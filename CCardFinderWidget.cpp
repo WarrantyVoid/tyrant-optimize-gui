@@ -78,7 +78,7 @@ void CCardFinderWidget::updateLayout()
     }
 }
 
-void CCardFinderWidget::resizeEvent(QResizeEvent *event)
+void CCardFinderWidget::resizeEvent(QResizeEvent */*event*/)
 {
     //const QSize &sizeOld = event->oldSize();
     //const QSize &sizeNew = event->size();

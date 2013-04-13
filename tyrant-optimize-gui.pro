@@ -18,7 +18,6 @@ HEADERS += \
     CMainWindow.h \
     CPathManager.h \
     CPictureDownload.h \
-    CProcessParameters.h \
     CUnitLabel.h \
     CDownload.h \
     CDeckWidget.h \
@@ -31,13 +30,16 @@ HEADERS += \
     CCardFilterParameters.h \
     CCardFilter.h \
     CCardFilterWidget.h \
+    CCardFinderWidget.h \
     CMultiDeckEditorWidget.h \
     CMultiDeckWidget.h \
     model/CCard.h \
     model/CDeck.h \
     model/CSkill.h \
     model/CBattleground.h \
-    CCardFinderWidget.h
+    process/CProcessParameters.h \
+    process/IProcessWrapper.h \
+    process/CTyrantOptimizeWrapper.h
 
 	   
 FORMS += \
@@ -52,7 +54,6 @@ SOURCES += \
     CMainWindow.cpp \
     CPathManager.cpp \
     CPictureDownload.cpp \
-    CProcessParameters.cpp \
     CUnitLabel.cpp \
     main.cpp \
     CDownload.cpp \
@@ -66,13 +67,15 @@ SOURCES += \
     CCardFilterParameters.cpp \
     CCardFilter.cpp \
     CCardFilterWidget.cpp \
+    CCardFinderWidget.cpp \
     CMultiDeckEditorWidget.cpp \
     CMultiDeckWidget.cpp \
     model/CCard.cpp \
     model/CDeck.cpp \
     model/CSkill.cpp \
     model/CBattleground.cpp \
-    CCardFinderWidget.cpp
+    process/CProcessParameters.cpp \
+    process/CTyrantOptimizeWrapper.cpp
 	   
 RESOURCES += main.qrc
 RC_FILE    = main.rc

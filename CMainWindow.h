@@ -6,11 +6,13 @@
 #include <QProcess.h>
 #include <QComboBox>
 #include <QFileSystemWatcher>
+#include "process/IProcessWrapper.h"
+#include "process/CProcessParameters.h"
 #include "CDeckWidget.h"
 #include "CCardFilterWidget.h"
 #include "CMultiDeckWidget.h"
 #include "CCardTable.h"
-#include "CProcessParameters.h"
+
 
 namespace Ui
 {
@@ -29,7 +31,6 @@ protected:
     void getInputDeck(const QComboBox *input, CDeck &deck) const;
     void startToolProcess(bool isOptimizationEnabled);
     void killToolProcess();
-    void setWinChance(float percentage);
     void setProcessActivityChanged(bool isActive);
     void loadDefaultSettings();
 
@@ -67,6 +68,11 @@ protected slots:
     void setOwnedCardsWatchingEnabled(bool enabled);
     void scanForOwnedCards();
 
+    // Process slots
+    void setWinChance(float winChance);
+    void setAnp(float anp);
+    void setResultDeck(const QString &deckHash);
+
 private:
     Ui::MainWindow *mUi;
     QFileSystemWatcher *mOwnedCardsWatcher;
@@ -77,6 +83,7 @@ private:
     CCardFilterWidget *mFilterWidget;    
     CMultiDeckWidget *mMultiDeckWidget;
     QProcess *mProcess;
+    IProcessWrapper *mProcessWrapper;
     QLabel *mProcessStatusLabel;
     QLabel *mDownloadStatusLabel;
     CCardTable *mCards;
@@ -84,7 +91,6 @@ private:
 	QString mLastDir;
 
 private:
-    static const QString PROCESS_NAME;
     static const QString VERSION;
 };
 

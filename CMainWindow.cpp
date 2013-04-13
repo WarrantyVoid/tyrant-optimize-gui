@@ -1,6 +1,7 @@
 #include "CMainWindow.h"
 #include "ui_MainWindow.h"
 #include "CPathManager.h"
+#include "process/CTyrantOptimizeWrapper.h"
 #include <QSortFilterProxyModel>
 #include <QDesktopWidget>
 #include <QSettings>
@@ -11,7 +12,6 @@
 #include <QHelpEvent>
 #include <QClipboard>
 
-const QString CMainWindow::PROCESS_NAME = "tyrant_optimize";
 const QString CMainWindow::VERSION = "1.0.1";
 
 CMainWindow::CMainWindow(QWidget *parent)
@@ -25,6 +25,7 @@ CMainWindow::CMainWindow(QWidget *parent)
 , mFilterWidget(new CCardFilterWidget())
 , mMultiDeckWidget(new CMultiDeckWidget())
 , mProcess(0)
+, mProcessWrapper(new CTyrantOptimizeWrapper())
 , mProcessStatusLabel(new QLabel())
 , mDownloadStatusLabel(new QLabel())
 , mCards(&CCardTable::getCardTable())
@@ -32,7 +33,7 @@ CMainWindow::CMainWindow(QWidget *parent)
 , mLastDir(QApplication::applicationDirPath())
 {
     mUi->setupUi(this);
-    setWindowTitle(QString("%1 GUI").arg(PROCESS_NAME));
+    setWindowTitle(QString("%1 GUI").arg(mProcessWrapper->getProcessExecutable().baseName()));
 
     mUi->baseDeckEdit->addItem("");
     mUi->baseDeckEdit->addItems(mCards->getCustomDecks());
@@ -256,6 +257,17 @@ CMainWindow::CMainWindow(QWidget *parent)
     connect(
         mOwnedCardsWatcher, SIGNAL(directoryChanged(const QString &)),
         this, SLOT(scanForOwnedCards()));
+
+    // Process Wrapper
+    connect(
+        mProcessWrapper, SIGNAL(winChanceUpdated(float)),
+        this, SLOT(setWinChance(float)));
+    connect(
+        mProcessWrapper, SIGNAL(anpUpdated(float)),
+        this, SLOT(setAnp(float)));
+    connect(
+        mProcessWrapper, SIGNAL(deckUpdated(const QString&)),
+        this, SLOT(setResultDeck(const QString&)));
 }
 
 CMainWindow::~CMainWindow()
@@ -303,117 +315,24 @@ void CMainWindow::getInputDeck(const QComboBox *input, CDeck &deck) const
 
 void CMainWindow::startToolProcess(bool isOptimizationEnabled)
 {
-    if (mProcess == 0)
+    if (mProcessWrapper && mProcess == 0)
     {
         mProcess = new QProcess();
         if (mProcess)
         {
-            const CPathManager &pm = CPathManager::getPathManager();
-
             // Fetch parameters from gui
             mParameters.setOptimizationEnabled(isOptimizationEnabled);
 			mParameters.fetchFromUi(*mUi);
-
-            QStringList toolParameters;            
-
-            // Base deck
-            CDeck deck;
-            QString deckId = mParameters.baseDeck();
-            if (!mCards->nameToDeck(deckId, deck) && !mCards->hashToDeck(deckId, deck) && mCards->strToDeck(deckId, deck))
-            {
-                QString deckHash;
-                if (mCards->deckToHash(deck, deckHash))
-                {
-                    deckId = deckHash;
-                }
-            }
-            toolParameters << deckId;
-
-
-            // Enemy deck
-            deckId = mParameters.enemyDeck();
-            if (!mCards->nameToDeck(deckId, deck) && !mCards->hashToDeck(deckId, deck) && mCards->strToDeck(deckId, deck))
-            {
-                QString deckHash;
-                if (mCards->deckToHash(deck, deckHash))
-                {
-                    deckId = deckHash;
-                }
-            }
-            toolParameters << deckId;
-
-            // Switches
-			if (mParameters.anpOnly())
-            {
-                toolParameters << "-a";
-            }
-			if (mParameters.lockCommander())
-            {
-                toolParameters << "-c";
-            }
-            if (mParameters.lockCardCount())
-            {
-                toolParameters << "-fixedlen";
-            }
-			if (mParameters.ownedCardsOnly())
+            if (mParameters.ownedCardsOnly())
             {
                 if (mFilterWidget->hasOwnedCardsChanged(mParameters.ownedCardsFile()))
-                {                                        
+                {
                     mFilterWidget->setOwnedCardsFile(mParameters.ownedCardsFile());
                 }
-                if (QFileInfo(pm.getToolPath() + "ownedcards_f.txt").exists())
-                {
-                    toolParameters << "-o=ownedcards_f.txt";
-                }
-                else
-                {
-                    toolParameters << "-o";
-                }
-            }
-            if (mParameters.orderedBase())
-            {
-                toolParameters << "-r";
-            }
-            if (mParameters.orderedEnemy())
-            {
-                toolParameters << "defender:ordered";
-            }
-            if (mParameters.surge())
-            {
-                toolParameters << "-s";
-            }
-            if (mParameters.winTie())
-            {
-                toolParameters << "-wintie";
-            }
-            if (mParameters.tournament())
-            {
-                toolParameters << "tournament";
-            }
-            if (!mParameters.battleGround().isEmpty())
-            {
-                toolParameters << "-e" << mParameters.battleGround();
-            }
-            if (!mParameters.achievement().isEmpty())
-            {
-                toolParameters << "-A" << mParameters.achievement();
             }
 
-            if (mParameters.isOptimizationEnabled())
-            {
-                toolParameters << "climb" << QString("%1").arg(mParameters.numBattles());
-            }
-            else
-            {
-                toolParameters << "sim" << QString("%1").arg(mParameters.numBattles());
-            }
-            toolParameters << "-t" << QString("%1").arg(mParameters.numThreads());
-
-            if (mParameters.numTurns() != 50)
-            {
-                toolParameters << "-turnlimit" << QString("%1").arg(mParameters.numTurns());
-            }
-
+            QStringList toolParameters;
+            mProcessWrapper->getCommandLineParameters(mParameters, toolParameters);
             //debug output only
             //mProcessStatusLabel->setText(toolParameters.join(" "));
             //return;
@@ -433,9 +352,10 @@ void CMainWindow::startToolProcess(bool isOptimizationEnabled)
                 this, SLOT(processStarted()));
 
             // Start tool
-            mProcess->setWorkingDirectory(pm.getToolPath());
+            QFileInfo toolExe = mProcessWrapper->getProcessExecutable();
+            mProcess->setWorkingDirectory(toolExe.absolutePath());
             mProcess->setProcessChannelMode(QProcess::MergedChannels);
-            mProcess->start(pm.getToolPath() + PROCESS_NAME + ".exe", toolParameters);
+            mProcess->start(toolExe.absoluteFilePath(), toolParameters);
             setProcessActivityChanged(true);
         }
     }
@@ -466,21 +386,9 @@ void CMainWindow::killToolProcess()
 
         if (mUi)
         {
-            mProcessStatusLabel->setText("Process \'" + PROCESS_NAME + "\' killed");
+            mProcessStatusLabel->setText(mProcessWrapper->getProcessExecutable().fileName() + "\' killed");
         }
         setProcessActivityChanged(false);
-    }
-}
-
-void CMainWindow::setWinChance(float percentage)
-{
-    if (mParameters.anpOnly())
-    {
-        mUi->resultDeckWidget->setWinLabel(QString("ANP=\n %1").arg(percentage, 3));
-    }
-    else
-    {
-        mUi->resultDeckWidget->setWinLabel(QString("%1%").arg(percentage, 3));
     }
 }
 
@@ -887,36 +795,38 @@ void CMainWindow::updateWindowHeight(bool grow)
 
 void CMainWindow::processError(QProcess::ProcessError error)
 {
+    QString processName = mProcessWrapper->getProcessExecutable().baseName();
     switch(error)
     {
     case QProcess::FailedToStart:
-        mProcessStatusLabel->setText(QString("Process \'%1\' not started").arg(PROCESS_NAME));
+        mProcessStatusLabel->setText(QString("Process \'%1\' not started").arg(processName));
         break;
     case QProcess::Crashed:
-        mProcessStatusLabel->setText(QString("Process \'%1\' crashed").arg(PROCESS_NAME));
+        mProcessStatusLabel->setText(QString("Process \'%1\' crashed").arg(processName));
         break;
     case QProcess::Timedout:
-        mProcessStatusLabel->setText(QString("Process \'%1\' timeout").arg(PROCESS_NAME));
+        mProcessStatusLabel->setText(QString("Process \'%1\' timeout").arg(processName));
         break;
     case QProcess::ReadError:
     case QProcess::WriteError:
-        mProcessStatusLabel->setText(QString("Process \'%1\' io error").arg(PROCESS_NAME));
+        mProcessStatusLabel->setText(QString("Process \'%1\' io error").arg(processName));
         break;
     default:
-        mProcessStatusLabel->setText(QString("Process \'%1\' unknown error").arg(PROCESS_NAME));
+        mProcessStatusLabel->setText(QString("Process \'%1\' unknown error").arg(processName));
         break;
     }
 }
 
 void CMainWindow::processFinished(int /*exitCode*/, QProcess::ExitStatus exitStatus)
 {
+    QString processName = mProcessWrapper->getProcessExecutable().baseName();
     switch(exitStatus)
     {
     case QProcess::NormalExit:
         //mProcessStatusLabel->setText(QString("\'%1\' finished with code %2").arg(PROCESS_NAME).arg(exitCode));
         break;
     case QProcess::CrashExit:
-        mProcessStatusLabel->setText(QString("Process \'%1\' crashed").arg(PROCESS_NAME));
+        mProcessStatusLabel->setText(QString("Process \'%1\' crashed").arg(processName));
         break;
     }
     if (mProcess)
@@ -930,169 +840,25 @@ void CMainWindow::processFinished(int /*exitCode*/, QProcess::ExitStatus exitSta
 void CMainWindow::processReadyReadStandardOutput()
 {
     QString toolOutput = QString(mProcess->readAllStandardOutput());
-    QStringList outputLines = toolOutput.split(QRegExp("\\n|\\r"), QString::SkipEmptyParts);
-    
+    QStringList outputLines = toolOutput.split(QRegExp("\\n|\\r"), QString::SkipEmptyParts);    
     for (int iLine = 0; iLine < outputLines.size(); ++iLine)
-    {        
+    {
         QString curLine = outputLines.at(iLine);
         if (!curLine.isEmpty())
         {
             mProcessStatusLabel->setText(curLine);
         }
-        if (curLine.startsWith("Attacker:"))
-        {
-            mUi->resultDeckWidget->setDefaultUnits();
-            QStringList curTokens = curLine.split(QRegExp("\\s|\\(|\\)|:"), QString::SkipEmptyParts);
-            if (!curTokens.isEmpty())
-            {
-                CDeck outputDeck;
-                if (mCards->hashToDeck(curTokens.last(), outputDeck))
-                {
-                    // We have at least one valid card -> enable saving
-                    mUi->saveOptimizedButton->setEnabled(!outputDeck.isEmpty());
-                    mUi->hashOptimizedButton->setEnabled(!outputDeck.isEmpty());
-                    mUi->resultDeckWidget->setDeck(outputDeck);
-                }
-            }
-        }
-        else if (curLine.startsWith("win%") || (mParameters.anpOnly() && curLine.startsWith("ANP")))
-        {
-            QStringList curTokens = curLine.split(QRegExp("\\s|\\(|\\)|:"), QString::SkipEmptyParts);
-            bool ok(true);
-            float winPercent = curTokens.at(1).toFloat(&ok);
-            if (ok)
-            {
-                setWinChance(winPercent);
-            }
-        }
-        else if (curLine.startsWith("Deck improved"))
-        {            
-            QStringList curTokens = curLine.split(QRegExp("\\s|\\(|\\)|:"), QString::SkipEmptyParts);
-           
-            //Debug output, enable only for testing
-            //QString debugOut = "";
-            //for (int iToken = 0; iToken < curTokens.size(); ++iToken)
-            //{
-            //    debugOut += "[" + curTokens.at(iToken) + "]";
-            //}
-            //mProcessStatusLabel->setText(debugOut);
-            //return;
-            
-            if (curTokens.size() > (mParameters.anpOnly() ? 6 : 10))
-            {  
-                int fromSlot(-0xf);
-                int toSlot(-0xf);
-                int unitBeginIdx(-0xf);
-                CDeck outputDeck;
-                if (mCards->hashToDeck(curTokens.at(2), outputDeck))
-                {
-                    mUi->resultDeckWidget->setDeck(outputDeck);
-                }
-                else if (curTokens.at(2).compare("commander") == 0)
-                {
-                    // Commander toggled
-                    toSlot = -1;
-                    unitBeginIdx = 4;
-                }
-                else if (curTokens.at(2).compare("slot") == 0)
-                {
-                    // Slot toggled
-                    bool ok(true);
-                    int parsedSlot = curTokens.at(3).toInt(&ok);
-                    if (ok)
-                    {
-                        toSlot = parsedSlot;
-                        unitBeginIdx = 5;
-                    }
-                }
-                else
-                {
-                    // Slot moved
-                    bool ok(true);
-                    int parsedSlot = curTokens.at(2).toInt(&ok);
-                    if (ok)
-                    {
-                        fromSlot = parsedSlot;
-                        for (int slotIdx = 4; slotIdx < curTokens.size() - 1; ++slotIdx)
-                        {
-                            if (curTokens.at(slotIdx).compare("->") == 0)
-                            {
-                                int parsedSlot = curTokens.at(slotIdx + 1).toInt(&ok);
-                                if (ok)
-                                {
-                                    toSlot = parsedSlot;
-                                    unitBeginIdx = slotIdx + 2;
-                                }
-                                break;
-                            }
-                        }
-                    }                    
-                }
-
-                QString unitName("");
-                if (toSlot != -0xf && unitBeginIdx != -0xf)
-                {
-                    // Retrieve full unit name and percentage
-                    int unitEndIdx = unitBeginIdx;
-                    for (; unitEndIdx < curTokens.size(); ++unitEndIdx)
-                    {
-                        if (curTokens.at(unitEndIdx).compare("win%") == 0 || curTokens.at(unitEndIdx).compare("ANP") == 0)
-                        {
-                            break;
-                        }
-                        else
-                        {
-                            if (!unitName.isEmpty())
-                            {
-                                unitName += " ";
-                            }
-                            unitName += curTokens.at(unitEndIdx);
-                        }
-                    }
-                    if (curTokens.size() - unitEndIdx >  (mParameters.anpOnly() ? 0 : 4))
-                    {
-                        bool ok(true);
-                        float winPercent = curTokens.at(unitEndIdx + 1).toFloat(&ok);
-                        if (ok)
-                        {
-                            setWinChance(winPercent);
-                        }
-                    }
-                }
-
-                if (!unitName.isEmpty())
-                {
-                    if (fromSlot != -0xf)
-                    {                       
-                        for (int iSlot = fromSlot; iSlot != toSlot; (fromSlot < toSlot ? ++iSlot : --iSlot))
-                        {
-                            const CCard &exCard = mUi->resultDeckWidget->getUnit(fromSlot < toSlot ? iSlot + 1 : iSlot - 1);
-                            mUi->resultDeckWidget->setUnit(iSlot, exCard);
-                        }
-                    }
-                    //mProcessStatusLabel->setText(QString("%1 -> %2").arg(fromSlot).arg(toSlot));
-                    const CCard &card = mCards->getCardForName(unitName);                    
-                    mUi->resultDeckWidget->setUnit(toSlot, card);
-                }
-            }
-        }
-        else
-        {
-            // Extra output starting with win chance
-            QStringList curTokens = curLine.split(QRegExp("\\s|\\(|\\)|:|%"), QString::SkipEmptyParts);
-            bool ok(true);
-            float winPercent = curTokens.at(0).toFloat(&ok);
-            if (ok)
-            {
-                setWinChance(winPercent);
-            }
-        }
+    }
+    if (mProcessWrapper)
+    {
+        mProcessWrapper->processCommandLineOutput(outputLines);
     }
 }
 
 void CMainWindow::processStarted()
 {
-    mProcessStatusLabel->setText(QString("Process \'%1\' started").arg(PROCESS_NAME));
+    QString processName = mProcessWrapper->getProcessExecutable().baseName();
+    mProcessStatusLabel->setText(QString("Process \'%1\' started").arg(processName));
 }
 
 void  CMainWindow::downloadProgress(int numDone, int numDownloads)
@@ -1156,4 +922,38 @@ void CMainWindow::scanForOwnedCards()
     mUi->ownedCardsFileBox->clear();
     mUi->ownedCardsFileBox->addItems(mOwnedCardsFiles);
     mUi->ownedCardsFileBox->setCurrentIndex(mUi->ownedCardsFileBox->findText(lastText));
+}
+
+void CMainWindow::setWinChance(float winChance)
+{
+    if (!mParameters.anpOnly())
+    {
+        mUi->resultDeckWidget->setWinLabel(QString("%1%").arg(winChance, 3));
+    }
+}
+
+void CMainWindow::setAnp(float anp)
+{
+    if (mParameters.anpOnly())
+    {
+        mUi->resultDeckWidget->setWinLabel(QString("ANP=\n %1").arg(anp, 3));
+    }
+}
+
+void CMainWindow::setResultDeck(const QString &deckHash)
+{
+    CDeck deck;
+    if (mCards->hashToDeck(deckHash, deck))
+    {
+        // We have at least one valid card -> enable saving
+        mUi->saveOptimizedButton->setEnabled(true);
+        mUi->hashOptimizedButton->setEnabled(true);
+        mUi->resultDeckWidget->setDeck(deck);
+    }
+    else
+    {
+        mUi->saveOptimizedButton->setEnabled(false);
+        mUi->hashOptimizedButton->setEnabled(false);
+        mUi->resultDeckWidget->setDefaultUnits();
+    }
 }
