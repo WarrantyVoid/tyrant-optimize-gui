@@ -157,7 +157,8 @@ void CTyrantOptimizeWrapper::processCommandLineOutput(const QStringList &output)
             float winPercent = curTokens.at(0).toFloat(&ok);
             if (ok)
             {
-                if (curLine.endsWith("%"))
+                int chanceIndex = curLine.indexOf('%');
+                if (chanceIndex > -1 && chanceIndex < 8)
                 {
                     emit winChanceUpdated(winPercent);
                 }
