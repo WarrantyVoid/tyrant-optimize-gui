@@ -54,6 +54,7 @@ protected slots:
     void checkBaseDeck();
     void saveCustomDeck();
     void copyDeckHash();
+    void useOptimizedDeck();
     void switchDecks();
     void updateWindowHeight(bool grow);
 

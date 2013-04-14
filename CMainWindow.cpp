@@ -217,6 +217,9 @@ CMainWindow::CMainWindow(QWidget *parent)
         mUi->optimizeBaseButton, SIGNAL(clicked()),
         this, SLOT(toggleToolProcess()));
     connect(
+        mUi->useOptimizedButton, SIGNAL(clicked()),
+        this, SLOT(useOptimizedDeck()));
+    connect(
         mUi->saveBaseButton, SIGNAL(clicked()),
         this, SLOT(saveCustomDeck()));
     connect(
@@ -740,6 +743,18 @@ void CMainWindow::saveCustomDeck()
    }
 }
 
+void CMainWindow::useOptimizedDeck()
+{
+    CDeck deck = mUi->resultDeckWidget->getDeck();
+    if (deck.isValid())
+    {
+        QString hash;
+        mCards->deckToHash(deck, hash);
+        mUi->baseDeckEdit->lineEdit()->setText(hash);
+        mUi->baseDeckWidget->setDeck(deck);
+    }
+}
+
 void CMainWindow::copyDeckHash()
 {
     CDeck deck;
@@ -946,12 +961,14 @@ void CMainWindow::setResultDeck(const QString &deckHash)
     if (mCards->hashToDeck(deckHash, deck))
     {
         // We have at least one valid card -> enable saving
+        mUi->useOptimizedButton->setEnabled((true));
         mUi->saveOptimizedButton->setEnabled(true);
         mUi->hashOptimizedButton->setEnabled(true);
         mUi->resultDeckWidget->setDeck(deck);
     }
     else
     {
+        mUi->useOptimizedButton->setEnabled(false);
         mUi->saveOptimizedButton->setEnabled(false);
         mUi->hashOptimizedButton->setEnabled(false);
         mUi->resultDeckWidget->setDefaultUnits();
