@@ -32,6 +32,14 @@ void CDeck::addCard(const CCard& card)
     mCards.push_back(card);
 }
 
+void CDeck::replaceCard(int index, const CCard& card)
+{
+    if (index <  mCards.size())
+    {
+        mCards[index] = card;
+    }
+}
+
 void CDeck::clearCards()
 {
     mCards.clear();
@@ -50,6 +58,11 @@ EDeckType CDeck::getType() const
 const QList<CCard>& CDeck::getCards() const
 {
     return mCards;
+}
+
+int CDeck::getNumCards() const
+{
+    return mCards.size();
 }
 
 bool CDeck::isValid() const

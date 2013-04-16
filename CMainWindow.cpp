@@ -255,8 +255,8 @@ CMainWindow::CMainWindow(QWidget *parent)
         mMultiDeckWidget, SIGNAL(decksUpdated(const QString&)),
         mMultiDeckDialog, SLOT(hide()));
     connect(
-        mCards, SIGNAL(debugOutputSignal(const QString &)),
-        mProcessStatusLabel, SLOT(setText(const QString &)));
+        mUi->cardFinderDockWidget->widget(), SIGNAL(cardSelected(unsigned int)),
+        this, SLOT(addCard(unsigned int)));
     connect(
         mOwnedCardsWatcher, SIGNAL(directoryChanged(const QString &)),
         this, SLOT(scanForOwnedCards()));
@@ -937,6 +937,55 @@ void CMainWindow::scanForOwnedCards()
     mUi->ownedCardsFileBox->clear();
     mUi->ownedCardsFileBox->addItems(mOwnedCardsFiles);
     mUi->ownedCardsFileBox->setCurrentIndex(mUi->ownedCardsFileBox->findText(lastText));
+}
+
+void CMainWindow::addCard(unsigned int cardId)
+{
+    CDeckWidget *deckWidget = 0;
+    QLineEdit *editWidget = 0;
+    if (mUi->baseDeckWidget->isVisible())
+    {
+        deckWidget = mUi->baseDeckWidget;
+        editWidget = mUi->baseDeckEdit->lineEdit();
+    }
+    else if (mUi->enemyDeckWidget->isVisible())
+    {
+        deckWidget = mUi->enemyDeckWidget;
+        editWidget = mUi->enemyDeckEdit->lineEdit();
+    }
+    else
+    {
+        deckWidget = mUi->baseDeckWidget;
+        editWidget = mUi->baseDeckEdit->lineEdit();
+    }
+
+    if (deckWidget && editWidget)
+    {
+        CDeck deck = deckWidget->getDeck();
+        const CCard &newCard = mCards->getCardForId(cardId);
+        if (newCard.getType() == ECommanderType)
+        {
+            deck.replaceCard(0, newCard);
+        }
+        else if (deck.getNumCards() > 10)
+        {
+            deck.replaceCard(10, newCard);
+        }
+        else
+        {
+            if (deck.getNumCards() == 0)
+            {
+                const CCard &whisper = mCards->getCardForId(1003);
+                deck.addCard(whisper);
+            }
+            deck.addCard(newCard);
+        }
+        deckWidget->setDeck(deck);
+
+        QString hash;
+        mCards->deckToHash(deck, hash);
+        editWidget->setText(hash);
+    }
 }
 
 void CMainWindow::setWinChance(float winChance)

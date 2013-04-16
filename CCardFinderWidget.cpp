@@ -19,6 +19,7 @@ CCardFinderWidget::CCardFinderWidget(QWidget *parent)
     {
         CUnitLabel* newLabel = new CUnitLabel();
         newLabel->setFixedSize(80, 110);
+        newLabel->installEventFilter(this);
         mResultWidgets.push_back(mScene->addWidget(newLabel));
     }
     updateLayout();
@@ -27,7 +28,7 @@ CCardFinderWidget::CCardFinderWidget(QWidget *parent)
     mUi->finderView->setMinimumWidth(widthView + widthWidget - widthView);
 
     connect(
-        mUi->finderBox, SIGNAL(activated(const QString&)),
+        mUi->finderBox, SIGNAL(editTextChanged(const QString&)),
         this, SLOT(updateView(const QString&)));
 }
 
@@ -39,13 +40,13 @@ CCardFinderWidget::~CCardFinderWidget()
 void CCardFinderWidget::updateView(const QString &search)
 {
     CCardTable &cards = CCardTable::getCardTable();
-    QList<CCard> foundCards;
+    QList<CCard*> foundCards;
     cards.searchCards(search, foundCards, NUM_RESULT_WIDGETS);
     for (int i = 0; i < NUM_RESULT_WIDGETS; ++i)
     {
         if (i < foundCards.size())
         {
-            static_cast<CUnitLabel*>(mResultWidgets[i]->widget())->setCard(foundCards[i]);
+            static_cast<CUnitLabel*>(mResultWidgets[i]->widget())->setCard(*foundCards[i]);
             mResultWidgets[i]->widget()->setVisible(true);
         }
         else
@@ -85,5 +86,27 @@ void CCardFinderWidget::resizeEvent(QResizeEvent */*event*/)
     //if (sizeNew.width() / 80 != sizeOld.width() / 80)
     {
         updateLayout();
+    }
+}
+
+bool CCardFinderWidget::eventFilter(QObject *obj, QEvent *e)
+{
+    switch (e->type())
+    {
+        case QEvent::MouseButtonDblClick:
+        {
+            CUnitLabel *unitLabel = static_cast<CUnitLabel*>(obj);
+            const CCard &card = unitLabel->getCard();
+            if (card.isValid())
+            {
+                emit cardSelected(card.getId());
+            }
+            return true;
+        }
+        default:
+        {
+            // standard event processing
+            return QObject::eventFilter(obj, e);
+        }
     }
 }

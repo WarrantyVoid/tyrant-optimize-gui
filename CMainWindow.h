@@ -68,6 +68,7 @@ protected slots:
     void ownedCardsUpdated(int numCards);
     void setOwnedCardsWatchingEnabled(bool enabled);
     void scanForOwnedCards();
+    void addCard(unsigned int cardId);
 
     // Process slots
     void setWinChance(float winChance);

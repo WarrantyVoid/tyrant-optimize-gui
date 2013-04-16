@@ -31,7 +31,7 @@ public:
     const QString getPictureForCardSet(ECardSet cardSet) const;
     const CCard& getCardForId(unsigned int id) const;
     const CCard& getCardForName(const QString &name) const;
-    void searchCards(const QString &search, QList<CCard> &cards, int maxHits = -1) const;
+    void searchCards(const QString &search, QList<CCard*> &cards, int maxHits = -1) const;
 
     void updateData();
     bool addCustomDeck(CDeck &customDeck);
@@ -43,7 +43,6 @@ public:
 signals:
     void downloadProgress(int numDone, int numDownloads);
     void dataUpdated(const QStringList &result);
-    void debugOutputSignal(const QString &output);
 
  protected slots:
     void processNextPictureDownload();

@@ -23,11 +23,13 @@ public:
     void setName(const QString& name);
     void setType(EDeckType type);
     void addCard(const CCard& card);
-    void clearCards();
+    void replaceCard(int index, const CCard& card);
+    void clearCards();    
 
     const QString& getName() const;
     EDeckType getType() const;
     const QList<CCard>& getCards() const;
+    int getNumCards() const;
 
     bool isValid() const;
     bool isEmpty() const;

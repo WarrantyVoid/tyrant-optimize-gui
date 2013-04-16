@@ -18,12 +18,16 @@ public:
     explicit CCardFinderWidget(QWidget *parent = 0);
     ~CCardFinderWidget();
 
+signals:
+    void cardSelected(unsigned int cardId);
+
 public slots:
     void updateView(const QString &search);
     void updateLayout();
 
 protected:
-    void resizeEvent(QResizeEvent *event);
+    virtual void resizeEvent(QResizeEvent *event);
+    virtual bool eventFilter(QObject *obj, QEvent *e);
     
 private:
     static const int NUM_RESULT_WIDGETS;
