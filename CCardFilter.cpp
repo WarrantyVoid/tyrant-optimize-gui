@@ -23,6 +23,7 @@ int CCardFilter::updateOwnedCards(const QString &cardsStr, const QString &cardsP
             }
         }
     }
+
     if (!ownedCards.isEmpty())
     {
         QFile outputFile(cardsPath);
@@ -54,6 +55,7 @@ void CCardFilter::execute(const QString &inputFilePath, const QString &outputFil
                 ownedCards.push_back(curOwned);
             }
         }
+
         QFile outputFile(outputFilePath);
         if (outputFile.open(QIODevice::WriteOnly | QIODevice::Truncate))
         {

@@ -82,11 +82,12 @@ private:
     unsigned int mFlags;
 };
 
+typedef QList<CCardSkill> TCardSkills;
+
 class CCard
 {
 public:
     CCard();
-    CCard(unsigned int id, const QString &name, const QString &picture, ECardRarity rarity, ECardFaction faction, ECardSet set);
 
 public:
     void setId(unsigned int id);
@@ -105,12 +106,13 @@ public:
 
     unsigned int getId() const;
     QString getName() const;
+    QString getLwCsName() const;
     QString getPicture() const;
     ECardRarity getRarity() const;
     ECardFaction getFaction() const;
     ECardType getType() const;
     ECardSet getSet() const;
-    const QList<CCardSkill>& getSkills() const;
+    const TCardSkills& getSkills() const;
     int getUpgradeLevel() const;
     int getDelay() const;
     bool isUnique() const;
@@ -128,6 +130,7 @@ public:
 private:
     unsigned int mId;
     QString mName;
+    QString mLwCsName;
     QString mPicture;
     ECardRarity mRarity;
     ECardFaction mFaction;

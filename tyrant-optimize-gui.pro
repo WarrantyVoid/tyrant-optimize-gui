@@ -30,7 +30,6 @@ HEADERS += \
     CCardFilterParameters.h \
     CCardFilter.h \
     CCardFilterWidget.h \
-    CCardFinderWidget.h \
     CMultiDeckEditorWidget.h \
     CMultiDeckWidget.h \
     model/CCard.h \
@@ -39,7 +38,10 @@ HEADERS += \
     model/CBattleground.h \
     process/CProcessParameters.h \
     process/IProcessWrapper.h \
-    process/CTyrantOptimizeWrapper.h
+    process/CTyrantOptimizeWrapper.h \
+    CCardSearchParameters.h \
+    CCardSearchWidget.h \
+    ICardCheck.h
 
 	   
 FORMS += \
@@ -47,7 +49,7 @@ FORMS += \
     DeckWidget.ui \
     CardFilterWidget.ui \
     MultiDeckEditorWidget.ui \
-    CardFinderWidget.ui
+    CardSearchWidget.ui
 
 SOURCES += \
     CCardTable.cpp \
@@ -67,7 +69,6 @@ SOURCES += \
     CCardFilterParameters.cpp \
     CCardFilter.cpp \
     CCardFilterWidget.cpp \
-    CCardFinderWidget.cpp \
     CMultiDeckEditorWidget.cpp \
     CMultiDeckWidget.cpp \
     model/CCard.cpp \
@@ -75,7 +76,9 @@ SOURCES += \
     model/CSkill.cpp \
     model/CBattleground.cpp \
     process/CProcessParameters.cpp \
-    process/CTyrantOptimizeWrapper.cpp
+    process/CTyrantOptimizeWrapper.cpp \
+    CCardSearchParameters.cpp \
+    CCardSearchWidget.cpp
 	   
 RESOURCES += main.qrc
 RC_FILE    = main.rc

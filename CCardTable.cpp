@@ -97,12 +97,13 @@ const CCard& CCardTable::getCardForName(const QString &name) const
     return CCard::INVALID_CARD;
 }
 
-void CCardTable::searchCards(const QString &search, QList<CCard*> &cards, int maxHits) const
+void CCardTable::searchCards(const ICardCheck &search, QList<CCard*> &cards, int maxHits) const
 {
     cards.clear();
+    int dummy(0);
     for (QHash<QString, CCard*>::const_iterator i = mCardNameMap.begin(); i != mCardNameMap.end(); ++i)
     {
-        if (i.key().contains(search, Qt::CaseInsensitive))
+        if (search.checkCard(*i.value(), dummy))
         {
             cards.push_back(i.value());
             if (cards.size() == maxHits)

@@ -82,7 +82,7 @@ private:
     QDialog *mFilterDialog;
     QDialog *mMultiDeckDialog;
     CDeckWidget *mDeckToolTipContent;    
-    CCardFilterWidget *mFilterWidget;    
+    CCardFilterWidget *mFilterWidget;
     CMultiDeckWidget *mMultiDeckWidget;
     QProcess *mProcess;
     IProcessWrapper *mProcessWrapper;

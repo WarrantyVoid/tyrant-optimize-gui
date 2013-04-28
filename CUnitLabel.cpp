@@ -151,13 +151,14 @@ void CUnitLabel::paintEvent(QPaintEvent *ev)
             painter.drawText(dx + 2, dySkill - 15, 100, 12, Qt::AlignLeft | Qt::AlignVCenter, "Unique");
         }
 
-        const QList<CCardSkill> &skills = mCard.getSkills();
-        for (int i = 0; i < skills.size(); ++i)
+        const TCardSkills &skills = mCard.getSkills();
+        int curIdx = 0;
+        for (TCardSkills::const_iterator i = skills.begin(); i != skills.end(); ++i, ++curIdx)
         {
-            const CSkill& curSkill = mCards.getSkillForId(skills.at(i).getId());
+            const CSkill& curSkill = mCards.getSkillForId(i->getId());
             if (curSkill.isValid())
             {
-                QPoint skillPos(dx + 2 + i * (2 + skill), dySkill);
+                QPoint skillPos(dx + 2 + curIdx * (2 + skill), dySkill);
                 painter.drawPixmap(skillPos, QPixmap(pm.getResourcePicturePath() + curSkill.getPicture() + ".png"));
                 //painter.drawText(dx, 80 + i*10, 100, 10, Qt::AlignLeft | Qt::AlignVCenter, curSkill.makeSignature(skills.at(i)));
             }

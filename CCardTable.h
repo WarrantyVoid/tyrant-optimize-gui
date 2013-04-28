@@ -8,6 +8,7 @@
 #include "model/CDeck.h"
 #include "model/CSkill.h"
 #include "model/CBattleground.h"
+#include "ICardCheck.h"
 
 class CDownload;
 class CPictureDownload;
@@ -31,7 +32,7 @@ public:
     const QString getPictureForCardSet(ECardSet cardSet) const;
     const CCard& getCardForId(unsigned int id) const;
     const CCard& getCardForName(const QString &name) const;
-    void searchCards(const QString &search, QList<CCard*> &cards, int maxHits = -1) const;
+    void searchCards(const ICardCheck &search, QList<CCard*> &cards, int maxHits = -1) const;
 
     void updateData();
     bool addCustomDeck(CDeck &customDeck);

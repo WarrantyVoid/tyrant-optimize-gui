@@ -3,6 +3,7 @@
 
 #include <QHash>
 #include <QSettings>
+#include "ICardCheck.h"
 
 namespace Ui
 {
@@ -11,7 +12,7 @@ class CardFilterWidget;
 class CCardTable;
 class CCard;
 
-class CCardFilterParameters
+class CCardFilterParameters : public ICardCheck
 {
 public:
     CCardFilterParameters();

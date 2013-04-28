@@ -28,14 +28,15 @@ CCardFilterWidget::~CCardFilterWidget()
     delete mUi;
 }
 
-void CCardFilterWidget::loadDefaultParameterSettings(QSettings &settings)
+void CCardFilterWidget::loadParameterSettings(QSettings &settings)
 {
     mParameters.fetchFromSettings(settings);
     mParameters.updateUi(*mUi);
 }
 
-void  CCardFilterWidget::saveDefaultParameterSettings(QSettings &settings)
+void  CCardFilterWidget::saveParameterSettings(QSettings &settings)
 {
+    mParameters.fetchFromUi(*mUi);
     mParameters.updateSettings(settings);
 }
 

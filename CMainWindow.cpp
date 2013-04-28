@@ -12,7 +12,7 @@
 #include <QHelpEvent>
 #include <QClipboard>
 
-const QString CMainWindow::VERSION = "1.0.1";
+const QString CMainWindow::VERSION = "1.0.2";
 
 CMainWindow::CMainWindow(QWidget *parent)
 : QMainWindow(parent)
@@ -87,7 +87,7 @@ CMainWindow::CMainWindow(QWidget *parent)
 
     CDeck baseDeck;    
     getInputDeck(mUi->baseDeckEdit, baseDeck);    
-    mUi->baseDeckWidget->setVisible(false);
+    mUi->baseDeckWidget->setVisible(mUi->displayBaseButton->isChecked());
     mUi->baseDeckLabel->setVisible(false);
     mUi->baseDeckWidget->setDeck(baseDeck);
     mUi->baseDeckWidget->setWinLabel(QPixmap(":/img/trash.png"));
@@ -95,7 +95,7 @@ CMainWindow::CMainWindow(QWidget *parent)
 
     CDeck enemyDeck;    
     getInputDeck(mUi->enemyDeckEdit, enemyDeck);    
-    mUi->enemyDeckWidget->setVisible(false);
+    mUi->enemyDeckWidget->setVisible(mUi->displayEnemyButton->isChecked());
     mUi->enemyDeckLabel->setVisible(false);
     mUi->enemyDeckWidget->setDeck(enemyDeck);
     mUi->enemyDeckWidget->setWinLabel(QPixmap(":/img/trash.png"));
@@ -180,7 +180,7 @@ CMainWindow::CMainWindow(QWidget *parent)
         mUi->baseDeckWidget, SIGNAL(deckChanged(const QString &)),
         mUi->baseDeckEdit->lineEdit(), SLOT(setText(const QString &)));
     connect(
-        mUi->displayBaseButton, SIGNAL(toggled(bool)),
+        mUi->displayBaseButton, SIGNAL(clicked(bool)),
         this, SLOT(updateWindowHeight(bool)), Qt::QueuedConnection);
     connect(
         mUi->switchDecksButton, SIGNAL(clicked()),
@@ -203,7 +203,7 @@ CMainWindow::CMainWindow(QWidget *parent)
         mUi->enemyDeckWidget, SIGNAL(deckChanged(const QString &)),
         mUi->enemyDeckEdit->lineEdit(), SLOT(setText(const QString &)));
     connect(
-        mUi->displayEnemyButton, SIGNAL(toggled(bool)),
+        mUi->displayEnemyButton, SIGNAL(clicked(bool)),
         this, SLOT(updateWindowHeight(bool)), Qt::QueuedConnection);
     connect(
         mUi->multiEnemyButton, SIGNAL(clicked()),
@@ -255,7 +255,7 @@ CMainWindow::CMainWindow(QWidget *parent)
         mMultiDeckWidget, SIGNAL(decksUpdated(const QString&)),
         mMultiDeckDialog, SLOT(hide()));
     connect(
-        mUi->cardFinderDockWidget->widget(), SIGNAL(cardSelected(unsigned int)),
+        mUi->cardSearchWidget, SIGNAL(cardSelected(unsigned int)),
         this, SLOT(addCard(unsigned int)));
     connect(
         mOwnedCardsWatcher, SIGNAL(directoryChanged(const QString &)),
@@ -414,14 +414,24 @@ void CMainWindow::setProcessActivityChanged(bool isActive)
 
 void CMainWindow::loadDefaultSettings()
 {
-    QSettings settings("default.ini", QSettings::IniFormat);
+    QSettings settings("default.ini", QSettings::IniFormat); 
     restoreGeometry(settings.value("window/geometry").toByteArray());
     restoreState(settings.value("window/state").toByteArray());
+
     bool alwaysOnTop = settings.value("window/alwaysOnTop").toBool();
-    mUi->alwaysOnTopAction->setChecked(alwaysOnTop);
+    mUi->alwaysOnTopAction->setChecked(alwaysOnTop);    
     toggleAlwaysOnTop(alwaysOnTop);
+
+    bool baseDisplayed = settings.value("window/baseDeckDisplayed", false).toBool();
+    bool enemyDisplayed = settings.value("window/enemyDeckDisplayed", false).toBool();
+    mUi->displayBaseButton->setChecked(baseDisplayed);
+    mUi->displayEnemyButton->setChecked(enemyDisplayed);
+
     mLastDir = settings.value("paths/lastDir", mLastDir).toString();
-    mFilterWidget->loadDefaultParameterSettings(settings);
+
+    mFilterWidget->loadParameterSettings(settings);
+    mUi->cardSearchWidget->loadParameterSettings(settings);
+
     loadDefaultParameterSettings();
 }
 
@@ -431,8 +441,12 @@ void CMainWindow::closeEvent(QCloseEvent *e)
     settings.setValue("window/geometry", saveGeometry());
     settings.setValue("window/state", saveState());
     settings.setValue("window/alwaysOnTop",  mUi->alwaysOnTopAction->isChecked());
+    settings.setValue("window/baseDeckDisplayed", mUi->displayBaseButton->isChecked());
+    settings.setValue("window/enemyDeckDisplayed", mUi->displayEnemyButton->isChecked());
 	settings.setValue("paths/lastDir", mLastDir);
-    mFilterWidget->saveDefaultParameterSettings(settings);
+
+    mFilterWidget->saveParameterSettings(settings);
+    mUi->cardSearchWidget->saveParameterSettings(settings);
     QMainWindow::closeEvent(e);
 }
 

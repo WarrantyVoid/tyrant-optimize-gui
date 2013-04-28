@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>627</width>
+    <width>625</width>
     <height>364</height>
    </rect>
   </property>
@@ -811,7 +811,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>627</width>
+     <width>625</width>
      <height>21</height>
     </rect>
    </property>
@@ -851,7 +851,13 @@
    <addaction name="menuUpdate"/>
    <addaction name="menuHelp"/>
   </widget>
-  <widget class="QDockWidget" name="cardFinderDockWidget">
+  <widget class="QDockWidget" name="cardSearchDockWidget">
+   <property name="minimumSize">
+    <size>
+     <width>280</width>
+     <height>37</height>
+    </size>
+   </property>
    <property name="allowedAreas">
     <set>Qt::LeftDockWidgetArea|Qt::RightDockWidgetArea</set>
    </property>
@@ -861,7 +867,7 @@
    <attribute name="dockWidgetArea">
     <number>2</number>
    </attribute>
-   <widget class="CCardFinderWidget" name="dockWidgetContents"/>
+   <widget class="CCardSearchWidget" name="cardSearchWidget"/>
   </widget>
   <action name="saveAsAction">
    <property name="text">
@@ -933,9 +939,9 @@
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>CCardFinderWidget</class>
+   <class>CCardSearchWidget</class>
    <extends>QWidget</extends>
-   <header>CCardFinderWidget.h</header>
+   <header>CCardSearchWidget.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

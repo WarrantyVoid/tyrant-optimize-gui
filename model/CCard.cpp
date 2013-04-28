@@ -49,27 +49,11 @@ const int CCard::UPGRADE_LEVEL_NONE = -1;
 CCard::CCard()
 : mId(0)
 , mName("")
+, mLwCsName("")
 , mPicture("")
 , mRarity(EUnknownRarity)
 , mFaction(EUnknownFaction)
 , mSet(EUnknownSet)
-, mSkills()
-, mUpgradeLevel(UPGRADE_LEVEL_NONE)
-, mDelay(-1)
-, mAttack(-1)
-, mHealth(-1)
-, mIsUnique(false)
-{
-
-}
-
-CCard::CCard(unsigned int id, const QString &name, const QString &picture, ECardRarity rarity, ECardFaction faction, ECardSet set)
-: mId(id)
-, mName(name)
-, mPicture(picture)
-, mRarity(rarity)
-, mFaction(faction)
-, mSet(set)
 , mSkills()
 , mUpgradeLevel(UPGRADE_LEVEL_NONE)
 , mDelay(-1)
@@ -88,6 +72,7 @@ void CCard::setId(unsigned int id)
 void CCard::setName(const QString &name)
 {
     mName = name;
+    mLwCsName = getName().toLower();
 }
 
 void CCard::setPicture(const QString &picture)
@@ -164,6 +149,11 @@ QString CCard::getName() const
     return name;
 }
 
+QString CCard::getLwCsName() const
+{
+    return mLwCsName;
+}
+
 QString CCard::getPicture() const
 {
     return mPicture;
@@ -213,7 +203,7 @@ ECardSet CCard::getSet() const
     return mSet;
 }
 
-const QList<CCardSkill>& CCard::getSkills() const
+const TCardSkills& CCard::getSkills() const
 {
     return mSkills;
 }

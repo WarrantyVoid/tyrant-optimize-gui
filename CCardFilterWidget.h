@@ -19,8 +19,8 @@ public:
     ~CCardFilterWidget();
 
 public:
-    void loadDefaultParameterSettings(QSettings &settings);
-    void saveDefaultParameterSettings(QSettings &settings);
+    void loadParameterSettings(QSettings &settings);
+    void saveParameterSettings(QSettings &settings);
     void scanOwnedCards(QStringList &result) const;
     bool hasOwnedCardsChanged(const QString &fileName) const;
 
