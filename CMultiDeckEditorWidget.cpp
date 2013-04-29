@@ -54,6 +54,24 @@ void CMultiDeckEditorWidget::reset()
     mUi->deckEdit->lineEdit()->setText("");
 }
 
+void CMultiDeckEditorWidget::updateAvailableDecks()
+{
+    QString selectedItem = mUi->deckEdit->currentText();
+    mUi->deckEdit->clear();
+    mUi->deckEdit->addItem("");
+    mUi->deckEdit->addItems(mCards.getRaidDecks());
+    mUi->deckEdit->addItems(mCards.getCustomDecks());
+    int newIndex = mUi->deckEdit->findText(selectedItem);
+    if (newIndex == -1)
+    {
+        mUi->deckEdit->lineEdit()->setText(selectedItem);
+    }
+    else
+    {
+        mUi->deckEdit->setCurrentIndex(newIndex);
+    }
+}
+
 void CMultiDeckEditorWidget::updateDeck(const QString &deck)
 {
     mUi->deckEdit->lineEdit()->setText(deck);

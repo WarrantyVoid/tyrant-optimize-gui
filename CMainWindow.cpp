@@ -174,7 +174,7 @@ CMainWindow::CMainWindow(QWidget *parent)
         mUi->baseDeckEdit, SIGNAL(currentIndexChanged(const QString &)),
         mUi->baseDeckLabel, SLOT(setText(const QString &)));
     connect(
-        mUi->baseDeckEdit->lineEdit(), SIGNAL(textEdited(const QString &)),
+        mUi->baseDeckEdit->lineEdit(), SIGNAL(textChanged(const QString &)),
         mUi->baseDeckLabel, SLOT(clear()));
     connect(
         mUi->baseDeckWidget, SIGNAL(deckChanged(const QString &)),
@@ -197,7 +197,7 @@ CMainWindow::CMainWindow(QWidget *parent)
         mUi->enemyDeckEdit, SIGNAL(currentIndexChanged(const QString &)),
         mUi->enemyDeckLabel, SLOT(setText(const QString &)));
     connect(
-        mUi->enemyDeckEdit->lineEdit(), SIGNAL(textEdited(const QString &)),
+        mUi->enemyDeckEdit->lineEdit(), SIGNAL(textChanged(const QString &)),
         mUi->enemyDeckLabel, SLOT(clear()));
     connect(
         mUi->enemyDeckWidget, SIGNAL(deckChanged(const QString &)),
@@ -634,7 +634,7 @@ void CMainWindow::saveCustomDeck()
             }
             else
             {
-                QStringList comTokens = customDeck.getCards().first().getName().split(QRegExp("\\s|\\,"));
+                QStringList comTokens = customDeck.getCards().first().getName().split(QRegExp("\\s|\\,|\\*"), QString::SkipEmptyParts);
                 if (!comTokens.empty())
                 {
                     QString comName = comTokens.at(0);
@@ -672,7 +672,7 @@ void CMainWindow::saveCustomDeck()
             }
             else
             {
-                QStringList comTokens = customDeck.getCards().first().getName().split(QRegExp("\\s|\\,"));
+                QStringList comTokens = customDeck.getCards().first().getName().split(QRegExp("\\s|\\,|\\*"), QString::SkipEmptyParts);
                 if (!comTokens.empty())
                 {
                     QString comName = comTokens.at(0);
@@ -752,6 +752,8 @@ void CMainWindow::saveCustomDeck()
 
                 mUi->enemyDeckEdit->addItem(customDeckName);
                 mUi->enemyDeckEdit->model()->sort(0);
+
+                mMultiDeckWidget->updateAvailableDecks();
             }
         }
    }

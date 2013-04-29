@@ -19,6 +19,7 @@ public:
 
 public:
     QString getResult();
+    void updateAvailableDecks();
     void reset();
 
 signals:

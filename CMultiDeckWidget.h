@@ -16,6 +16,7 @@ public:
 
 public:
     void setDeckWidget(QLineEdit* editWidget);
+    void updateAvailableDecks();
     void resetEditors();
 
 signals:

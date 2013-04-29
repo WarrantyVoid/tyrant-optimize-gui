@@ -58,6 +58,14 @@ void CMultiDeckWidget::setDeckWidget(QLineEdit* editWidget)
     mDeckSourceWidget = editWidget;
 }
 
+void CMultiDeckWidget::updateAvailableDecks()
+{
+    for (int i = 0; i < 10; ++i)
+    {
+        mMultiDeckEditors[i]->updateAvailableDecks();
+    }
+}
+
 void CMultiDeckWidget::resetEditors()
 {
     mNumberOfDecks = 1;
