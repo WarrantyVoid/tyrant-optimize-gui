@@ -221,7 +221,7 @@ int CCard::getDelay() const
 
 bool CCard::isUnique() const
 {
-    return mIsUnique;
+    return mRarity == ELegendaryRarity ? false : mIsUnique;
 }
 
 int CCard::getAttack() const
