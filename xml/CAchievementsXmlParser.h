@@ -2,6 +2,7 @@
 #define CACHIEVEMENTSXMLPARSER_H
 
 #include <QXmlDefaultHandler>
+#include "model/CAchievement.h"
 
 class CAchievementsXmlParser : public QObject, public QXmlDefaultHandler
 {
@@ -11,7 +12,7 @@ public:
     CAchievementsXmlParser();
 
 signals:
-    void achievementParsed(const QString &name, const QString &description);
+    void achievementParsed(const CAchievement &achievement);
 
 protected:
     virtual bool startDocument();
@@ -22,10 +23,10 @@ protected:
 
 private:
     bool mIsAchievementTagActive;
+    bool mIsIdTagActive;
     bool mIsNameTagActive;
     bool mIsDescTagActive;
-    QString mCurAchievementName;
-    QString mCurAchievementDesc;
+    CAchievement mCurAchievement;
 };
 
 #endif // CACHIEVEMENTSXMLPARSER_H

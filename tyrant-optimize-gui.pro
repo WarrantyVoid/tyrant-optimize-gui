@@ -32,6 +32,7 @@ HEADERS += \
     CCardFilterWidget.h \
     CMultiDeckEditorWidget.h \
     CMultiDeckWidget.h \
+    model/CAchievement.h \
     model/CCard.h \
     model/CDeck.h \
     model/CSkill.h \
@@ -42,6 +43,7 @@ HEADERS += \
     CCardSearchParameters.h \
     CCardSearchWidget.h \
     ICardCheck.h
+
 
 	   
 FORMS += \
@@ -71,6 +73,7 @@ SOURCES += \
     CCardFilterWidget.cpp \
     CMultiDeckEditorWidget.cpp \
     CMultiDeckWidget.cpp \
+    model/CAchievement.cpp \
     model/CCard.cpp \
     model/CDeck.cpp \
     model/CSkill.cpp \
@@ -79,6 +82,6 @@ SOURCES += \
     process/CTyrantOptimizeWrapper.cpp \
     CCardSearchParameters.cpp \
     CCardSearchWidget.cpp
-	   
+
 RESOURCES += main.qrc
 RC_FILE    = main.rc

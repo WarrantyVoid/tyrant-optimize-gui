@@ -2,20 +2,20 @@
 
 CAchievementsXmlParser::CAchievementsXmlParser()
 : mIsAchievementTagActive(false)
+, mIsIdTagActive(false)
 , mIsNameTagActive(false)
 , mIsDescTagActive(false)
-, mCurAchievementName("")
-, mCurAchievementDesc("")
+, mCurAchievement()
 {
 }
 
 bool CAchievementsXmlParser::startDocument()
 {
     mIsAchievementTagActive = false;
+    mIsIdTagActive = false;
     mIsNameTagActive = false;
     mIsDescTagActive = false;
-    mCurAchievementName = "";
-    mCurAchievementDesc = "";
+    mCurAchievement = CAchievement::INVALID_ACHIEVEMENT;
     return true;
 }
 
@@ -27,7 +27,11 @@ bool CAchievementsXmlParser::startElement(const QString & /*namespaceURI*/, cons
     }
     else if (mIsAchievementTagActive)
     {
-        if (qName.compare("name") == 0)
+        if (qName.compare("id") == 0)
+        {
+            mIsIdTagActive = true;
+        }
+        else if (qName.compare("name") == 0)
         {
             mIsNameTagActive = true;
         }
@@ -45,10 +49,13 @@ bool CAchievementsXmlParser::endElement(const QString & /*namespaceURI*/, const 
     {
         if (qName.compare("achievement") == 0)
         {
-            emit achievementParsed(mCurAchievementName, mCurAchievementDesc);
+            emit achievementParsed(mCurAchievement);
             mIsAchievementTagActive = false;
-            mCurAchievementName = "";
-            mCurAchievementDesc = "";
+            mCurAchievement = CAchievement::INVALID_ACHIEVEMENT;
+        }
+        else if (qName.compare("id") == 0)
+        {
+            mIsIdTagActive = false;
         }
         else if (qName.compare("name") == 0)
         {
@@ -66,13 +73,18 @@ bool CAchievementsXmlParser::characters(const QString & ch)
 {
     if (mIsAchievementTagActive)
     {
-        if (mIsNameTagActive)
+        if (mIsIdTagActive)
         {
-            mCurAchievementName = ch;
+            bool ok(true);
+            mCurAchievement.setId(ch.toUInt(&ok));
+        }
+        else if (mIsNameTagActive)
+        {
+            mCurAchievement.setName(ch);
         }
         else if (mIsDescTagActive)
         {
-            mCurAchievementDesc = ch;
+           mCurAchievement.setDescription(ch);
         }
     }
     return true;

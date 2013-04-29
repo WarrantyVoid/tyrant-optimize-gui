@@ -76,9 +76,9 @@ void CTyrantOptimizeWrapper::getCommandLineParameters(const CProcessParameters &
     {
         comLineParams << "-e" << guiParams.battleGround();
     }
-    if (!guiParams.achievement().isEmpty())
+    if (guiParams.achievement() > 0)
     {
-        comLineParams << "-A" << guiParams.achievement();
+        comLineParams << "-A" << QString("%1").arg(guiParams.achievement());
     }
 
     if (guiParams.isOptimizationEnabled())

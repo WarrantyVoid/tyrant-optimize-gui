@@ -28,8 +28,8 @@ public:
 	QString baseDeck() const { return mBaseDeck; }
 	QString enemyDeck() const { return mEnemyDeck; }
 	QString battleGround() const { return mBattleGround; }
-    QString achievement() const { return mAchievement; }
     QString ownedCardsFile() const { return mOwnedCardsFile; }
+    unsigned int achievement() const { return mAchievement; }
 	int numThreads() const { return mNumThreads; }
 	int numTurns() const { return mNumTurns; }
 	int numBattles() const { return mNumBattles; }
@@ -48,8 +48,8 @@ private:
     QString mBaseDeck;
 	QString mEnemyDeck;
 	QString mBattleGround;
-    QString mAchievement;
     QString mOwnedCardsFile;
+    unsigned int mAchievement;
 	int mNumThreads;
 	int mNumTurns;
 	int mNumBattles;

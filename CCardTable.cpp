@@ -240,7 +240,7 @@ const QList<CBattleground>& CCardTable::getBattlegrounds()
     return mBattlegrounds;
 }
 
-const QList<TAchievement>& CCardTable::getAchievements()
+const QList<CAchievement>& CCardTable::getAchievements()
 {
     return mAchievements;
 }
@@ -567,11 +567,11 @@ void CCardTable::processBattleground(const CBattleground& battleground)
     }
 }
 
-void CCardTable::processAchievement(const QString &name, const QString& description)
+void CCardTable::processAchievement(const CAchievement& achievement)
 {
-    if (!name.isEmpty())
+    if (achievement.isValid())
     {
-        mAchievements.push_back(TAchievement(name, description));
+        mAchievements.push_back(achievement);
     }
 }
 
@@ -715,8 +715,8 @@ void CCardTable::initData()
     {
         CAchievementsXmlParser achievementXmlParser;
         connect(
-            &achievementXmlParser, SIGNAL(achievementParsed(const QString&,const QString&)),
-            this, SLOT(processAchievement(const QString&,const QString&)));
+            &achievementXmlParser, SIGNAL(achievementParsed(const CAchievement&)),
+            this, SLOT(processAchievement(const CAchievement&)));
 
         QXmlInputSource achievementXml(&achievementFile);
         QXmlSimpleReader achievementReader;

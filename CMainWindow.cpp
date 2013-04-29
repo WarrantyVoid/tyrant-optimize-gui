@@ -67,11 +67,11 @@ CMainWindow::CMainWindow(QWidget *parent)
     mUi->battleGroundBox->model()->sort(0);
 
     mUi->achievementBox->addItem("");
-    const QList<TAchievement> &achievements = mCards->getAchievements();
+    const QList<CAchievement> &achievements = mCards->getAchievements();
     for (int i = 0; i < achievements.size(); ++i)
     {
-        mUi->achievementBox->addItem(achievements.at(i).first);
-        mUi->achievementBox->setItemData(mUi->achievementBox->count() - 1, achievements.at(i).second, Qt::ToolTipRole);
+        mUi->achievementBox->addItem(achievements.at(i).getName(), achievements.at(i).getId());
+        mUi->achievementBox->setItemData(mUi->achievementBox->count() - 1, achievements.at(i).getDescription(), Qt::ToolTipRole);
     }
     QSortFilterProxyModel* achievementProxy = new QSortFilterProxyModel(mUi->achievementBox);
     achievementProxy->setSourceModel(mUi->achievementBox->model());

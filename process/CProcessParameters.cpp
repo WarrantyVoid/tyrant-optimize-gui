@@ -7,8 +7,8 @@ CProcessParameters::CProcessParameters()
 , mBaseDeck("")
 , mEnemyDeck("")
 , mBattleGround("")
-, mAchievement("")
 , mOwnedCardsFile("ownedcards.txt")
+, mAchievement(0u)
 , mNumThreads(4)
 , mNumTurns(50)
 , mNumBattles(10000)
@@ -28,9 +28,9 @@ void CProcessParameters::fetchFromUi(const Ui::MainWindow &ui)
 {    
     mBaseDeck = ui.baseDeckEdit->currentText().trimmed();
     mEnemyDeck = ui.enemyDeckEdit->currentText().trimmed();
-	mBattleGround = ui.battleGroundBox->currentText();   
-    mAchievement = ui.achievementBox->currentText();
+    mBattleGround = ui.battleGroundBox->currentText();
     mOwnedCardsFile = ui.ownedCardsFileBox->currentText();
+    mAchievement = ui.achievementBox->itemData(ui.achievementBox->currentIndex()).toUInt();
 	mNumThreads = ui.numThreadsSpinBox->value();
 	mNumTurns = ui.numTurnsSpinBox->value();
 	mNumBattles = ui.numBattlesSpinBox->value();
@@ -49,9 +49,9 @@ void CProcessParameters::updateUi(Ui::MainWindow &ui) const
 {
     ui.baseDeckEdit->lineEdit()->setText(mBaseDeck);
     ui.enemyDeckEdit->lineEdit()->setText(mEnemyDeck);
-    ui.battleGroundBox->setCurrentIndex(ui.battleGroundBox->findText(mBattleGround));
-    ui.achievementBox->setCurrentIndex(ui.achievementBox->findText(mAchievement));
+    ui.battleGroundBox->setCurrentIndex(ui.battleGroundBox->findText(mBattleGround)); 
     ui.ownedCardsFileBox->setCurrentIndex(ui.ownedCardsFileBox->findText(mOwnedCardsFile));
+    ui.achievementBox->setCurrentIndex(ui.achievementBox->findData(mAchievement));
 	ui.numThreadsSpinBox->setValue(mNumThreads);
 	ui.numTurnsSpinBox->setValue(mNumTurns);
 	ui.numBattlesSpinBox->setValue(mNumBattles);
@@ -72,8 +72,8 @@ void CProcessParameters::fetchFromSettings(QSettings &settings)
 	mBaseDeck = settings.value("baseDeck", mBaseDeck).toString();
 	mEnemyDeck = settings.value("enemyDeck", mEnemyDeck).toString();
 	mBattleGround = settings.value("battleGround", mBattleGround).toString();
-    mAchievement = settings.value("achievement", mAchievement).toString();
     mOwnedCardsFile = settings.value("ownedCardsFile", mOwnedCardsFile).toString();
+    mAchievement = settings.value("achievement", mAchievement).toUInt();
 	mNumThreads = settings.value("numThreads", mNumThreads).toInt();
 	mNumTurns = settings.value("numTurns", mNumTurns).toInt();
 	mNumBattles = settings.value("numBattles", mNumBattles).toInt();
@@ -95,8 +95,8 @@ void CProcessParameters::fetchFromSettings(QSettings &settings)
 	settings.setValue("baseDeck", mBaseDeck);
 	settings.setValue("enemyDeck", mEnemyDeck);
 	settings.setValue("battleGround", mBattleGround);
-    settings.setValue("achievement", mAchievement);
     settings.setValue("ownedCardsFile", mOwnedCardsFile);
+    settings.setValue("achievement", mAchievement);
 	settings.setValue("numThreads", mNumThreads);
 	settings.setValue("numTurns", mNumTurns);
 	settings.setValue("numBattles", mNumBattles);

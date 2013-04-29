@@ -8,11 +8,11 @@
 #include "model/CDeck.h"
 #include "model/CSkill.h"
 #include "model/CBattleground.h"
+#include "model/CAchievement.h"
 #include "ICardCheck.h"
 
 class CDownload;
 class CPictureDownload;
-typedef QPair<QString, QString> TAchievement;
 
 class CCardTable : public QObject
 {
@@ -39,7 +39,7 @@ public:
     const QStringList& getCustomDecks();
     const QStringList& getRaidDecks();
     const QList<CBattleground>& getBattlegrounds();
-    const QList<TAchievement>& getAchievements();
+    const QList<CAchievement>& getAchievements();
 
 signals:
     void downloadProgress(int numDone, int numDownloads);
@@ -53,7 +53,7 @@ signals:
     void processCardSet(ECardSet cardSet, const QString &picture);
     void processDeck(const QString &deckName, EDeckType type, const QList<unsigned int> &deckCards);
     void processBattleground(const CBattleground& battleground);
-    void processAchievement(const QString &name, const QString& description);
+    void processAchievement(const CAchievement& achievement);
 
 protected:
     void initData();
@@ -71,7 +71,7 @@ private:
     QStringList mCustomDecks;
     QStringList mRaidDecks;
     QList<CBattleground> mBattlegrounds;
-    QList<TAchievement> mAchievements;
+    QList<CAchievement> mAchievements;
     int mTotalDownloads;
     int mFinishedDownloads;    
     
