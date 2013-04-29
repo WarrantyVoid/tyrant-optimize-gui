@@ -173,6 +173,10 @@ void CDeckWidget::setDeck(const QString &deckIdParam)
             setDeck(mDeck);
         }
     }
+    else
+    {
+        setDefaultUnits();
+    }
 }
 
 void CDeckWidget::updateDeck()
