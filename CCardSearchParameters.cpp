@@ -113,26 +113,29 @@ bool CCardSearchParameters::checkCard(const CCard &card, int &/*num*/) const
         pass = qMax(0,card.getHealth()) >= mMinHp;
     }
 
+
     if (pass)
     {
+        TSearchMask rarityMask = (mRarityMask == 0) ? 0xf : mRarityMask;
         switch (card.getRarity())
         {
-        case ECommonRarity: pass = (mRarityMask & 0x8) != 0; break;
-        case EUncommonRarity: pass = (mRarityMask & 0x4) != 0; break;
-        case ERareRarity : pass = (mRarityMask & 0x2) != 0; break;
-        case ELegendaryRarity: pass = (mRarityMask & 0x1) != 0; break;
+        case ECommonRarity: pass = (rarityMask & 0x8) != 0; break;
+        case EUncommonRarity: pass = (rarityMask & 0x4) != 0; break;
+        case ERareRarity : pass = (rarityMask & 0x2) != 0; break;
+        case ELegendaryRarity: pass = (rarityMask & 0x1) != 0; break;
         default: break;
         }
     }
 
     if (pass)
     {
+        TSearchMask typeMask = (mTypeMask == 0) ? 0xf : mTypeMask;
         switch (card.getType())
         {
-        case EAssaultType: pass = (mTypeMask & 0x1) != 0; break;
-        case ECommanderType: pass = (mTypeMask & 0x4) != 0; break;
-        case EStructureType : pass = (mTypeMask & 0x2) != 0; break;
-        case EActionType: pass = (mTypeMask & 0x8) != 0; break;
+        case EAssaultType: pass = (typeMask & 0x1) != 0; break;
+        case ECommanderType: pass = (typeMask & 0x4) != 0; break;
+        case EStructureType : pass = (typeMask & 0x2) != 0; break;
+        case EActionType: pass = (typeMask & 0x8) != 0; break;
         default: break;
         }
     }
