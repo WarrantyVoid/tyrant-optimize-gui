@@ -979,6 +979,11 @@ void CMainWindow::addCard(unsigned int cardId)
     {
         CDeck deck = deckWidget->getDeck();
         const CCard &newCard = mCards->getCardForId(cardId);
+        if (deck.getNumCards() == 0)
+        {
+            const CCard &whisper = mCards->getCardForId(1003);
+            deck.addCard(whisper);
+        }
         if (newCard.getType() == ECommanderType)
         {
             deck.replaceCard(0, newCard);
@@ -989,11 +994,6 @@ void CMainWindow::addCard(unsigned int cardId)
         }
         else
         {
-            if (deck.getNumCards() == 0)
-            {
-                const CCard &whisper = mCards->getCardForId(1003);
-                deck.addCard(whisper);
-            }
             deck.addCard(newCard);
         }
         deckWidget->setDeck(deck);
