@@ -16,7 +16,7 @@ CCardFilterParameters::CCardFilterParameters()
 , mIsFilterOptionEnabled(true)
 , mIsWhiteListEnabled(true)
 , mIsBlackListEnabled(true)
-, mIsCompletionEnabled(true)
+, mIsCompletionEnabled(false)
 {
     for (int i = 0; i < NUM_RARITY; ++i)
     {
@@ -30,13 +30,13 @@ CCardFilterParameters::CCardFilterParameters()
     {
         mComplement[i] = 0;
     }
-    mComplement[0] = 10;
-    mComplement[1] = 5;
-    mComplement[2] = 5;
+    mComplement[0] = 5;
+    mComplement[1] = 3;
+    mComplement[2] = 3;
     mComplement[3] = 3;
-    mComplement[12] = 10;
+    mComplement[12] = 3;
     mComplement[13] = 3;
-    mComplement[14] = 10;
+    mComplement[14] = 3;
 }
 
 void CCardFilterParameters::fetchFromUi(const Ui::CardFilterWidget &ui)
