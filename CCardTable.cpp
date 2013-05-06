@@ -5,6 +5,7 @@
 #include <QDateTime>
 #include <QXmlSimpleReader>
 #include <QNetworkRequest>
+#include <QNetworkProxyFactory>
 #include <QUrl>
 #include "xml/CCardsXmlParser.h"
 #include "xml/CMissionsXmlParser.h"
@@ -33,7 +34,8 @@ CCardTable::CCardTable()
 , mTotalDownloads(0)
 , mFinishedDownloads(0)
 {
-    initData();
+    initData();  
+    QNetworkProxyFactory::setUseSystemConfiguration(true);
 }
 
 CCardTable::~CCardTable()
