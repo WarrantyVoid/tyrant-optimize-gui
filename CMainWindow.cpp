@@ -12,7 +12,7 @@
 #include <QHelpEvent>
 #include <QClipboard>
 
-const QString CMainWindow::VERSION = "1.0.2";
+const QString CMainWindow::VERSION = "1.0.3";
 
 CMainWindow::CMainWindow(QWidget *parent)
 : QMainWindow(parent)
@@ -35,6 +35,10 @@ CMainWindow::CMainWindow(QWidget *parent)
     mUi->setupUi(this);
     setWindowTitle(QString("%1 GUI").arg(mProcessWrapper->getProcessExecutable().baseName()));
 
+    // Menu bar setup
+    mUi->menuView->addAction(mUi->cardSearchDockWidget->toggleViewAction());
+
+    // Base deck setup
     mUi->baseDeckEdit->addItem("");
     mUi->baseDeckEdit->addItems(mCards->getCustomDecks());
     QSortFilterProxyModel* baseProxy = new QSortFilterProxyModel(mUi->baseDeckEdit);
@@ -43,6 +47,7 @@ CMainWindow::CMainWindow(QWidget *parent)
     mUi->baseDeckEdit->setModel(baseProxy);
     mUi->baseDeckEdit->model()->sort(0);
 
+    // Enemy deck setup
     mUi->enemyDeckEdit->addItem("");
     mUi->enemyDeckEdit->addItems(mCards->getRaidDecks());
     mUi->enemyDeckEdit->addItems(mCards->getCustomDecks());
@@ -52,6 +57,7 @@ CMainWindow::CMainWindow(QWidget *parent)
     mUi->enemyDeckEdit->setModel(enemyProxy);
     mUi->enemyDeckEdit->model()->sort(0);
 
+    // Battle ground setup
     mUi->battleGroundBox->addItem("");
     const QList<CBattleground> &battlegrounds = mCards->getBattlegrounds();
     for (int i = 0; i < battlegrounds.size(); ++i)
@@ -66,6 +72,7 @@ CMainWindow::CMainWindow(QWidget *parent)
     mUi->battleGroundBox->setModel(battlegroundProxy);
     mUi->battleGroundBox->model()->sort(0);
 
+    // Achievement setup
     mUi->achievementBox->addItem("");
     const QList<CAchievement> &achievements = mCards->getAchievements();
     for (int i = 0; i < achievements.size(); ++i)
@@ -79,12 +86,13 @@ CMainWindow::CMainWindow(QWidget *parent)
     mUi->achievementBox->setModel(achievementProxy);
     mUi->achievementBox->model()->sort(0);
 
-    // Parameters
+    // Parameter setup
     connect(
         mUi->ownedCardsBox, SIGNAL(toggled(bool)),
         this, SLOT(setOwnedCardsWatchingEnabled(bool)));
     loadDefaultSettings();
 
+    // Base deck view setup
     CDeck baseDeck;    
     getInputDeck(mUi->baseDeckEdit, baseDeck);    
     mUi->baseDeckWidget->setVisible(mUi->displayBaseButton->isChecked());
@@ -93,6 +101,7 @@ CMainWindow::CMainWindow(QWidget *parent)
     mUi->baseDeckWidget->setWinLabel(QPixmap(":/img/trash.png"));
     mUi->baseDeckWidget->setDropEnabled(true);
 
+    // Enemy deck view setup
     CDeck enemyDeck;    
     getInputDeck(mUi->enemyDeckEdit, enemyDeck);    
     mUi->enemyDeckWidget->setVisible(mUi->displayEnemyButton->isChecked());
@@ -101,14 +110,15 @@ CMainWindow::CMainWindow(QWidget *parent)
     mUi->enemyDeckWidget->setWinLabel(QPixmap(":/img/trash.png"));
     mUi->enemyDeckWidget->setDropEnabled(true);
     adjustSize();
-    
-    //setup status bar
+
+
+    // Status bar setup
     mUi->statusBar->addWidget(mProcessStatusLabel);
     mUi->statusBar->addWidget(mDownloadStatusLabel);
     mProcessStatusLabel->setFocusPolicy(Qt::ClickFocus);
     mProcessStatusLabel->setTextInteractionFlags(Qt::TextSelectableByMouse);
 
-    //setup tooltip popup
+    // Tooltip setup
     mDeckToolTip->setWindowFlags(Qt::ToolTip);
     mDeckToolTip->setStyleSheet("QDialog{background-color: rgb(255, 255, 219);border-color: rgb(0, 0, 0);border-width: 1px;border-style: solid;}");
     QBoxLayout *vLayout = new QBoxLayout(QBoxLayout::TopToBottom, mDeckToolTip);
@@ -116,7 +126,7 @@ CMainWindow::CMainWindow(QWidget *parent)
     mUi->baseDeckEdit->installEventFilter(this);
     mUi->enemyDeckEdit->installEventFilter(this);
 
-    //setup filter configuration popup
+    // Filter configuration setup
     QBoxLayout *vLayout2 = new QBoxLayout(QBoxLayout::TopToBottom, mFilterDialog);
     vLayout2->addWidget(mFilterWidget);
     mFilterDialog->setWindowTitle("Card Filter Configuration");
@@ -125,7 +135,7 @@ CMainWindow::CMainWindow(QWidget *parent)
         mFilterDialog, SIGNAL(rejected()),
         mFilterWidget, SLOT(declineFilter()));
 
-    //setup multi deck popup    
+    // Multi deck setup
     QBoxLayout *vLayout3 = new QBoxLayout(QBoxLayout::TopToBottom, mMultiDeckDialog);
     vLayout3->addWidget(mMultiDeckWidget);
     mMultiDeckWidget->setDeckWidget(mUi->enemyDeckEdit->lineEdit());
@@ -134,7 +144,7 @@ CMainWindow::CMainWindow(QWidget *parent)
         mMultiDeckDialog, SIGNAL(rejected()),
         mMultiDeckWidget, SLOT(declineDecks()));
 
-    // Menu
+    // Menu connections
     connect(
         mUi->saveAsDefaultAction, SIGNAL(triggered()),
         this, SLOT(saveDefaultParameterSettings()));
@@ -163,7 +173,7 @@ CMainWindow::CMainWindow(QWidget *parent)
         mUi->aboutAction, SIGNAL(triggered()),
         this, SLOT(displayAboutMessage()));
 
-    // Base deck
+    // Base deck connections
     connect(
         mUi->baseDeckEdit, SIGNAL(currentIndexChanged(const QString &)),
         mUi->baseDeckWidget, SLOT(setDeck(const QString &)));    
@@ -186,7 +196,7 @@ CMainWindow::CMainWindow(QWidget *parent)
         mUi->switchDecksButton, SIGNAL(clicked()),
         this, SLOT(switchDecks()));
 
-    // Enemy deck
+    // Enemy deck connections
     connect(
         mUi->enemyDeckEdit, SIGNAL(currentIndexChanged(const QString &)),
         mUi->enemyDeckWidget, SLOT(setDeck(const QString &)));
@@ -209,7 +219,7 @@ CMainWindow::CMainWindow(QWidget *parent)
         mUi->multiEnemyButton, SIGNAL(clicked()),
         mMultiDeckDialog, SLOT(show()));
 
-    // Buttons
+    // Button connections
     connect(
         mUi->checkBaseButton, SIGNAL(clicked()),
         this, SLOT(checkBaseDeck()));
@@ -238,7 +248,7 @@ CMainWindow::CMainWindow(QWidget *parent)
         mUi->hashOptimizedButton, SIGNAL(clicked()),
         this, SLOT(copyDeckHash()));
 
-    // Widgets
+    // Widgets connections
     connect(
         mCards, SIGNAL(downloadProgress(int,int)),
         this, SLOT(downloadProgress(int,int)));
@@ -261,7 +271,7 @@ CMainWindow::CMainWindow(QWidget *parent)
         mOwnedCardsWatcher, SIGNAL(directoryChanged(const QString &)),
         this, SLOT(scanForOwnedCards()));
 
-    // Process Wrapper
+    // Process wrapper connections
     connect(
         mProcessWrapper, SIGNAL(winChanceUpdated(float)),
         this, SLOT(setWinChance(float)));
