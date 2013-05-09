@@ -175,17 +175,14 @@ CMainWindow::CMainWindow(QWidget *parent)
 
     // Base deck connections
     connect(
-        mUi->baseDeckEdit, SIGNAL(currentIndexChanged(const QString &)),
-        mUi->baseDeckWidget, SLOT(setDeck(const QString &)));    
-    connect(
-        mUi->baseDeckEdit->lineEdit(), SIGNAL(textEdited(const QString &)),
+        mUi->baseDeckEdit->lineEdit(), SIGNAL(textChanged(const QString &)),
         mUi->baseDeckWidget, SLOT(setDeck(const QString &)));
-    connect(
-        mUi->baseDeckEdit, SIGNAL(currentIndexChanged(const QString &)),
-        mUi->baseDeckLabel, SLOT(setText(const QString &)));
     connect(
         mUi->baseDeckEdit->lineEdit(), SIGNAL(textChanged(const QString &)),
         mUi->baseDeckLabel, SLOT(clear()));
+    connect(
+        mUi->baseDeckEdit, SIGNAL(currentIndexChanged(const QString &)),
+        mUi->baseDeckLabel, SLOT(setText(const QString &)));    
     connect(
         mUi->baseDeckWidget, SIGNAL(deckChanged(const QString &)),
         mUi->baseDeckEdit->lineEdit(), SLOT(setText(const QString &)));
@@ -198,17 +195,14 @@ CMainWindow::CMainWindow(QWidget *parent)
 
     // Enemy deck connections
     connect(
-        mUi->enemyDeckEdit, SIGNAL(currentIndexChanged(const QString &)),
+        mUi->enemyDeckEdit->lineEdit(), SIGNAL(textChanged(const QString &)),
         mUi->enemyDeckWidget, SLOT(setDeck(const QString &)));
-    connect(
-        mUi->enemyDeckEdit->lineEdit(), SIGNAL(textEdited(const QString &)),
-        mUi->enemyDeckWidget, SLOT(setDeck(const QString &)));
-    connect(
-        mUi->enemyDeckEdit, SIGNAL(currentIndexChanged(const QString &)),
-        mUi->enemyDeckLabel, SLOT(setText(const QString &)));
     connect(
         mUi->enemyDeckEdit->lineEdit(), SIGNAL(textChanged(const QString &)),
         mUi->enemyDeckLabel, SLOT(clear()));
+    connect(
+        mUi->enemyDeckEdit, SIGNAL(currentIndexChanged(const QString &)),
+        mUi->enemyDeckLabel, SLOT(setText(const QString &))); 
     connect(
         mUi->enemyDeckWidget, SIGNAL(deckChanged(const QString &)),
         mUi->enemyDeckEdit->lineEdit(), SLOT(setText(const QString &)));
