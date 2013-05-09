@@ -1012,7 +1012,7 @@ void CMainWindow::setWinChance(float winChance)
 {
     if (!mParameters.anpOnly())
     {
-        mUi->resultDeckWidget->setWinLabel(QString("%1%").arg(winChance, 3));
+        mUi->resultDeckWidget->setWinLabel(QString("Win=\n%1%").arg(winChance, 3));
     }
 }
 
@@ -1020,7 +1020,7 @@ void CMainWindow::setAnp(float anp)
 {
     if (mParameters.anpOnly())
     {
-        mUi->resultDeckWidget->setWinLabel(QString("ANP=\n %1").arg(anp, 3));
+        mUi->resultDeckWidget->setWinLabel(QString("ANP=\n%1").arg(anp, 3));
     }
 }
 

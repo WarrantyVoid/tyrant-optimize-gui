@@ -38,6 +38,11 @@
         <file>tyrant/CardRighteousStyle.png</file>
         <file>tyrant/CardXenoStyle.png</file>
         <file>tyrant/ClockIcon.png</file>
+        <file>tyrant/ClockIcon0.png</file>
+        <file>tyrant/ClockIcon1.png</file>
+        <file>tyrant/ClockIcon2.png</file>
+        <file>tyrant/ClockIcon3.png</file>
+        <file>tyrant/ClockIcon4.png</file>
         <file>tyrant/AttackIcon.png</file>
         <file>tyrant/HealthIcon.png</file>
         <file>tyrant/AntiairSkillIcon.png</file>
@@ -127,5 +132,10 @@
         <file>tyrant/OccupationPackIcon.png</file>
         <file>tyrant/TerminusSetIcon.png</file>
         <file>tyrant/UpgradedSetIcon.png</file>
+        <file>tyrant/BloodthirstySortButton.png</file>
+        <file>tyrant/ImperialSortButton.png</file>
+        <file>tyrant/RaiderSortButton.png</file>
+        <file>tyrant/RighteousSortButton.png</file>
+        <file>tyrant/XenoSortButton.png</file>
     </qresource>
 </RCC>

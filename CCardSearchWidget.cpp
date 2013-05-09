@@ -34,6 +34,7 @@ CCardSearchWidget::CCardSearchWidget(QWidget *parent)
     connect(
         mUi->skillBox, SIGNAL(editTextChanged(const QString&)),
         this, SLOT(updateView()));
+
     connect(
         mUi->legendaryButton, SIGNAL(clicked(bool)),
         this, SLOT(updateView()));
@@ -46,6 +47,7 @@ CCardSearchWidget::CCardSearchWidget(QWidget *parent)
     connect(
         mUi->commonButton, SIGNAL(clicked(bool)),
         this, SLOT(updateView()));
+
     connect(
         mUi->assaultButton, SIGNAL(clicked(bool)),
         this, SLOT(updateView()));
@@ -58,11 +60,44 @@ CCardSearchWidget::CCardSearchWidget(QWidget *parent)
     connect(
         mUi->actionButton, SIGNAL(clicked(bool)),
         this, SLOT(updateView()));
+
     connect(
         mUi->attackSlider, SIGNAL(valueChanged(int)),
         this, SLOT(updateView()));
     connect(
         mUi->hpSlider, SIGNAL(valueChanged(int)),
+        this, SLOT(updateView()));
+
+    connect(
+        mUi->bloodthirstyButton, SIGNAL(clicked(bool)),
+        this, SLOT(updateView()));
+    connect(
+        mUi->imperialButton, SIGNAL(clicked(bool)),
+        this, SLOT(updateView()));
+    connect(
+        mUi->raiderButton, SIGNAL(clicked(bool)),
+        this, SLOT(updateView()));
+    connect(
+        mUi->righteousButton, SIGNAL(clicked(bool)),
+        this, SLOT(updateView()));
+    connect(
+        mUi->xenoButton, SIGNAL(clicked(bool)),
+        this, SLOT(updateView()));
+
+    connect(
+        mUi->timer0Button, SIGNAL(clicked(bool)),
+        this, SLOT(updateView()));
+    connect(
+        mUi->timer1Button, SIGNAL(clicked(bool)),
+        this, SLOT(updateView()));
+    connect(
+        mUi->timer2Button, SIGNAL(clicked(bool)),
+        this, SLOT(updateView()));
+    connect(
+        mUi->timer3Button, SIGNAL(clicked(bool)),
+        this, SLOT(updateView()));
+    connect(
+        mUi->timer4Button, SIGNAL(clicked(bool)),
         this, SLOT(updateView()));
 }
 

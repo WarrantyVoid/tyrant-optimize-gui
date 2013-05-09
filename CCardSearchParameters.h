@@ -34,6 +34,8 @@ private:
     typedef int TSearchMask;
     TSearchMask mRarityMask;
     TSearchMask mTypeMask;
+    TSearchMask mFactionMask;
+    TSearchMask mTimerMask;
     int mMinAttack;
     int mMinHp;
 };
