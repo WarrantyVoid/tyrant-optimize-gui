@@ -465,13 +465,15 @@ void CCardTable::processNextDataDownload()
         case EDownloadStored: action = "Updated"; break;
         case EDownloadStoreFailed: action = "Failed to write"; break;
         }
-        QString result = QString("'%1': \t%2").arg(fileInfo.fileName()).arg(action);
+        QString result = QString("<tr><td>%1</td><td>:</td><td>%2</td></tr>").arg(fileInfo.fileName()).arg(action);
         mDataDownloadResults.append(result);
         delete download;
         download = 0;
     }
     if (mDataDownloads.isEmpty())
     {
+        mDataDownloadResults.prepend("<table>");
+        mDataDownloadResults.append("</table>");
         emit dataUpdated(mDataDownloadResults);
         initData();
     }
