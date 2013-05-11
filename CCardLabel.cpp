@@ -1,11 +1,11 @@
-#include "CUnitLabel.h"
+#include "CCardLabel.h"
 #include "CPathManager.h"
-#include "CCardTable.h"
+#include "model/CCardTable.h"
 #include <QApplication>
 #include <QPaintEvent>
 #include <QPainter>
 
-CUnitLabel::CUnitLabel(QWidget *parent)
+CCardLabel::CCardLabel(QWidget *parent)
 : QLabel(parent)
 , mCards(CCardTable::getCardTable())
 , mTitleIcon()
@@ -14,7 +14,7 @@ CUnitLabel::CUnitLabel(QWidget *parent)
     setScaledContents(true);
 }
 
-void CUnitLabel::setCard(const CCard& card)
+void CCardLabel::setCard(const CCard& card)
 {
     const CPathManager &pm = CPathManager::getPathManager();
     mCard = card;
@@ -115,12 +115,12 @@ void CUnitLabel::setCard(const CCard& card)
     QLabel::setToolTip(skillDescr.join(""));
 }
 
-const CCard& CUnitLabel::getCard() const
+const CCard& CCardLabel::getCard() const
 {
     return mCard;
 }
 
-void CUnitLabel::paintEvent(QPaintEvent *ev)
+void CCardLabel::paintEvent(QPaintEvent *ev)
 {
     QLabel::paintEvent(ev);    
 
@@ -204,7 +204,7 @@ void CUnitLabel::paintEvent(QPaintEvent *ev)
     }
 }
 
-void CUnitLabel::mousePressEvent(QMouseEvent *ev)
+void CCardLabel::mousePressEvent(QMouseEvent *ev)
 {
     if (mLastLeftClickPos)
     {
@@ -217,7 +217,7 @@ void CUnitLabel::mousePressEvent(QMouseEvent *ev)
     }
 }
 
-void CUnitLabel::mouseReleaseEvent(QMouseEvent * /*ev*/)
+void CCardLabel::mouseReleaseEvent(QMouseEvent * /*ev*/)
 {
     if (mLastLeftClickPos)
     {
@@ -226,7 +226,7 @@ void CUnitLabel::mouseReleaseEvent(QMouseEvent * /*ev*/)
     }
 }
 
-void CUnitLabel::mouseMoveEvent(QMouseEvent *ev)
+void CCardLabel::mouseMoveEvent(QMouseEvent *ev)
 {
     if (mLastLeftClickPos && mCard.isValid())
     {
@@ -272,7 +272,7 @@ void CUnitLabel::mouseMoveEvent(QMouseEvent *ev)
     }
 }
 
-void CUnitLabel::dropEvent(QDropEvent *ev)
+void CCardLabel::dropEvent(QDropEvent *ev)
 {
     QString data = ev->mimeData()->text().toLatin1();
     if (data.length() < 50)
@@ -290,7 +290,7 @@ void CUnitLabel::dropEvent(QDropEvent *ev)
                 {
                     CCard cardBuf = mCard;
                     setCard(card);
-                    CUnitLabel *source = dynamic_cast<CUnitLabel*>(ev->source());
+                    CCardLabel *source = dynamic_cast<CCardLabel*>(ev->source());
                     if (source && source != this && ev->dropAction() == Qt::MoveAction)
                     {
                         source->setCard(cardBuf);
@@ -302,12 +302,20 @@ void CUnitLabel::dropEvent(QDropEvent *ev)
     }
 }
 
-void CUnitLabel::dragMoveEvent(QDragMoveEvent *ev)
+void CCardLabel::dragMoveEvent(QDragMoveEvent *ev)
 {
-    ev->accept();
+    QString data = ev->mimeData()->text().toLatin1();
+    if (data.length() < 50 && data.startsWith("http://tyrant.40in.net/kg/card.php?id="))
+    {
+        ev->accept();
+    }
 }
 
-void CUnitLabel::dragEnterEvent(QDragEnterEvent *ev)
+void CCardLabel::dragEnterEvent(QDragEnterEvent *ev)
 {
-    ev->acceptProposedAction();
+    QString data = ev->mimeData()->text().toLatin1();
+    if (data.length() < 50 && data.startsWith("http://tyrant.40in.net/kg/card.php?id="))
+    {
+        ev->acceptProposedAction();
+    }
 }

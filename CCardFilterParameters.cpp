@@ -1,5 +1,5 @@
 #include "CCardFilterParameters.h"
-#include "CCardTable.h"
+#include "model/CCardTable.h"
 #include "ui_CardFilterWidget.h"
 
 

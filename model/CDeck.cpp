@@ -55,6 +55,15 @@ EDeckType CDeck::getType() const
     return mType;
 }
 
+const CCard& CDeck::getCommander() const
+{
+    if (mCards.isEmpty())
+    {
+        return CCard::INVALID_CARD;
+    }
+    return mCards.first();
+}
+
 const QList<CCard>& CDeck::getCards() const
 {
     return mCards;

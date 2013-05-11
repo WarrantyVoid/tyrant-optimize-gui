@@ -4,7 +4,7 @@
 #include <QWidget>
 #include <QGraphicsScene>
 #include <QList>
-#include "CCardTable.h"
+#include "model/CCardTable.h"
 #include "CCardSearchParameters.h"
 
 namespace Ui {

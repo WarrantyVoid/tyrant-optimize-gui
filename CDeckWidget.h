@@ -2,7 +2,7 @@
 #define CDECKWIDGET_H
 
 #include <QWidget>
-#include "CCardTable.h"
+#include "model/CDeckTable.h"
 
 namespace Ui
 {
@@ -11,7 +11,7 @@ class DeckWidget;
 
 #include <QDrag>
 #include <QMimeData>
-#include "CUnitLabel.h"
+#include "CCardLabel.h"
 
 class CDeckWidget : public QWidget
 {
@@ -41,7 +41,7 @@ protected slots:
 
 private:
     Ui::DeckWidget *mUi;
-    CCardTable &mCards;
+    CDeckTable &mDecks;
 
     // @todo make this member useful
     mutable CDeck mDeck;

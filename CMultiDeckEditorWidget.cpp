@@ -13,15 +13,6 @@ CMultiDeckEditorWidget::CMultiDeckEditorWidget(int num, QWidget *parent)
 , mFractionOffset(0.0)
 {
     mUi->setupUi(this);
-
-    mUi->deckEdit->addItem("");
-    mUi->deckEdit->addItems(mCards.getRaidDecks());
-    mUi->deckEdit->addItems(mCards.getCustomDecks());
-    QSortFilterProxyModel* proxy = new QSortFilterProxyModel(mUi->deckEdit);
-    proxy->setSourceModel(mUi->deckEdit->model());
-    mUi->deckEdit->model()->setParent(proxy);
-    mUi->deckEdit->setModel(proxy);
-    mUi->deckEdit->model()->sort(0);
 }
 
 CMultiDeckEditorWidget::~CMultiDeckEditorWidget()
@@ -45,36 +36,23 @@ QString CMultiDeckEditorWidget::getResult()
     return "";
 }
 
+void CMultiDeckEditorWidget::updateHistory()
+{
+    mUi->deckEdit->updateHistory();
+}
+
 void CMultiDeckEditorWidget::reset()
 {
     mTotalNum = 1;
     mBaseFraction = 100.0;
     mFractionOffset = 0.0;
     mUi->deckFractionSpinBox->setValue(int(mBaseFraction + mFractionOffset + 0.5));
-    mUi->deckEdit->lineEdit()->setText("");
-}
-
-void CMultiDeckEditorWidget::updateAvailableDecks()
-{
-    QString selectedItem = mUi->deckEdit->currentText();
-    mUi->deckEdit->clear();
-    mUi->deckEdit->addItem("");
-    mUi->deckEdit->addItems(mCards.getRaidDecks());
-    mUi->deckEdit->addItems(mCards.getCustomDecks());
-    int newIndex = mUi->deckEdit->findText(selectedItem);
-    if (newIndex == -1)
-    {
-        mUi->deckEdit->lineEdit()->setText(selectedItem);
-    }
-    else
-    {
-        mUi->deckEdit->setCurrentIndex(newIndex);
-    }
+    mUi->deckEdit->setDeckId("");
 }
 
 void CMultiDeckEditorWidget::updateDeck(const QString &deck)
 {
-    mUi->deckEdit->lineEdit()->setText(deck);
+    mUi->deckEdit->setDeckId(deck);
 }
 
 void CMultiDeckEditorWidget::updateBaseFraction(int totalNum)

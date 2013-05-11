@@ -1,7 +1,14 @@
 #include "CQuestsXmlParser.h"
 
 CQuestsXmlParser::CQuestsXmlParser()
-: mIsBattlegroundTagActive(false)
+: mIsStepTagActive(false)
+, mIsIdTagActive(false)
+, mIsCommanderTagActive(false)
+, mIsDeckTagActive(false)
+, mIsCardTagActive(false)
+, mCurQuestName("")
+, mCurQuestDeck()
+, mIsBattlegroundTagActive(false)
 , mIsNameTagActive(false)
 , mIsDescTagActive(false)
 , mIsIconTagActive(false)
@@ -12,6 +19,14 @@ CQuestsXmlParser::CQuestsXmlParser()
 
 bool CQuestsXmlParser::startDocument()
 {
+    mIsStepTagActive = false;
+    mIsIdTagActive = false;
+    mIsCommanderTagActive = false;
+    mIsDeckTagActive = false;
+    mIsCardTagActive = false;
+    mCurQuestName = "";
+    mCurQuestDeck.clear();
+
     mIsBattlegroundTagActive = false;
     mIsNameTagActive = false;
     mIsDescTagActive = false;
@@ -22,7 +37,30 @@ bool CQuestsXmlParser::startDocument()
 
 bool CQuestsXmlParser::startElement(const QString & /*namespaceURI*/, const QString & /*localName*/, const QString & qName, const QXmlAttributes & /*atts*/)
 {
-    if (qName.compare("battleground") == 0)
+    if (qName.compare("step") == 0)
+    {
+        mIsStepTagActive = true;
+    }
+    else if (mIsStepTagActive)
+    {
+        if (qName.compare("id") == 0)
+        {
+            mIsIdTagActive = true;
+        }
+        else if (qName.compare("commander") == 0)
+        {
+            mIsCommanderTagActive = true;
+        }
+        else if (qName.compare("deck") == 0)
+        {
+            mIsDeckTagActive = true;
+        }
+        else if (qName.compare("card") == 0)
+        {
+            mIsCardTagActive = true;
+        }
+    }
+    else if (qName.compare("battleground") == 0)
     {
         mIsBattlegroundTagActive = true;
     }
@@ -45,8 +83,34 @@ bool CQuestsXmlParser::startElement(const QString & /*namespaceURI*/, const QStr
 }
 
 bool CQuestsXmlParser::endElement(const QString & /*namespaceURI*/, const QString & /*localName*/, const QString & qName)
-{
-    if (mIsBattlegroundTagActive)
+{  
+    if (mIsStepTagActive)
+    {
+        if (qName.compare("step") == 0)
+        {
+            emit questParsed(mCurQuestName, EQuestDeckType, mCurQuestDeck);
+            mIsStepTagActive = false;
+            mCurQuestName = "";
+            mCurQuestDeck.clear();
+        }
+        else if (qName.compare("id") == 0)
+        {
+            mIsIdTagActive = false;
+        }
+        else if (qName.compare("commander") == 0)
+        {
+            mIsCommanderTagActive = false;
+        }
+        else if (qName.compare("deck") == 0)
+        {
+            mIsDeckTagActive = false;
+        }
+        else if (qName.compare("card") == 0)
+        {
+            mIsCardTagActive = false;
+        }
+    }
+    else if (mIsBattlegroundTagActive)
     {
         if (qName.compare("battleground") == 0)
         {
@@ -72,7 +136,24 @@ bool CQuestsXmlParser::endElement(const QString & /*namespaceURI*/, const QStrin
 
 bool CQuestsXmlParser::characters(const QString & ch)
 {
-    if (mIsBattlegroundTagActive)
+    if (mIsStepTagActive)
+    {
+        if (mIsIdTagActive)
+        {
+            mCurQuestName = QString("Step %1").arg(ch);
+        }
+        else if (mIsCommanderTagActive)
+        {
+            bool ok(true);
+            mCurQuestDeck.push_back(ch.toUInt(&ok));
+        }
+        else if (mIsDeckTagActive && mIsCardTagActive)
+        {
+            bool ok(true);
+            mCurQuestDeck.push_back(ch.toUInt(&ok));
+        }
+    }
+    else if (mIsBattlegroundTagActive)
     {
         if (mIsNameTagActive)
         {

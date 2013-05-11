@@ -3,6 +3,7 @@
 
 #include <QXmlDefaultHandler>
 #include "model/CBattleground.h"
+#include "model/CDeck.h"
 
 class CQuestsXmlParser : public QObject, public QXmlDefaultHandler
 {
@@ -12,6 +13,7 @@ public:
     CQuestsXmlParser();
 
 signals:
+    void questParsed(const QString &questName, EDeckType type, const QList<unsigned int> &questDeck);
     void battlegroundParsed(const CBattleground &battleground);
 
 protected:
@@ -22,6 +24,14 @@ protected:
     virtual bool endDocument();
 
 private:
+    bool mIsStepTagActive;
+    bool mIsIdTagActive;
+    bool mIsCommanderTagActive;
+    bool mIsDeckTagActive;
+    bool mIsCardTagActive;
+    QString mCurQuestName;
+    QList<unsigned int> mCurQuestDeck;
+
     bool mIsBattlegroundTagActive;
     bool mIsNameTagActive;
     bool mIsDescTagActive;

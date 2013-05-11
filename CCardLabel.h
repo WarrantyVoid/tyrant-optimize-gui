@@ -1,16 +1,16 @@
-#ifndef CUNITLABEL_H
-#define CUNITLABEL_H
+#ifndef CCARDLABEL_H
+#define CCARDLABEL_H
 
 #include <QLabel>
 #include <QDropEvent>
-#include "CCardTable.h"
+#include "model/CCardTable.h"
 
-class CUnitLabel : public QLabel
+class CCardLabel : public QLabel
 {
     Q_OBJECT
 
 public:
-    explicit CUnitLabel(QWidget *parent = 0);
+    explicit CCardLabel(QWidget *parent = 0);
 
 public:
     void setCard(const CCard& card);
@@ -35,4 +35,4 @@ private:
     QPointF *mLastLeftClickPos;    
 };
 
-#endif // CUNITLABEL_H
+#endif // CCARDLABEL_H

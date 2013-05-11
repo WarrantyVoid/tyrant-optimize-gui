@@ -2,7 +2,7 @@
 #define CCARDFILTER_H
 
 #include "CCardFilterParameters.h"
-#include "CCardTable.h"
+#include "model/CCardTable.h"
 #include <QTextStream>
 
 class CCardFilter

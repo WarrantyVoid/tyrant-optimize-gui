@@ -18,7 +18,7 @@
     <number>0</number>
    </property>
    <item row="0" column="0">
-    <widget class="CUnitLabel" name="commanderLabel">
+    <widget class="CCardLabel" name="commanderLabel">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Ignored" vsizetype="Ignored">
        <horstretch>0</horstretch>
@@ -32,7 +32,7 @@
       </size>
      </property>
      <property name="pixmap">
-      <pixmap resource="MainResource.qrc">:/img/tyrant/CardBack.png</pixmap>
+      <pixmap resource="main.qrc">:/img/tyrant/CardBack.png</pixmap>
      </property>
      <property name="scaledContents">
       <bool>true</bool>
@@ -40,7 +40,7 @@
     </widget>
    </item>
    <item row="0" column="1">
-    <widget class="CUnitLabel" name="unit00Label">
+    <widget class="CCardLabel" name="unit00Label">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Ignored" vsizetype="Ignored">
        <horstretch>0</horstretch>
@@ -54,7 +54,7 @@
       </size>
      </property>
      <property name="pixmap">
-      <pixmap resource="MainResource.qrc">:/img/tyrant/CardBack.png</pixmap>
+      <pixmap resource="main.qrc">:/img/tyrant/CardBack.png</pixmap>
      </property>
      <property name="scaledContents">
       <bool>true</bool>
@@ -62,7 +62,7 @@
     </widget>
    </item>
    <item row="0" column="2">
-    <widget class="CUnitLabel" name="unit01Label">
+    <widget class="CCardLabel" name="unit01Label">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Ignored" vsizetype="Ignored">
        <horstretch>0</horstretch>
@@ -76,7 +76,7 @@
       </size>
      </property>
      <property name="pixmap">
-      <pixmap resource="MainResource.qrc">:/img/tyrant/CardBack.png</pixmap>
+      <pixmap resource="main.qrc">:/img/tyrant/CardBack.png</pixmap>
      </property>
      <property name="scaledContents">
       <bool>true</bool>
@@ -84,7 +84,7 @@
     </widget>
    </item>
    <item row="0" column="3">
-    <widget class="CUnitLabel" name="unit02Label">
+    <widget class="CCardLabel" name="unit02Label">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Ignored" vsizetype="Ignored">
        <horstretch>0</horstretch>
@@ -98,7 +98,7 @@
       </size>
      </property>
      <property name="pixmap">
-      <pixmap resource="MainResource.qrc">:/img/tyrant/CardBack.png</pixmap>
+      <pixmap resource="main.qrc">:/img/tyrant/CardBack.png</pixmap>
      </property>
      <property name="scaledContents">
       <bool>true</bool>
@@ -106,7 +106,7 @@
     </widget>
    </item>
    <item row="0" column="4">
-    <widget class="CUnitLabel" name="unit03Label">
+    <widget class="CCardLabel" name="unit03Label">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Ignored" vsizetype="Ignored">
        <horstretch>0</horstretch>
@@ -120,7 +120,7 @@
       </size>
      </property>
      <property name="pixmap">
-      <pixmap resource="MainResource.qrc">:/img/tyrant/CardBack.png</pixmap>
+      <pixmap resource="main.qrc">:/img/tyrant/CardBack.png</pixmap>
      </property>
      <property name="scaledContents">
       <bool>true</bool>
@@ -128,7 +128,7 @@
     </widget>
    </item>
    <item row="0" column="5">
-    <widget class="CUnitLabel" name="unit04Label">
+    <widget class="CCardLabel" name="unit04Label">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Ignored" vsizetype="Ignored">
        <horstretch>0</horstretch>
@@ -142,7 +142,7 @@
       </size>
      </property>
      <property name="pixmap">
-      <pixmap resource="MainResource.qrc">:/img/tyrant/CardBack.png</pixmap>
+      <pixmap resource="main.qrc">:/img/tyrant/CardBack.png</pixmap>
      </property>
      <property name="scaledContents">
       <bool>true</bool>
@@ -162,7 +162,7 @@ color: rgb(255, 255, 255);</string>
     </widget>
    </item>
    <item row="1" column="1">
-    <widget class="CUnitLabel" name="unit05Label">
+    <widget class="CCardLabel" name="unit05Label">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Ignored" vsizetype="Ignored">
        <horstretch>0</horstretch>
@@ -176,7 +176,7 @@ color: rgb(255, 255, 255);</string>
       </size>
      </property>
      <property name="pixmap">
-      <pixmap resource="MainResource.qrc">:/img/tyrant/CardBack.png</pixmap>
+      <pixmap resource="main.qrc">:/img/tyrant/CardBack.png</pixmap>
      </property>
      <property name="scaledContents">
       <bool>true</bool>
@@ -184,7 +184,7 @@ color: rgb(255, 255, 255);</string>
     </widget>
    </item>
    <item row="1" column="2">
-    <widget class="CUnitLabel" name="unit06Label">
+    <widget class="CCardLabel" name="unit06Label">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Ignored" vsizetype="Ignored">
        <horstretch>0</horstretch>
@@ -198,7 +198,7 @@ color: rgb(255, 255, 255);</string>
       </size>
      </property>
      <property name="pixmap">
-      <pixmap resource="MainResource.qrc">:/img/tyrant/CardBack.png</pixmap>
+      <pixmap resource="main.qrc">:/img/tyrant/CardBack.png</pixmap>
      </property>
      <property name="scaledContents">
       <bool>true</bool>
@@ -206,7 +206,7 @@ color: rgb(255, 255, 255);</string>
     </widget>
    </item>
    <item row="1" column="3">
-    <widget class="CUnitLabel" name="unit07Label">
+    <widget class="CCardLabel" name="unit07Label">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Ignored" vsizetype="Ignored">
        <horstretch>0</horstretch>
@@ -220,7 +220,7 @@ color: rgb(255, 255, 255);</string>
       </size>
      </property>
      <property name="pixmap">
-      <pixmap resource="MainResource.qrc">:/img/tyrant/CardBack.png</pixmap>
+      <pixmap resource="main.qrc">:/img/tyrant/CardBack.png</pixmap>
      </property>
      <property name="scaledContents">
       <bool>true</bool>
@@ -228,7 +228,7 @@ color: rgb(255, 255, 255);</string>
     </widget>
    </item>
    <item row="1" column="4">
-    <widget class="CUnitLabel" name="unit08Label">
+    <widget class="CCardLabel" name="unit08Label">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Ignored" vsizetype="Ignored">
        <horstretch>0</horstretch>
@@ -242,7 +242,7 @@ color: rgb(255, 255, 255);</string>
       </size>
      </property>
      <property name="pixmap">
-      <pixmap resource="MainResource.qrc">:/img/tyrant/CardBack.png</pixmap>
+      <pixmap resource="main.qrc">:/img/tyrant/CardBack.png</pixmap>
      </property>
      <property name="scaledContents">
       <bool>true</bool>
@@ -250,7 +250,7 @@ color: rgb(255, 255, 255);</string>
     </widget>
    </item>
    <item row="1" column="5">
-    <widget class="CUnitLabel" name="unit09Label">
+    <widget class="CCardLabel" name="unit09Label">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Ignored" vsizetype="Ignored">
        <horstretch>0</horstretch>
@@ -264,7 +264,7 @@ color: rgb(255, 255, 255);</string>
       </size>
      </property>
      <property name="pixmap">
-      <pixmap resource="MainResource.qrc">:/img/tyrant/CardBack.png</pixmap>
+      <pixmap resource="main.qrc">:/img/tyrant/CardBack.png</pixmap>
      </property>
      <property name="scaledContents">
       <bool>true</bool>
@@ -275,18 +275,18 @@ color: rgb(255, 255, 255);</string>
  </widget>
  <customwidgets>
   <customwidget>
-   <class>CUnitLabel</class>
-   <extends>QLabel</extends>
-   <header>CUnitLabel.h</header>
-  </customwidget>
-  <customwidget>
    <class>CWinLabel</class>
    <extends>QLabel</extends>
    <header>CWinLabel.h</header>
   </customwidget>
+  <customwidget>
+   <class>CCardLabel</class>
+   <extends>QLabel</extends>
+   <header>CCardLabel.h</header>
+  </customwidget>
  </customwidgets>
  <resources>
-  <include location="MainResource.qrc"/>
+  <include location="main.qrc"/>
  </resources>
  <connections/>
 </ui>

@@ -3,7 +3,7 @@
 
 #include <QWidget>
 #include <QPushButton>
-#include <QLineEdit>
+#include "CDeckInput.h"
 
 class CMultiDeckEditorWidget;
 
@@ -15,9 +15,9 @@ public:
     explicit CMultiDeckWidget(QWidget *parent = 0);
 
 public:
-    void setDeckWidget(QLineEdit* editWidget);
-    void updateAvailableDecks();
-    void resetEditors();
+    void setDeckInputWidget(CDeckInput* inputWidget);
+    void updateHistory();
+    void initDecks();
 
 signals:
     void numberOfDecksChanged(int numDecks);
@@ -35,9 +35,10 @@ protected:
 
 private:
     bool isDoubleEqual(double d1, double d2);
+    void resetEditors();
 
 private:
-    QLineEdit* mDeckSourceWidget;
+    CDeckInput* mDeckSourceWidget;
     CMultiDeckEditorWidget* mMultiDeckEditors[10];
     QPushButton *mAddButton;
     QPushButton *mCancelButton;

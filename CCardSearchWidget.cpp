@@ -1,7 +1,7 @@
 #include "CCardSearchWidget.h"
 #include "ui_CardSearchWidget.h"
-#include "CCardTable.h"
-#include "CUnitLabel.h"
+#include "model/CCardTable.h"
+#include "CCardLabel.h"
 #include <QGraphicsProxyWidget>
 
 const int CCardSearchWidget::NUM_RESULT_WIDGETS = 50;
@@ -18,7 +18,7 @@ CCardSearchWidget::CCardSearchWidget(QWidget *parent)
     mUi->finderView->setScene(mScene);
     for (int i = 0; i < NUM_RESULT_WIDGETS; ++i)
     {
-        CUnitLabel* newLabel = new CUnitLabel();
+        CCardLabel* newLabel = new CCardLabel();
         newLabel->setFixedSize(80, 110);
         newLabel->installEventFilter(this);
         mResultWidgets.push_back(mScene->addWidget(newLabel));
@@ -133,7 +133,7 @@ void CCardSearchWidget::updateView()
         {
             if (i < foundCards.size())
             {
-                static_cast<CUnitLabel*>(mResultWidgets[i]->widget())->setCard(*foundCards[i]);
+                static_cast<CCardLabel*>(mResultWidgets[i]->widget())->setCard(*foundCards[i]);
                 mResultWidgets[i]->widget()->setVisible(true);
             }
             else
@@ -183,8 +183,8 @@ bool CCardSearchWidget::eventFilter(QObject *obj, QEvent *e)
     {
         case QEvent::MouseButtonDblClick:
         {
-            CUnitLabel *unitLabel = static_cast<CUnitLabel*>(obj);
-            const CCard &card = unitLabel->getCard();
+            CCardLabel *cardLabel = static_cast<CCardLabel*>(obj);
+            const CCard &card = cardLabel->getCard();
             if (card.isValid())
             {
                 emit cardSelected(card.getId());

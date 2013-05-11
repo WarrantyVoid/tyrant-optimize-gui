@@ -5,7 +5,7 @@
 CDeckWidget::CDeckWidget(QWidget *parent)
 : QWidget(parent)
 , mUi(new Ui::DeckWidget)
-, mCards(CCardTable::getCardTable())
+, mDecks(CDeckTable::getDeckTable())
 , mDeck()
 {
     mUi->setupUi(this);
@@ -19,7 +19,7 @@ CDeckWidget::CDeckWidget(QWidget *parent)
     for(int i = 0; i < 10; ++i)
     {
         QString widgetName = QString("unit%1Label").arg(i, 2, 10, QChar('0'));
-        CUnitLabel* widget = findChild<CUnitLabel*>(widgetName);
+        CCardLabel* widget = findChild<CCardLabel*>(widgetName);
         if (widget)
         {
             connect(
@@ -36,7 +36,7 @@ void CDeckWidget::setDropEnabled(bool enabled)
     for(int i = 0; i < 10; ++i)
     {
         QString widgetName = QString("unit%1Label").arg(i, 2, 10, QChar('0'));
-        CUnitLabel* widget = findChild<CUnitLabel*>(widgetName);
+        CCardLabel* widget = findChild<CCardLabel*>(widgetName);
         if (widget)
         {
             widget->setAcceptDrops(enabled);
@@ -67,7 +67,7 @@ void CDeckWidget::setDefaultUnits()
 
 void CDeckWidget::setUnit(int slot, const CCard &unit)
 {
-    CUnitLabel* widget = 0;
+    CCardLabel* widget = 0;
     if (slot == -1)
     {
         // Commander slot
@@ -77,7 +77,7 @@ void CDeckWidget::setUnit(int slot, const CCard &unit)
     {
         // Assault/Action slot
         QString widgetName = QString("unit%1Label").arg(slot, 2, 10, QChar('0'));
-        widget = findChild<CUnitLabel*>(widgetName);
+        widget = findChild<CCardLabel*>(widgetName);
     }
 
     if (widget)
@@ -107,7 +107,7 @@ void  CDeckWidget::setDeck(const CDeck &deck)
 
 const CCard& CDeckWidget::getUnit(int slot) const
 {
-    CUnitLabel* widget = 0;
+    CCardLabel* widget = 0;
     if (slot == -1)
     {
         // Commander slot
@@ -117,7 +117,7 @@ const CCard& CDeckWidget::getUnit(int slot) const
     {
         // Assault/Action slot
         QString widgetName = QString("unit%1Label").arg(slot, 2, 10, QChar('0'));
-        widget = findChild<CUnitLabel*>(widgetName);
+        widget = findChild<CCardLabel*>(widgetName);
     }
 
     if (widget)
@@ -156,15 +156,16 @@ void CDeckWidget::setDeck(const QString &deckIdParam)
             deckId = deckParts.first();
         }
 
-        if (mCards.nameToDeck(deckId, mDeck))
+        mDeck = mDecks.getDeckForName(deckId);
+        if (mDeck.isValid())
         {
             // Custom Deck
         }
-        else if (mCards.hashToDeck(deckId, mDeck))
+        else if (mDecks.hashToDeck(deckId, mDeck))
         {
             // Deck Hash
         }
-        else if (mCards.strToDeck(deckId, mDeck))
+        else if (mDecks.strToDeck(deckId, mDeck))
         {
             // Direct Card List
         }
@@ -191,7 +192,7 @@ void CDeckWidget::updateDeck()
         }
     }
     QString deckId;
-    if (mCards.deckToHash(mDeck, deckId))
+    if (mDecks.deckToHash(mDeck, deckId))
     {
         emit deckChanged(deckId);
     }

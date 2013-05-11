@@ -72,7 +72,7 @@
          <string/>
         </property>
         <property name="icon">
-         <iconset resource="MainResource.qrc">
+         <iconset resource="main.qrc">
           <normaloff>:/img/tyrant/AssaultRegIcon.png</normaloff>:/img/tyrant/AssaultRegIcon.png</iconset>
         </property>
        </widget>
@@ -86,7 +86,7 @@
          <string/>
         </property>
         <property name="icon">
-         <iconset resource="MainResource.qrc">
+         <iconset resource="main.qrc">
           <normaloff>:/img/tyrant/CommanderGoldIcon.png</normaloff>:/img/tyrant/CommanderGoldIcon.png</iconset>
         </property>
         <property name="checked">
@@ -113,7 +113,7 @@
          <string/>
         </property>
         <property name="icon">
-         <iconset resource="MainResource.qrc">
+         <iconset resource="main.qrc">
           <normaloff>:/img/tyrant/ActionRegIcon.png</normaloff>:/img/tyrant/ActionRegIcon.png</iconset>
         </property>
         <property name="checked">
@@ -127,7 +127,7 @@
          <string/>
         </property>
         <property name="icon">
-         <iconset resource="MainResource.qrc">
+         <iconset resource="main.qrc">
           <normaloff>:/img/tyrant/CommanderSilverIcon.png</normaloff>:/img/tyrant/CommanderSilverIcon.png</iconset>
         </property>
         <property name="checked">
@@ -141,7 +141,7 @@
          <string/>
         </property>
         <property name="icon">
-         <iconset resource="MainResource.qrc">
+         <iconset resource="main.qrc">
           <normaloff>:/img/tyrant/CommanderGoldIcon.png</normaloff>:/img/tyrant/CommanderGoldIcon.png</iconset>
         </property>
         <property name="checked">
@@ -155,7 +155,7 @@
          <string>4+</string>
         </property>
         <property name="icon">
-         <iconset resource="MainResource.qrc">
+         <iconset resource="main.qrc">
           <normaloff>:/img/tyrant/HealthIcon.png</normaloff>:/img/tyrant/HealthIcon.png</iconset>
         </property>
         <property name="checked">
@@ -169,7 +169,7 @@
          <string>1</string>
         </property>
         <property name="icon">
-         <iconset resource="MainResource.qrc">
+         <iconset resource="main.qrc">
           <normaloff>:/img/tyrant/HealthIcon.png</normaloff>:/img/tyrant/HealthIcon.png</iconset>
         </property>
         <property name="checked">
@@ -183,7 +183,7 @@
          <string>2</string>
         </property>
         <property name="icon">
-         <iconset resource="MainResource.qrc">
+         <iconset resource="main.qrc">
           <normaloff>:/img/tyrant/HealthIcon.png</normaloff>:/img/tyrant/HealthIcon.png</iconset>
         </property>
         <property name="checked">
@@ -203,7 +203,7 @@
          <string/>
         </property>
         <property name="icon">
-         <iconset resource="MainResource.qrc">
+         <iconset resource="main.qrc">
           <normaloff>:/img/tyrant/AssaultSilverIcon.png</normaloff>:/img/tyrant/AssaultSilverIcon.png</iconset>
         </property>
        </widget>
@@ -214,7 +214,7 @@
          <string/>
         </property>
         <property name="icon">
-         <iconset resource="MainResource.qrc">
+         <iconset resource="main.qrc">
           <normaloff>:/img/tyrant/ActionGoldIcon.png</normaloff>:/img/tyrant/ActionGoldIcon.png</iconset>
         </property>
         <property name="checked">
@@ -231,7 +231,7 @@
          <string/>
         </property>
         <property name="icon">
-         <iconset resource="MainResource.qrc">
+         <iconset resource="main.qrc">
           <normaloff>:/img/tyrant/ActionLegendaryIcon.png</normaloff>:/img/tyrant/ActionLegendaryIcon.png</iconset>
         </property>
         <property name="checked">
@@ -245,7 +245,7 @@
          <string>3</string>
         </property>
         <property name="icon">
-         <iconset resource="MainResource.qrc">
+         <iconset resource="main.qrc">
           <normaloff>:/img/tyrant/HealthIcon.png</normaloff>:/img/tyrant/HealthIcon.png</iconset>
         </property>
         <property name="checked">
@@ -259,7 +259,7 @@
          <string/>
         </property>
         <property name="icon">
-         <iconset resource="MainResource.qrc">
+         <iconset resource="main.qrc">
           <normaloff>:/img/tyrant/StructureRegIcon.png</normaloff>:/img/tyrant/StructureRegIcon.png</iconset>
         </property>
        </widget>
@@ -286,7 +286,7 @@
          <string/>
         </property>
         <property name="icon">
-         <iconset resource="MainResource.qrc">
+         <iconset resource="main.qrc">
           <normaloff>:/img/tyrant/AssaultGoldIcon.png</normaloff>:/img/tyrant/AssaultGoldIcon.png</iconset>
         </property>
         <property name="checked">
@@ -300,7 +300,7 @@
          <string/>
         </property>
         <property name="icon">
-         <iconset resource="MainResource.qrc">
+         <iconset resource="main.qrc">
           <normaloff>:/img/tyrant/StructureSilverIcon.png</normaloff>:/img/tyrant/StructureSilverIcon.png</iconset>
         </property>
        </widget>
@@ -311,7 +311,7 @@
          <string/>
         </property>
         <property name="icon">
-         <iconset resource="MainResource.qrc">
+         <iconset resource="main.qrc">
           <normaloff>:/img/tyrant/ActionSilverIcon.png</normaloff>:/img/tyrant/ActionSilverIcon.png</iconset>
         </property>
         <property name="checked">
@@ -325,7 +325,7 @@
          <string/>
         </property>
         <property name="icon">
-         <iconset resource="MainResource.qrc">
+         <iconset resource="main.qrc">
           <normaloff>:/img/tyrant/CommanderRegIcon.png</normaloff>:/img/tyrant/CommanderRegIcon.png</iconset>
         </property>
         <property name="checked">
@@ -339,7 +339,7 @@
          <string/>
         </property>
         <property name="icon">
-         <iconset resource="MainResource.qrc">
+         <iconset resource="main.qrc">
           <normaloff>:/img/tyrant/StructureGoldIcon.png</normaloff>:/img/tyrant/StructureGoldIcon.png</iconset>
         </property>
         <property name="checked">
@@ -359,7 +359,7 @@
          <string/>
         </property>
         <property name="icon">
-         <iconset resource="MainResource.qrc">
+         <iconset resource="main.qrc">
           <normaloff>:/img/tyrant/AssaultLegendaryIcon.png</normaloff>:/img/tyrant/AssaultLegendaryIcon.png</iconset>
         </property>
         <property name="checked">
@@ -403,7 +403,7 @@
          <string/>
         </property>
         <property name="icon">
-         <iconset resource="MainResource.qrc">
+         <iconset resource="main.qrc">
           <normaloff>:/img/tyrant/StructureLegendaryIcon.png</normaloff>:/img/tyrant/StructureLegendaryIcon.png</iconset>
         </property>
         <property name="checked">
@@ -432,7 +432,7 @@
          <string/>
         </property>
         <property name="pixmap">
-         <pixmap resource="MainResource.qrc">:/img/tyrant/SetIconHomeworld.png</pixmap>
+         <pixmap resource="main.qrc">:/img/tyrant/SetIconHomeworld.png</pixmap>
         </property>
         <property name="alignment">
          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -458,7 +458,7 @@
          <string/>
         </property>
         <property name="pixmap">
-         <pixmap resource="MainResource.qrc">:/img/tyrant/BlightSetIcon.png</pixmap>
+         <pixmap resource="main.qrc">:/img/tyrant/BlightSetIcon.png</pixmap>
         </property>
         <property name="alignment">
          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -474,7 +474,7 @@
          <string/>
         </property>
         <property name="pixmap">
-         <pixmap resource="MainResource.qrc">:/img/tyrant/PurityPackIcon.png</pixmap>
+         <pixmap resource="main.qrc">:/img/tyrant/PurityPackIcon.png</pixmap>
         </property>
         <property name="alignment">
          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -500,7 +500,7 @@
          <string/>
         </property>
         <property name="pixmap">
-         <pixmap resource="MainResource.qrc">:/img/tyrant/NexusPackIcon.png</pixmap>
+         <pixmap resource="main.qrc">:/img/tyrant/NexusPackIcon.png</pixmap>
         </property>
         <property name="alignment">
          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -516,7 +516,7 @@
          <string/>
         </property>
         <property name="pixmap">
-         <pixmap resource="MainResource.qrc">:/img/tyrant/EnclaveSetIcon.png</pixmap>
+         <pixmap resource="main.qrc">:/img/tyrant/EnclaveSetIcon.png</pixmap>
         </property>
         <property name="alignment">
          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -552,7 +552,7 @@
          <string/>
         </property>
         <property name="pixmap">
-         <pixmap resource="MainResource.qrc">:/img/tyrant/OccupationPackIcon.png</pixmap>
+         <pixmap resource="main.qrc">:/img/tyrant/OccupationPackIcon.png</pixmap>
         </property>
         <property name="alignment">
          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -578,7 +578,7 @@
          <string/>
         </property>
         <property name="pixmap">
-         <pixmap resource="MainResource.qrc">:/img/tyrant/WorldshipSetIcon.png</pixmap>
+         <pixmap resource="main.qrc">:/img/tyrant/WorldshipSetIcon.png</pixmap>
         </property>
         <property name="alignment">
          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -614,7 +614,7 @@
          <string/>
         </property>
         <property name="pixmap">
-         <pixmap resource="MainResource.qrc">:/img/tyrant/AftermathSetIcon.png</pixmap>
+         <pixmap resource="main.qrc">:/img/tyrant/AftermathSetIcon.png</pixmap>
         </property>
         <property name="alignment">
          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -660,7 +660,7 @@
          <string/>
         </property>
         <property name="pixmap">
-         <pixmap resource="MainResource.qrc">:/img/tyrant/AwakeningSetIcon.png</pixmap>
+         <pixmap resource="main.qrc">:/img/tyrant/AwakeningSetIcon.png</pixmap>
         </property>
         <property name="alignment">
          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -676,7 +676,7 @@
          <string/>
         </property>
         <property name="pixmap">
-         <pixmap resource="MainResource.qrc">:/img/tyrant/StandardSetIcon.png</pixmap>
+         <pixmap resource="main.qrc">:/img/tyrant/StandardSetIcon.png</pixmap>
         </property>
         <property name="alignment">
          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -702,7 +702,7 @@
          <string/>
         </property>
         <property name="pixmap">
-         <pixmap resource="MainResource.qrc">:/img/tyrant/PhobosSetIcon.png</pixmap>
+         <pixmap resource="main.qrc">:/img/tyrant/PhobosSetIcon.png</pixmap>
         </property>
         <property name="alignment">
          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -718,7 +718,7 @@
          <string/>
         </property>
         <property name="pixmap">
-         <pixmap resource="MainResource.qrc">:/img/tyrant/TerminusSetIcon.png</pixmap>
+         <pixmap resource="main.qrc">:/img/tyrant/TerminusSetIcon.png</pixmap>
         </property>
         <property name="alignment">
          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -754,7 +754,7 @@
          <string/>
         </property>
         <property name="pixmap">
-         <pixmap resource="MainResource.qrc">:/img/tyrant/UpgradedSetIcon.png</pixmap>
+         <pixmap resource="main.qrc">:/img/tyrant/UpgradedSetIcon.png</pixmap>
         </property>
         <property name="alignment">
          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -780,7 +780,7 @@
          <string/>
         </property>
         <property name="pixmap">
-         <pixmap resource="MainResource.qrc">:/img/tyrant/EliteSetIcon.png</pixmap>
+         <pixmap resource="main.qrc">:/img/tyrant/EliteSetIcon.png</pixmap>
         </property>
         <property name="alignment">
          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -806,7 +806,7 @@
          <string/>
         </property>
         <property name="pixmap">
-         <pixmap resource="MainResource.qrc">:/img/tyrant/RewardSetIcon.png</pixmap>
+         <pixmap resource="main.qrc">:/img/tyrant/RewardSetIcon.png</pixmap>
         </property>
         <property name="alignment">
          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -878,7 +878,7 @@
   </layout>
  </widget>
  <resources>
-  <include location="MainResource.qrc"/>
+  <include location="main.qrc"/>
  </resources>
  <connections/>
 </ui>

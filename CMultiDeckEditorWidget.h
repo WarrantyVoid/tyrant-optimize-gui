@@ -2,7 +2,7 @@
 #define CMULTIDECKEDITORWIDGET_H
 
 #include <QWidget>
-#include "CCardTable.h"
+#include "model/CCardTable.h"
 
 namespace Ui
 {
@@ -19,7 +19,7 @@ public:
 
 public:
     QString getResult();
-    void updateAvailableDecks();
+    void updateHistory();
     void reset();
 
 signals:

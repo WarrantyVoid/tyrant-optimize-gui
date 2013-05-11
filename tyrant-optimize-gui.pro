@@ -14,11 +14,9 @@ INCLUDEPATH += .
 
 # Input
 HEADERS += \
-    CCardTable.h \
     CMainWindow.h \
     CPathManager.h \
     CPictureDownload.h \
-    CUnitLabel.h \
     CDownload.h \
     CDeckWidget.h \
     CWinLabel.h \
@@ -42,7 +40,12 @@ HEADERS += \
     process/CTyrantOptimizeWrapper.h \
     CCardSearchParameters.h \
     CCardSearchWidget.h \
-    ICardCheck.h
+    ICardCheck.h \
+    CDeckManagementWidget.h \
+    CCardLabel.h \
+    CDeckInput.h \
+    model/CDeckTable.h \
+    model/CCardTable.h
 
 
 	   
@@ -51,14 +54,13 @@ FORMS += \
     DeckWidget.ui \
     CardFilterWidget.ui \
     MultiDeckEditorWidget.ui \
-    CardSearchWidget.ui
+    CardSearchWidget.ui \
+    DeckManagementWidget.ui
 
 SOURCES += \
-    CCardTable.cpp \
     CMainWindow.cpp \
     CPathManager.cpp \
     CPictureDownload.cpp \
-    CUnitLabel.cpp \
     main.cpp \
     CDownload.cpp \
     CDeckWidget.cpp \
@@ -81,7 +83,12 @@ SOURCES += \
     process/CProcessParameters.cpp \
     process/CTyrantOptimizeWrapper.cpp \
     CCardSearchParameters.cpp \
-    CCardSearchWidget.cpp
+    CCardSearchWidget.cpp \
+    CDeckManagementWidget.cpp \
+    CCardLabel.cpp \
+    CDeckInput.cpp \
+    model/CCardTable.cpp \
+    model/CDeckTable.cpp
 
 RESOURCES += main.qrc
 RC_FILE    = main.rc

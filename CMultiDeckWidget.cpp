@@ -53,75 +53,27 @@ CMultiDeckWidget::CMultiDeckWidget(QWidget *parent)
     vLayout->addLayout(hLayout);
 }
 
-void CMultiDeckWidget::setDeckWidget(QLineEdit* editWidget)
+void CMultiDeckWidget::setDeckInputWidget(CDeckInput* inputWidget)
 {
-    mDeckSourceWidget = editWidget;
+    mDeckSourceWidget = inputWidget;
 }
 
-void CMultiDeckWidget::updateAvailableDecks()
+void CMultiDeckWidget::updateHistory()
 {
     for (int i = 0; i < 10; ++i)
     {
-        mMultiDeckEditors[i]->updateAvailableDecks();
-    }
-}
-
-void CMultiDeckWidget::resetEditors()
-{
-    mNumberOfDecks = 1;
-    for (int i = 0; i < 10; ++i)
-    {
-        if (i >= mNumberOfDecks)
+        if (i < mNumberOfDecks)
         {
-            mMultiDeckEditors[i]->setVisible(false);
-        }
-        mMultiDeckEditors[i]->reset();
-    }
-}
-
-
-void CMultiDeckWidget::declineDecks()
-{
-    emit decksUpdated(false);
-}
-
-void CMultiDeckWidget::acceptDecks()
-{
-    QStringList multiDeckStr;
-    for (int i = 0; i < 10; ++i)
-    {
-        QString deckStr = "";
-        if (mMultiDeckEditors[i])
-        {
-            deckStr = mMultiDeckEditors[i]->getResult();
-        }
-        if (!deckStr.isEmpty())
-        {
-            multiDeckStr.append(deckStr);
+            mMultiDeckEditors[i]->updateHistory();
         }
     }
-    if (mDeckSourceWidget)
-    {
-        mDeckSourceWidget->setText(multiDeckStr.join(";"));
-    }
-    emit decksUpdated(multiDeckStr.join(";"));
 }
 
-void CMultiDeckWidget::addDeck()
-{
-    if (mNumberOfDecks < 10)
-    {
-        mMultiDeckEditors[mNumberOfDecks]->setVisible(true);
-        ++mNumberOfDecks;
-        emit numberOfDecksChanged(mNumberOfDecks);
-    }
-}
-
-void CMultiDeckWidget::showEvent(QShowEvent */*event*/)
+void CMultiDeckWidget::initDecks()
 {
     if (mDeckSourceWidget)
     {
-        QStringList multiDeckStr = mDeckSourceWidget->text().split(";");
+        QStringList multiDeckStr = mDeckSourceWidget->currentText().split(";");
         resetEditors();
         double numDecks = qMin(10, multiDeckStr.size());
         double totalFractions = 0.0;
@@ -164,7 +116,62 @@ void CMultiDeckWidget::showEvent(QShowEvent */*event*/)
     }
 }
 
+void CMultiDeckWidget::declineDecks()
+{
+    emit decksUpdated(false);
+}
+
+void CMultiDeckWidget::acceptDecks()
+{
+    QStringList multiDeckStr;
+    for (int i = 0; i < 10; ++i)
+    {
+        QString deckStr = "";
+        if (mMultiDeckEditors[i])
+        {
+            deckStr = mMultiDeckEditors[i]->getResult();
+        }
+        if (!deckStr.isEmpty())
+        {
+            multiDeckStr.append(deckStr);
+        }
+    }
+    if (mDeckSourceWidget)
+    {
+        mDeckSourceWidget->setDeckId(multiDeckStr.join(";"));
+    }
+    emit decksUpdated(multiDeckStr.join(";"));
+}
+
+void CMultiDeckWidget::addDeck()
+{
+    if (mNumberOfDecks < 10)
+    {
+        mMultiDeckEditors[mNumberOfDecks]->setVisible(true);
+        ++mNumberOfDecks;
+        emit numberOfDecksChanged(mNumberOfDecks);
+    }
+}
+
+void CMultiDeckWidget::showEvent(QShowEvent */*event*/)
+{
+    initDecks();
+}
+
 bool CMultiDeckWidget::isDoubleEqual(double d1, double d2)
 {
     return qAbs(d1 - d2) < 0.00000001;
+}
+
+void CMultiDeckWidget::resetEditors()
+{
+    mNumberOfDecks = 1;
+    for (int i = 0; i < 10; ++i)
+    {
+        if (i >= mNumberOfDecks)
+        {
+            mMultiDeckEditors[i]->setVisible(false);
+        }
+        mMultiDeckEditors[i]->reset();
+    }
 }

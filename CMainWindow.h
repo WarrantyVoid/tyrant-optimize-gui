@@ -8,11 +8,12 @@
 #include <QFileSystemWatcher>
 #include "process/IProcessWrapper.h"
 #include "process/CProcessParameters.h"
+#include "model/CCardTable.h"
+#include "model/CDeckTable.h"
 #include "CDeckWidget.h"
+#include "CDeckInput.h"
 #include "CCardFilterWidget.h"
 #include "CMultiDeckWidget.h"
-#include "CCardTable.h"
-
 
 namespace Ui
 {
@@ -73,7 +74,11 @@ protected slots:
     // Process slots
     void setWinChance(float winChance);
     void setAnp(float anp);
-    void setResultDeck(const QString &deckHash);
+    void setActiveEditingDeck(const QString &deckStr);
+    void setResultDeckButtonAvailability(const QString &deckHash);
+
+private:
+    void getActiveDeckInput(CDeckInput *&deckInput) const;
 
 private:
     Ui::MainWindow *mUi;
@@ -88,7 +93,8 @@ private:
     IProcessWrapper *mProcessWrapper;
     QLabel *mProcessStatusLabel;
     QLabel *mDownloadStatusLabel;
-    CCardTable *mCards;
+    CCardTable &mCards;
+    CDeckTable &mDecks;
     CProcessParameters mParameters;
 	QString mLastDir;
 

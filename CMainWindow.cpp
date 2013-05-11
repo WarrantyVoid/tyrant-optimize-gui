@@ -28,7 +28,8 @@ CMainWindow::CMainWindow(QWidget *parent)
 , mProcessWrapper(new CTyrantOptimizeWrapper())
 , mProcessStatusLabel(new QLabel())
 , mDownloadStatusLabel(new QLabel())
-, mCards(&CCardTable::getCardTable())
+, mCards(CCardTable::getCardTable())
+, mDecks(CDeckTable::getDeckTable())
 , mParameters()
 , mLastDir(QApplication::applicationDirPath())
 {
@@ -36,30 +37,17 @@ CMainWindow::CMainWindow(QWidget *parent)
     setWindowTitle(QString("%1 GUI").arg(mProcessWrapper->getProcessExecutable().baseName()));
 
     // Menu bar setup
+    mUi->cardSearchDockWidget->toggleViewAction()->setShortcut(QKeySequence("Ctrl+F"));
+    mUi->deckManagementDockWidget->toggleViewAction()->setShortcut(QKeySequence("Ctrl+M"));
+    mUi->menuView->addAction(mUi->deckManagementDockWidget->toggleViewAction());
     mUi->menuView->addAction(mUi->cardSearchDockWidget->toggleViewAction());
 
-    // Base deck setup
-    mUi->baseDeckEdit->addItem("");
-    mUi->baseDeckEdit->addItems(mCards->getCustomDecks());
-    QSortFilterProxyModel* baseProxy = new QSortFilterProxyModel(mUi->baseDeckEdit);
-    baseProxy->setSourceModel(mUi->baseDeckEdit->model());
-    mUi->baseDeckEdit->model()->setParent(baseProxy);
-    mUi->baseDeckEdit->setModel(baseProxy);
-    mUi->baseDeckEdit->model()->sort(0);
-
-    // Enemy deck setup
-    mUi->enemyDeckEdit->addItem("");
-    mUi->enemyDeckEdit->addItems(mCards->getRaidDecks());
-    mUi->enemyDeckEdit->addItems(mCards->getCustomDecks());
-    QSortFilterProxyModel* enemyProxy = new QSortFilterProxyModel(mUi->enemyDeckEdit);
-    enemyProxy->setSourceModel(mUi->enemyDeckEdit->model());
-    mUi->enemyDeckEdit->model()->setParent(enemyProxy);
-    mUi->enemyDeckEdit->setModel(enemyProxy);
-    mUi->enemyDeckEdit->model()->sort(0);
+    // Enemy deck input setup
+    mUi->enemyDeckEdit->setAllowMultiDecks(true);
 
     // Battle ground setup
     mUi->battleGroundBox->addItem("");
-    const QList<CBattleground> &battlegrounds = mCards->getBattlegrounds();
+    const QList<CBattleground> &battlegrounds = mCards.getBattlegrounds();
     for (int i = 0; i < battlegrounds.size(); ++i)
     {
         mUi->battleGroundBox->addItem(battlegrounds.at(i).getName());
@@ -74,7 +62,7 @@ CMainWindow::CMainWindow(QWidget *parent)
 
     // Achievement setup
     mUi->achievementBox->addItem("");
-    const QList<CAchievement> &achievements = mCards->getAchievements();
+    const QList<CAchievement> &achievements = mCards.getAchievements();
     for (int i = 0; i < achievements.size(); ++i)
     {
         mUi->achievementBox->addItem(achievements.at(i).getName(), achievements.at(i).getId());
@@ -96,7 +84,6 @@ CMainWindow::CMainWindow(QWidget *parent)
     CDeck baseDeck;    
     getInputDeck(mUi->baseDeckEdit, baseDeck);    
     mUi->baseDeckWidget->setVisible(mUi->displayBaseButton->isChecked());
-    mUi->baseDeckLabel->setVisible(false);
     mUi->baseDeckWidget->setDeck(baseDeck);
     mUi->baseDeckWidget->setWinLabel(QPixmap(":/img/trash.png"));
     mUi->baseDeckWidget->setDropEnabled(true);
@@ -105,7 +92,6 @@ CMainWindow::CMainWindow(QWidget *parent)
     CDeck enemyDeck;    
     getInputDeck(mUi->enemyDeckEdit, enemyDeck);    
     mUi->enemyDeckWidget->setVisible(mUi->displayEnemyButton->isChecked());
-    mUi->enemyDeckLabel->setVisible(false);
     mUi->enemyDeckWidget->setDeck(enemyDeck);
     mUi->enemyDeckWidget->setWinLabel(QPixmap(":/img/trash.png"));
     mUi->enemyDeckWidget->setDropEnabled(true);
@@ -138,7 +124,7 @@ CMainWindow::CMainWindow(QWidget *parent)
     // Multi deck setup
     QBoxLayout *vLayout3 = new QBoxLayout(QBoxLayout::TopToBottom, mMultiDeckDialog);
     vLayout3->addWidget(mMultiDeckWidget);
-    mMultiDeckWidget->setDeckWidget(mUi->enemyDeckEdit->lineEdit());
+    mMultiDeckWidget->setDeckInputWidget(mUi->enemyDeckEdit);
     mMultiDeckDialog->setWindowTitle("Multi Deck Creation");
     connect(
         mMultiDeckDialog, SIGNAL(rejected()),
@@ -178,40 +164,34 @@ CMainWindow::CMainWindow(QWidget *parent)
         mUi->baseDeckEdit->lineEdit(), SIGNAL(textChanged(const QString &)),
         mUi->baseDeckWidget, SLOT(setDeck(const QString &)));
     connect(
-        mUi->baseDeckEdit->lineEdit(), SIGNAL(textChanged(const QString &)),
-        mUi->baseDeckLabel, SLOT(clear()));
-    connect(
-        mUi->baseDeckEdit, SIGNAL(currentIndexChanged(const QString &)),
-        mUi->baseDeckLabel, SLOT(setText(const QString &)));    
-    connect(
         mUi->baseDeckWidget, SIGNAL(deckChanged(const QString &)),
-        mUi->baseDeckEdit->lineEdit(), SLOT(setText(const QString &)));
+        mUi->baseDeckEdit, SLOT(setDeckId(const QString &)));
     connect(
         mUi->displayBaseButton, SIGNAL(clicked(bool)),
         this, SLOT(updateWindowHeight(bool)), Qt::QueuedConnection);
     connect(
         mUi->switchDecksButton, SIGNAL(clicked()),
         this, SLOT(switchDecks()));
+    connect(
+        mUi->deckManagementWidget, SIGNAL(setBaseDeck(const QString &)),
+        mUi->baseDeckEdit, SLOT(setDeckId(const QString &)));
 
     // Enemy deck connections
     connect(
         mUi->enemyDeckEdit->lineEdit(), SIGNAL(textChanged(const QString &)),
         mUi->enemyDeckWidget, SLOT(setDeck(const QString &)));
     connect(
-        mUi->enemyDeckEdit->lineEdit(), SIGNAL(textChanged(const QString &)),
-        mUi->enemyDeckLabel, SLOT(clear()));
-    connect(
-        mUi->enemyDeckEdit, SIGNAL(currentIndexChanged(const QString &)),
-        mUi->enemyDeckLabel, SLOT(setText(const QString &))); 
-    connect(
         mUi->enemyDeckWidget, SIGNAL(deckChanged(const QString &)),
-        mUi->enemyDeckEdit->lineEdit(), SLOT(setText(const QString &)));
+        mUi->enemyDeckEdit, SLOT(setDeckId(const QString &)));
     connect(
         mUi->displayEnemyButton, SIGNAL(clicked(bool)),
         this, SLOT(updateWindowHeight(bool)), Qt::QueuedConnection);
     connect(
         mUi->multiEnemyButton, SIGNAL(clicked()),
         mMultiDeckDialog, SLOT(show()));
+    connect(
+        mUi->deckManagementWidget, SIGNAL(setEnemyDeck(const QString &)),
+        mUi->enemyDeckEdit, SLOT(setDeckId(const QString &)));
 
     // Button connections
     connect(
@@ -244,10 +224,10 @@ CMainWindow::CMainWindow(QWidget *parent)
 
     // Widgets connections
     connect(
-        mCards, SIGNAL(downloadProgress(int,int)),
+        &mCards, SIGNAL(downloadProgress(int,int)),
         this, SLOT(downloadProgress(int,int)));
     connect(
-        mCards, SIGNAL(dataUpdated(const QStringList&)),
+        &mCards, SIGNAL(dataUpdated(const QStringList&)),
         this, SLOT(dataUpdated(const QStringList&)));
     connect(
         mFilterWidget, SIGNAL(ownedCardsUpdated(int)),
@@ -264,6 +244,9 @@ CMainWindow::CMainWindow(QWidget *parent)
     connect(
         mOwnedCardsWatcher, SIGNAL(directoryChanged(const QString &)),
         this, SLOT(scanForOwnedCards()));
+    connect(
+        mUi->deckManagementWidget, SIGNAL(setBaseOrEnemyDeck(const QString &)),
+        this, SLOT(setActiveEditingDeck(const QString &)));
 
     // Process wrapper connections
     connect(
@@ -274,7 +257,7 @@ CMainWindow::CMainWindow(QWidget *parent)
         this, SLOT(setAnp(float)));
     connect(
         mProcessWrapper, SIGNAL(deckUpdated(const QString&)),
-        this, SLOT(setResultDeck(const QString&)));
+        this, SLOT(setResultDeckButtonAvailability(const QString&)));
 }
 
 CMainWindow::~CMainWindow()
@@ -304,15 +287,16 @@ void CMainWindow::getInputDeck(const QComboBox *input, CDeck &deck) const
         QString deckId = input->currentText();
         if (!deckId.isEmpty())
         {
-            if (mCards->nameToDeck(deckId, deck))
+            deck = mDecks.getDeckForName(deckId);
+            if (deck.isValid())
             {
                 // Custom Deck
             }
-            else if (mCards->hashToDeck(deckId, deck))
+            else if (mDecks.hashToDeck(deckId, deck))
             {
                 // Deck Hash
             }
-            else if (mCards->strToDeck(deckId, deck))
+            else if (mDecks.strToDeck(deckId, deck))
             {
                 // Direct Card List
             }
@@ -327,6 +311,12 @@ void CMainWindow::startToolProcess(bool isOptimizationEnabled)
         mProcess = new QProcess();
         if (mProcess)
         {
+            // Update history of all deck input widgets
+            mUi->baseDeckEdit->updateHistory();
+            mUi->enemyDeckEdit->updateHistory();
+            mMultiDeckWidget->initDecks();
+            mMultiDeckWidget->updateHistory();
+
             // Fetch parameters from gui
             mParameters.setOptimizationEnabled(isOptimizationEnabled);
 			mParameters.fetchFromUi(*mUi);
@@ -588,7 +578,7 @@ void CMainWindow::toggleAlwaysOnTop(bool checked)
 void CMainWindow::updateXmlData()
 {
     mUi->updateXmlAction->setEnabled(false);
-    mCards->updateData();
+    mCards.updateData();
 }
 
 void CMainWindow::displayAboutMessage()
@@ -619,78 +609,46 @@ void CMainWindow::saveCustomDeck()
     CDeck customDeck;
     QString customDeckName;    
     if(QObject::sender() == mUi->saveBaseButton)
-    {        
-        customDeck = mUi->baseDeckWidget->getDeck();        
+    {
+        getInputDeck(mUi->baseDeckEdit, customDeck);
         if (!customDeck.isEmpty())
-        {
-            bool deckLabelNameValid = !mUi->baseDeckLabel->text().isEmpty();
-            if (deckLabelNameValid)
+        {          
+            QStringList comTokens = customDeck.getCards().first().getName().split(QRegExp("\\s|\\,|\\*"), QString::SkipEmptyParts);
+            if (!comTokens.empty())
             {
-                CDeck checkDeck;
-                if (mCards->nameToDeck(mUi->baseDeckLabel->text(), checkDeck))
+                QString comName = comTokens.at(0);
+                if (comTokens.size() > 1)
                 {
-                    deckLabelNameValid = (checkDeck.getType() == ECustomDeckType);
-                }
-            }
-            if (deckLabelNameValid)
-            {
-                customDeckName = mUi->baseDeckLabel->text();
-            }
-            else
-            {
-                QStringList comTokens = customDeck.getCards().first().getName().split(QRegExp("\\s|\\,|\\*"), QString::SkipEmptyParts);
-                if (!comTokens.empty())
-                {
-                    QString comName = comTokens.at(0);
-                    if (comTokens.size() > 1)
+                    comName = "";
+                    for (int i = 0; i < comTokens.size(); ++i)
                     {
-                        comName = "";
-                        for (int i = 0; i < comTokens.size(); ++i)
-                        {
-                            comName += comTokens.at(i).left(1);
-                        }
-
+                        comName += comTokens.at(i).left(1);
                     }
-                    customDeckName = comName.toLower() + "-";
+
                 }
+                customDeckName = comName.toLower() + "-";
             }
         }
     }
     else if(QObject::sender() == mUi->saveEnemyButton)
     {
-        customDeck = mUi->enemyDeckWidget->getDeck();
+        getInputDeck(mUi->enemyDeckEdit, customDeck);
         if (!customDeck.isEmpty())
-        {
-            bool deckLabelNameValid = !mUi->enemyDeckLabel->text().isEmpty();
-            if (deckLabelNameValid)
+        {         
+            QStringList comTokens = customDeck.getCards().first().getName().split(QRegExp("\\s|\\,|\\*"), QString::SkipEmptyParts);
+            if (!comTokens.empty())
             {
-                CDeck checkDeck;
-                if (mCards->nameToDeck(mUi->enemyDeckLabel->text(), checkDeck))
+                QString comName = comTokens.at(0);
+                if (comTokens.size() > 1)
                 {
-                    deckLabelNameValid = (checkDeck.getType() == ECustomDeckType);
-                }
-            }
-            if (deckLabelNameValid)
-            {
-                customDeckName = mUi->enemyDeckLabel->text();
-            }
-            else
-            {
-                QStringList comTokens = customDeck.getCards().first().getName().split(QRegExp("\\s|\\,|\\*"), QString::SkipEmptyParts);
-                if (!comTokens.empty())
-                {
-                    QString comName = comTokens.at(0);
-                    if (comTokens.size() > 1)
+                    comName = "";
+                    for (int i = 0; i < comTokens.size(); ++i)
                     {
-                        comName = "";
-                        for (int i = 0; i < comTokens.size(); ++i)
-                        {
-                            comName += comTokens.at(i).left(1);
-                        }
-
+                        comName += comTokens.at(i).left(1);
                     }
-                    customDeckName = comName.toLower() + "-";
+
                 }
+                customDeckName = comName.toLower() + "-";
             }
         }
     }
@@ -725,8 +683,8 @@ void CMainWindow::saveCustomDeck()
             customDeck.setType(ECustomDeckType);
             if (customDeck.isValid())
             {
-                CDeck deckDummy;
-                if (mCards->nameToDeck(customDeckName, deckDummy))
+                const CDeck &existingDeck = mDecks.getDeckForName(customDeckName);
+                if (existingDeck.isValid())
                 {
                     ok = QMessageBox::question(
                         this,
@@ -749,16 +707,7 @@ void CMainWindow::saveCustomDeck()
 
         if (customDeck.isValid() && ok == QMessageBox::Yes)
         {
-            if (mCards->addCustomDeck(customDeck))
-            {
-                mUi->baseDeckEdit->addItem(customDeckName);
-                mUi->baseDeckEdit->model()->sort(0);
-
-                mUi->enemyDeckEdit->addItem(customDeckName);
-                mUi->enemyDeckEdit->model()->sort(0);
-
-                mMultiDeckWidget->updateAvailableDecks();
-            }
+            mDecks.addCustomDeck(customDeck);
         }
    }
 }
@@ -769,9 +718,8 @@ void CMainWindow::useOptimizedDeck()
     if (deck.isValid())
     {
         QString hash;
-        mCards->deckToHash(deck, hash);
-        mUi->baseDeckEdit->lineEdit()->setText(hash);
-        mUi->baseDeckWidget->setDeck(deck);
+        mDecks.deckToHash(deck, hash);
+        mUi->baseDeckEdit->setDeckId(hash);
     }
 }
 
@@ -780,11 +728,11 @@ void CMainWindow::copyDeckHash()
     CDeck deck;
     if(QObject::sender() == mUi->hashBaseButton)
     {
-        deck = mUi->baseDeckWidget->getDeck();
+        getInputDeck(mUi->baseDeckEdit, deck);
     }
     else if(QObject::sender() == mUi->hashEnemyButton)
     {
-        deck = mUi->enemyDeckWidget->getDeck();
+        getInputDeck(mUi->enemyDeckEdit, deck);
     }
     else if(QObject::sender() == mUi->hashOptimizedButton)
     {
@@ -793,7 +741,7 @@ void CMainWindow::copyDeckHash()
     if (deck.isValid())
     {
         QString hash;
-        mCards->deckToHash(deck, hash);
+        mDecks.deckToHash(deck, hash);
         QApplication::clipboard()->setText(hash);
     }
 }
@@ -809,10 +757,8 @@ void CMainWindow::switchDecks()
         baseDeckStr.append(enemyDeckStr.right(enemyDeckStr.length() - firstEnemyDeck.length()));
         enemyDeckStr = firstEnemyDeck;
     }
-    mUi->baseDeckEdit->lineEdit()->setText(enemyDeckStr);
-    mUi->enemyDeckEdit->lineEdit()->setText(baseDeckStr);
-    mUi->baseDeckWidget->setDeck(enemyDeckStr);
-    mUi->enemyDeckWidget->setDeck(baseDeckStr);
+    mUi->baseDeckEdit->setDeckId(enemyDeckStr);
+    mUi->enemyDeckEdit->setDeckId(baseDeckStr);
 
     bool orderedBase = mUi->orderedBaseBox->isChecked();
     mUi->orderedBaseBox->setChecked(mUi->orderedEnemyBox->isChecked());
@@ -961,31 +907,16 @@ void CMainWindow::scanForOwnedCards()
 
 void CMainWindow::addCard(unsigned int cardId)
 {
-    CDeckWidget *deckWidget = 0;
-    QLineEdit *editWidget = 0;
-    if (mUi->baseDeckWidget->isVisible())
+    CDeckInput *deckInput = 0;
+    getActiveDeckInput(deckInput);
+    if (deckInput)
     {
-        deckWidget = mUi->baseDeckWidget;
-        editWidget = mUi->baseDeckEdit->lineEdit();
-    }
-    else if (mUi->enemyDeckWidget->isVisible())
-    {
-        deckWidget = mUi->enemyDeckWidget;
-        editWidget = mUi->enemyDeckEdit->lineEdit();
-    }
-    else
-    {
-        deckWidget = mUi->baseDeckWidget;
-        editWidget = mUi->baseDeckEdit->lineEdit();
-    }
-
-    if (deckWidget && editWidget)
-    {
-        CDeck deck = deckWidget->getDeck();
-        const CCard &newCard = mCards->getCardForId(cardId);
+        CDeck deck;
+        getInputDeck(deckInput, deck);
+        const CCard &newCard = mCards.getCardForId(cardId);
         if (deck.getNumCards() == 0)
         {
-            const CCard &whisper = mCards->getCardForId(1003);
+            const CCard &whisper = mCards.getCardForId(1003);
             deck.addCard(whisper);
         }
         if (newCard.getType() == ECommanderType)
@@ -1000,11 +931,9 @@ void CMainWindow::addCard(unsigned int cardId)
         {
             deck.addCard(newCard);
         }
-        deckWidget->setDeck(deck);
-
         QString hash;
-        mCards->deckToHash(deck, hash);
-        editWidget->setText(hash);
+        mDecks.deckToHash(deck, hash);
+        deckInput->setDeckId(hash);
     }
 }
 
@@ -1024,10 +953,20 @@ void CMainWindow::setAnp(float anp)
     }
 }
 
-void CMainWindow::setResultDeck(const QString &deckHash)
+void CMainWindow::setActiveEditingDeck(const QString &deckStr)
+{
+    CDeckInput *deckInput = 0;
+    getActiveDeckInput(deckInput);
+    if (deckInput)
+    {
+        deckInput->setDeckId(deckStr);
+    }
+}
+
+void CMainWindow::setResultDeckButtonAvailability(const QString &deckHash)
 {
     CDeck deck;
-    if (mCards->hashToDeck(deckHash, deck))
+    if (mDecks.hashToDeck(deckHash, deck))
     {
         // We have at least one valid card -> enable saving
         mUi->useOptimizedButton->setEnabled((true));
@@ -1041,5 +980,21 @@ void CMainWindow::setResultDeck(const QString &deckHash)
         mUi->saveOptimizedButton->setEnabled(false);
         mUi->hashOptimizedButton->setEnabled(false);
         mUi->resultDeckWidget->setDefaultUnits();
+    }
+}
+
+void CMainWindow::getActiveDeckInput(CDeckInput *&deckInput) const
+{
+    if (mUi->baseDeckWidget->isVisible())
+    {
+        deckInput = mUi->baseDeckEdit;
+    }
+    else if (mUi->enemyDeckWidget->isVisible())
+    {
+        deckInput = mUi->enemyDeckEdit;
+    }
+    else
+    {
+        deckInput = mUi->baseDeckEdit;
     }
 }

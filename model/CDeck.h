@@ -10,6 +10,7 @@ enum EDeckType
     EUnknownDeckType,
     EMissionDeckType,
     ERaidDeckType,
+    EQuestDeckType,
     ECustomDeckType
 };
 
@@ -28,6 +29,7 @@ public:
 
     const QString& getName() const;
     EDeckType getType() const;
+    const CCard& getCommander() const;
     const QList<CCard>& getCards() const;
     int getNumCards() const;
 

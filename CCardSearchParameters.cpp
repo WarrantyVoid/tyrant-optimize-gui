@@ -2,7 +2,7 @@
 #include "ui_CardSearchWidget.h"
 #include "model/CCard.h"
 #include "model/CSkill.h"
-#include "CCardTable.h"
+#include "model/CCardTable.h"
 #include <QLineEdit>
 
 CCardSearchParameters::CCardSearchParameters()

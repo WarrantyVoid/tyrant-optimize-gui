@@ -1,19 +1,20 @@
 <RCC>
     <qresource prefix="/img">
         <file>MainWindow.ico</file>
-        <file>hash.png</file>
-        <file>save.png</file>
-        <file>view.png</file>
-        <file>search.png</file>
         <file>add.png</file>
-        <file>switch.png</file>
-        <file>multi.png</file>
-        <file>use.png</file>
-        <file>legendary.png</file>
-        <file>rare.png</file>
-        <file>uncommon.png</file>
+        <file>delete.png</file>
         <file>common.png</file>
+        <file>hash.png</file>
+        <file>legendary.png</file>
+        <file>multi.png</file>
+        <file>rare.png</file>
+        <file>save.png</file>
+        <file>switch.png</file>
+        <file>search.png</file>
+        <file>uncommon.png</file>
         <file>unique.png</file>
+        <file>use.png</file>
+        <file>view.png</file>
         <file>tyrant/ActionGoldIcon.png</file>
         <file>tyrant/ActionLegendaryIcon.png</file>
         <file>tyrant/ActionRegIcon.png</file>

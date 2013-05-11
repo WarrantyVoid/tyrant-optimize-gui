@@ -47,8 +47,8 @@ void CProcessParameters::fetchFromUi(const Ui::MainWindow &ui)
 
 void CProcessParameters::updateUi(Ui::MainWindow &ui) const
 {
-    ui.baseDeckEdit->lineEdit()->setText(mBaseDeck);
-    ui.enemyDeckEdit->lineEdit()->setText(mEnemyDeck);
+    ui.baseDeckEdit->setDeckId(mBaseDeck);
+    ui.enemyDeckEdit->setDeckId(mEnemyDeck);
     ui.battleGroundBox->setCurrentIndex(ui.battleGroundBox->findText(mBattleGround)); 
     ui.ownedCardsFileBox->setCurrentIndex(ui.ownedCardsFileBox->findText(mOwnedCardsFile));
     ui.achievementBox->setCurrentIndex(ui.achievementBox->findData(mAchievement));
