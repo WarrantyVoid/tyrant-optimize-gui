@@ -59,6 +59,9 @@ CMainWindow::CMainWindow(QWidget *parent)
     mUi->battleGroundBox->model()->setParent(battlegroundProxy);
     mUi->battleGroundBox->setModel(battlegroundProxy);
     mUi->battleGroundBox->model()->sort(0);
+    connect(
+        mUi->battleGroundBox, SIGNAL(activated(int)),
+        this, SLOT(updateParameterBoxToolTip(int)));
 
     // Achievement setup
     mUi->achievementBox->addItem("");
@@ -73,6 +76,9 @@ CMainWindow::CMainWindow(QWidget *parent)
     mUi->achievementBox->model()->setParent(achievementProxy);
     mUi->achievementBox->setModel(achievementProxy);
     mUi->achievementBox->model()->sort(0);
+    connect(
+        mUi->achievementBox, SIGNAL(activated(int)),
+        this, SLOT(updateParameterBoxToolTip(int)));
 
     // Parameter setup
     connect(
@@ -771,6 +777,17 @@ void CMainWindow::updateWindowHeight(bool grow)
     {
         mUi->centralWidget->layout()->activate();
         adjustSize();
+    }
+}
+
+void CMainWindow::updateParameterBoxToolTip(int boxIndex)
+{
+    QComboBox* parameterBox = dynamic_cast<QComboBox*>(QWidget::sender());
+    if (parameterBox)
+    {
+        parameterBox->setToolTip((boxIndex > -1)
+            ? parameterBox->itemData(boxIndex, Qt::ToolTipRole).toString()
+            : "");
     }
 }
 

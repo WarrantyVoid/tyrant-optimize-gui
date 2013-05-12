@@ -58,6 +58,7 @@ protected slots:
     void useOptimizedDeck();
     void switchDecks();
     void updateWindowHeight(bool grow);
+    void updateParameterBoxToolTip(int boxIndex);
 
     // Widget slots
     void processError(QProcess::ProcessError error);
