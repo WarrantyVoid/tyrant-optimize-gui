@@ -3,12 +3,15 @@
 CQuestsXmlParser::CQuestsXmlParser()
 : mIsStepTagActive(false)
 , mIsIdTagActive(false)
+, mIsBattlegroundIdTagActive(false)
 , mIsCommanderTagActive(false)
 , mIsDeckTagActive(false)
 , mIsCardTagActive(false)
 , mCurQuestName("")
+, mCurQuestBattleGroundId(0u)
 , mCurQuestDeck()
 , mIsBattlegroundTagActive(false)
+, mIsBgIdTagActive(false)
 , mIsNameTagActive(false)
 , mIsDescTagActive(false)
 , mIsIconTagActive(false)
@@ -21,13 +24,16 @@ bool CQuestsXmlParser::startDocument()
 {
     mIsStepTagActive = false;
     mIsIdTagActive = false;
+    mIsBattlegroundIdTagActive = false;
     mIsCommanderTagActive = false;
     mIsDeckTagActive = false;
     mIsCardTagActive = false;
     mCurQuestName = "";
+    mCurQuestBattleGroundId = 0u;
     mCurQuestDeck.clear();
 
     mIsBattlegroundTagActive = false;
+    mIsBgIdTagActive = false;
     mIsNameTagActive = false;
     mIsDescTagActive = false;
     mIsIconTagActive = false;
@@ -46,6 +52,10 @@ bool CQuestsXmlParser::startElement(const QString & /*namespaceURI*/, const QStr
         if (qName.compare("id") == 0)
         {
             mIsIdTagActive = true;
+        }
+        else if (qName.compare("battleground_id") == 0)
+        {
+            mIsBattlegroundIdTagActive = true;
         }
         else if (qName.compare("commander") == 0)
         {
@@ -66,7 +76,11 @@ bool CQuestsXmlParser::startElement(const QString & /*namespaceURI*/, const QStr
     }
     else if (mIsBattlegroundTagActive)
     {
-        if (qName.compare("name") == 0)
+        if (qName.compare("id") == 0)
+        {
+            mIsBgIdTagActive = true;
+        }
+        else if (qName.compare("name") == 0)
         {
             mIsNameTagActive = true;
         }
@@ -88,14 +102,19 @@ bool CQuestsXmlParser::endElement(const QString & /*namespaceURI*/, const QStrin
     {
         if (qName.compare("step") == 0)
         {
-            emit questParsed(mCurQuestName, EQuestDeckType, mCurQuestDeck);
+            emit questParsed(mCurQuestName, EQuestDeckType, mCurQuestBattleGroundId, mCurQuestDeck);
             mIsStepTagActive = false;
             mCurQuestName = "";
+            mCurQuestBattleGroundId = 0u;
             mCurQuestDeck.clear();
         }
         else if (qName.compare("id") == 0)
         {
             mIsIdTagActive = false;
+        }
+        else if (qName.compare("battleground_id") == 0)
+        {
+            mIsBattlegroundIdTagActive = false;
         }
         else if (qName.compare("commander") == 0)
         {
@@ -117,6 +136,10 @@ bool CQuestsXmlParser::endElement(const QString & /*namespaceURI*/, const QStrin
             emit battlegroundParsed(mCurBattleground);
             mIsBattlegroundTagActive = false;
             mCurBattleground = CBattleground::INVALID_BATTLEGROUND;
+        }
+        else if (qName.compare("id") == 0)
+        {
+            mIsBgIdTagActive = false;
         }
         else if (qName.compare("name") == 0)
         {
@@ -142,6 +165,11 @@ bool CQuestsXmlParser::characters(const QString & ch)
         {
             mCurQuestName = QString("Step %1").arg(ch);
         }
+        else if (mIsBattlegroundIdTagActive)
+        {
+            bool ok(true);
+            mCurQuestBattleGroundId = ch.toUInt(&ok);
+        }
         else if (mIsCommanderTagActive)
         {
             bool ok(true);
@@ -155,7 +183,12 @@ bool CQuestsXmlParser::characters(const QString & ch)
     }
     else if (mIsBattlegroundTagActive)
     {
-        if (mIsNameTagActive)
+        if (mIsBgIdTagActive)
+        {
+            bool ok(true);
+            mCurBattleground.setId(ch.toUInt(&ok));
+        }
+        else if (mIsNameTagActive)
         {
             mCurBattleground.setName(ch);
         }

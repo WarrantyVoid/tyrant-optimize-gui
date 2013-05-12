@@ -26,7 +26,7 @@ public:
     void clearDecks();    
 
 protected slots:
-    void processDeck(const QString &deckName, EDeckType type, const QList<unsigned int> &deckCards);
+    void processDeck(const QString &deckName, EDeckType type, unsigned int battlegroundId, const QList<unsigned int> &deckCards);
 
 protected:
     void initData();

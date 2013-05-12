@@ -419,12 +419,12 @@ QMimeData *CDeckTable::mimeData(const QModelIndexList &indexes) const
      return mimeData;
  }
 
-void CDeckTable::processDeck(const QString &deckName, EDeckType type, const QList<unsigned int> &deckCards)
+void CDeckTable::processDeck(const QString &deckName, EDeckType type, unsigned int battlegroundId, const QList<unsigned int> &deckCards)
 {
     if (!deckName.isEmpty() && !deckCards.isEmpty())
     {
         CCardTable &cards = CCardTable::getCardTable();
-        CDeck* deck = new CDeck(deckName, type);
+        CDeck* deck = new CDeck(deckName, type, battlegroundId);
         for (QList<unsigned int>::const_iterator i = deckCards.begin(); i != deckCards.end(); ++i)
         {
             const CCard &curCard = cards.getCardForId(*i);
@@ -482,8 +482,8 @@ void CDeckTable::initData()
     {
         CQuestsXmlParser questXmlParser;
         connect(
-            &questXmlParser, SIGNAL(questParsed(const QString&, EDeckType, const QList<unsigned int>&)),
-            this, SLOT(processDeck(const QString&, EDeckType, const QList<unsigned int>&)));
+            &questXmlParser, SIGNAL(questParsed(const QString&, EDeckType, unsigned int, const QList<unsigned int>&)),
+            this, SLOT(processDeck(const QString&, EDeckType, unsigned int, const QList<unsigned int>&)));
 
         QXmlInputSource questXml(&questFile);
         QXmlSimpleReader questReader;
@@ -498,8 +498,8 @@ void CDeckTable::initData()
     {
         CRaidsXmlParser raidXmlParser;
         connect(
-            &raidXmlParser, SIGNAL(raidParsed(const QString&, EDeckType, const QList<unsigned int>&)),
-            this, SLOT(processDeck(const QString&, EDeckType, const QList<unsigned int>&)));
+            &raidXmlParser, SIGNAL(raidParsed(const QString&, EDeckType, unsigned int, const QList<unsigned int>&)),
+            this, SLOT(processDeck(const QString&, EDeckType, unsigned int, const QList<unsigned int>&)));
 
         QXmlInputSource raidXml(&raidFile);
         QXmlSimpleReader raidReader;
@@ -514,8 +514,8 @@ void CDeckTable::initData()
     {
         CMissionsXmlParser missionXmlParser;
         connect(
-            &missionXmlParser, SIGNAL(missionParsed(const QString&, EDeckType, const QList<unsigned int>&)),
-            this, SLOT(processDeck(const QString&, EDeckType, const QList<unsigned int>&)));
+            &missionXmlParser, SIGNAL(missionParsed(const QString&, EDeckType, unsigned int, const QList<unsigned int>&)),
+            this, SLOT(processDeck(const QString&, EDeckType, unsigned int, const QList<unsigned int>&)));
 
         QXmlInputSource missionXml(&missionFile);
         QXmlSimpleReader missionReader;

@@ -30,8 +30,9 @@ public:
     void searchCards(const ICardCheck &search, QList<CCard*> &cards, int maxHits = -1) const;
 
     void updateData();
-    const QList<CBattleground>& getBattlegrounds();
-    const QList<CAchievement>& getAchievements();
+    const CBattleground& getBattlegroundForId(unsigned int id) const;
+    const QList<CBattleground>& getBattlegrounds() const;
+    const QList<CAchievement>& getAchievements() const;
 
 signals:
     void downloadProgress(int numDone, int numDownloads);

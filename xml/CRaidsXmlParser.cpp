@@ -61,7 +61,7 @@ bool CRaidsXmlParser::endElement(const QString & /*namespaceURI*/, const QString
     {
         if (qName.compare("raid") == 0)
         {
-            emit raidParsed(mCurRaidName, ERaidDeckType, mCurRaidDeck);
+            emit raidParsed(mCurRaidName, ERaidDeckType, 0u, mCurRaidDeck);
             mIsRaidTagActive = false;
             mCurRaidName = "";
             mCurRaidDeck.clear();

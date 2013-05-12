@@ -144,12 +144,23 @@ void  CCardTable::updateData()
     }
 }
 
-const QList<CBattleground>& CCardTable::getBattlegrounds()
+const CBattleground& CCardTable::getBattlegroundForId(unsigned int id) const
+{
+    for(QList<CBattleground>::const_iterator i = mBattlegrounds.begin(); i != mBattlegrounds.end(); ++i)
+    {
+        if ((*i).getId() == id)
+        {
+            return *i;
+        }
+    }
+}
+
+const QList<CBattleground>& CCardTable::getBattlegrounds() const
 {
     return mBattlegrounds;
 }
 
-const QList<CAchievement>& CCardTable::getAchievements()
+const QList<CAchievement>& CCardTable::getAchievements() const
 {
     return mAchievements;
 }

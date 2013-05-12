@@ -178,14 +178,14 @@ CMainWindow::CMainWindow(QWidget *parent)
     connect(
         mUi->switchDecksButton, SIGNAL(clicked()),
         this, SLOT(switchDecks()));
-    connect(
-        mUi->deckManagementWidget, SIGNAL(setBaseDeck(const QString &)),
-        mUi->baseDeckEdit, SLOT(setDeckId(const QString &)));
 
     // Enemy deck connections
     connect(
         mUi->enemyDeckEdit->lineEdit(), SIGNAL(textChanged(const QString &)),
         mUi->enemyDeckWidget, SLOT(setDeck(const QString &)));
+    connect(
+        mUi->enemyDeckEdit->lineEdit(), SIGNAL(textChanged(const QString &)),
+        this, SLOT(updateParameterBoxValues(const QString &)));
     connect(
         mUi->enemyDeckWidget, SIGNAL(deckChanged(const QString &)),
         mUi->enemyDeckEdit, SLOT(setDeckId(const QString &)));
@@ -195,9 +195,6 @@ CMainWindow::CMainWindow(QWidget *parent)
     connect(
         mUi->multiEnemyButton, SIGNAL(clicked()),
         mMultiDeckDialog, SLOT(show()));
-    connect(
-        mUi->deckManagementWidget, SIGNAL(setEnemyDeck(const QString &)),
-        mUi->enemyDeckEdit, SLOT(setDeckId(const QString &)));
 
     // Button connections
     connect(
@@ -251,8 +248,8 @@ CMainWindow::CMainWindow(QWidget *parent)
         mOwnedCardsWatcher, SIGNAL(directoryChanged(const QString &)),
         this, SLOT(scanForOwnedCards()));
     connect(
-        mUi->deckManagementWidget, SIGNAL(setBaseOrEnemyDeck(const QString &)),
-        this, SLOT(setActiveEditingDeck(const QString &)));
+        mUi->deckManagementWidget, SIGNAL(setDeck(const QString &,EInputDeckTarget)),
+        this, SLOT(setDeckInput(const QString &,EInputDeckTarget)));
 
     // Process wrapper connections
     connect(
@@ -791,6 +788,20 @@ void CMainWindow::updateParameterBoxToolTip(int boxIndex)
     }
 }
 
+void CMainWindow::updateParameterBoxValues(const QString &deckStr)
+{
+    const CDeck& deck = mDecks.getDeckForName(deckStr);
+    if (deck.isValid() && deck.getType() == EQuestDeckType)
+    {
+        const CBattleground &battleground = mCards.getBattlegroundForId(deck.getBattlegroundId());
+        mUi->battleGroundBox->setCurrentIndex(mUi->battleGroundBox->findText(battleground.getName()));
+    }
+    else
+    {
+        mUi->battleGroundBox->setCurrentIndex(0);
+    }
+}
+
 void CMainWindow::processError(QProcess::ProcessError error)
 {
     QString processName = mProcessWrapper->getProcessExecutable().baseName();
@@ -970,10 +981,16 @@ void CMainWindow::setAnp(float anp)
     }
 }
 
-void CMainWindow::setActiveEditingDeck(const QString &deckStr)
+void CMainWindow::setDeckInput(const QString &deckStr, EInputDeckTarget target)
 {
     CDeckInput *deckInput = 0;
-    getActiveDeckInput(deckInput);
+    switch(target)
+    {
+    case BaseDeckInputTarget: deckInput = mUi->baseDeckEdit; break;
+    case EnemyDeckInputTarget: deckInput = mUi->enemyDeckEdit; break;
+    default:
+    case ActiveDeckInputTarget: getActiveDeckInput(deckInput); break;
+    }
     if (deckInput)
     {
         deckInput->setDeckId(deckStr);

@@ -13,7 +13,7 @@ public:
     CRaidsXmlParser();
 
 signals:
-    void raidParsed(const QString raidName, EDeckType type, const QList<unsigned int> &raidDeck);
+    void raidParsed(const QString raidName, EDeckType type, unsigned int battlegroundId, const QList<unsigned int> &raidDeck);
 
 protected:
     virtual bool startDocument();

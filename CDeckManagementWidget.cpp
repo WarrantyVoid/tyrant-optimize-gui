@@ -19,14 +19,14 @@ CDeckManagementWidget::CDeckManagementWidget(QWidget *parent)
         this, SLOT(updateButtonAvailability()));
     connect(
         mUi->deckTableView, SIGNAL(doubleClicked(const QModelIndex &)),
-        this, SLOT(setSelectedDecks()));
+        this, SLOT(setSelectedDeck()));
 
     connect(
         mUi->deleteDeckButton, SIGNAL(clicked()),
-        this, SLOT(deleteSelectedDecks()));
+        this, SLOT(deleteSelectedDeck()));
     connect(
         mUi->setEnemyDeckButton, SIGNAL(clicked()),
-        this, SLOT(setSelectedEnemyDecks()));
+        this, SLOT(setSelectedEnemyDeck()));
     connect(
         mUi->setBaseDeckButton, SIGNAL(clicked()),
         this, SLOT(setSelectedBaseDeck()));
@@ -74,7 +74,7 @@ void CDeckManagementWidget::updateButtonAvailability()
     mUi->setEnemyDeckButton->setEnabled(setEnemyDeckAllowed);
 }
 
-void CDeckManagementWidget::deleteSelectedDecks()
+void CDeckManagementWidget::deleteSelectedDeck()
 {
     QModelIndexList indexes = mUi->deckTableView->selectionModel()->selectedRows();
     QStringList selectedDecks;
@@ -89,7 +89,7 @@ void CDeckManagementWidget::deleteSelectedDecks()
     }
 }
 
-void CDeckManagementWidget::setSelectedEnemyDecks()
+void CDeckManagementWidget::setSelectedBaseDeck()
 {
     QModelIndexList indexes = mUi->deckTableView->selectionModel()->selectedRows();
     QStringList selectedDecks;
@@ -100,21 +100,26 @@ void CDeckManagementWidget::setSelectedEnemyDecks()
             const CDeck &deck = mDecks.getDeckForIndex(*i);
             selectedDecks.push_back(deck.getName());
         }
-        emit setEnemyDeck(selectedDecks.join(";"));
+        emit setDeck(selectedDecks.join(";"), BaseDeckInputTarget);
     }
 }
 
-void CDeckManagementWidget::setSelectedBaseDeck()
+void CDeckManagementWidget::setSelectedEnemyDeck()
 {
     QModelIndexList indexes = mUi->deckTableView->selectionModel()->selectedRows();
+    QStringList selectedDecks;
     if (!indexes.isEmpty())
     {
-        const CDeck &deck = mDecks.getDeckForIndex(indexes.first());
-        emit setBaseDeck(deck.getName());
+        for (QModelIndexList::const_iterator i = indexes.begin(); i!= indexes.end(); ++i)
+        {
+            const CDeck &deck = mDecks.getDeckForIndex(*i);
+            selectedDecks.push_back(deck.getName());
+        }
+        emit setDeck(selectedDecks.join(";"), EnemyDeckInputTarget);
     }
 }
 
-void CDeckManagementWidget::setSelectedDecks()
+void CDeckManagementWidget::setSelectedDeck()
 {
     QModelIndexList indexes = mUi->deckTableView->selectionModel()->selectedRows();
     QStringList selectedDecks;
@@ -129,16 +134,16 @@ void CDeckManagementWidget::setSelectedDecks()
         {
             if (mUi->setEnemyDeckButton->isEnabled())
             {
-                emit setBaseOrEnemyDeck(selectedDecks.first());
+                emit setDeck(selectedDecks.join(";"), ActiveDeckInputTarget);
             }
             else
             {
-                emit setBaseDeck(selectedDecks.first());
+                emit setDeck(selectedDecks.join(";"), BaseDeckInputTarget);
             }
         }
         else
         {
-            emit setEnemyDeck(selectedDecks.join(";"));
+            emit setDeck(selectedDecks.join(";"), EnemyDeckInputTarget);
         }
     }
 }

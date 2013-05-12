@@ -61,7 +61,7 @@ bool CMissionsXmlParser::endElement(const QString & /*namespaceURI*/, const QStr
     {
         if (qName.compare("mission") == 0)
         {
-            emit missionParsed(mCurMissionName, EMissionDeckType, mCurMissionDeck);
+            emit missionParsed(mCurMissionName, EMissionDeckType, 0u,  mCurMissionDeck);
             mIsMissionTagActive = false;
             mCurMissionName = "";
             mCurMissionDeck.clear();

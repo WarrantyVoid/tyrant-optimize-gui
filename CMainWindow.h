@@ -14,6 +14,7 @@
 #include "CDeckInput.h"
 #include "CCardFilterWidget.h"
 #include "CMultiDeckWidget.h"
+#include "CDeckManagementWidget.h"
 
 namespace Ui
 {
@@ -59,6 +60,7 @@ protected slots:
     void switchDecks();
     void updateWindowHeight(bool grow);
     void updateParameterBoxToolTip(int boxIndex);
+    void updateParameterBoxValues(const QString &deckStr);
 
     // Widget slots
     void processError(QProcess::ProcessError error);
@@ -75,7 +77,7 @@ protected slots:
     // Process slots
     void setWinChance(float winChance);
     void setAnp(float anp);
-    void setActiveEditingDeck(const QString &deckStr);
+    void setDeckInput(const QString &deckStr, EInputDeckTarget target);
     void setResultDeckButtonAvailability(const QString &deckHash);
 
 private:

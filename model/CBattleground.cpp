@@ -3,10 +3,16 @@
 const CBattleground CBattleground::INVALID_BATTLEGROUND;
 
 CBattleground::CBattleground()
-: mName("")
+: mId(0u)
+, mName("")
 , mDescription("")
 , mPicture("")
 {
+}
+
+void CBattleground::setId(unsigned int id)
+{
+    mId = id;
 }
 
 void CBattleground::setName(const QString &name)
@@ -22,6 +28,11 @@ void CBattleground::setDescription(const QString &description)
 void CBattleground::setPicture(const QString &picture)
 {
     mPicture = picture;
+}
+
+unsigned int CBattleground::getId() const
+{
+    return mId;
 }
 
 QString CBattleground::getName() const
@@ -41,5 +52,5 @@ QString CBattleground::getPicture() const
 
 bool CBattleground::isValid() const
 {
-    return !mName.isEmpty() && !mDescription.isEmpty() && !mPicture.isEmpty();
+    return mId > 0 && !mName.isEmpty() && !mDescription.isEmpty() && !mPicture.isEmpty();
 }

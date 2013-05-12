@@ -9,10 +9,12 @@ public:
     CBattleground();
 
 public:
+    void setId(unsigned int id);
     void setName(const QString &name);
     void setDescription(const QString &description);
     void setPicture(const QString &picture);
 
+    unsigned int getId() const;
     QString getName() const;
     QString getDescription() const;
     QString getPicture() const;
@@ -23,6 +25,7 @@ public:
     static const CBattleground INVALID_BATTLEGROUND;
 
 private:
+    unsigned int mId;
     QString mName;
     QString mDescription;
     QString mPicture;

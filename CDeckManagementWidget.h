@@ -25,6 +25,13 @@ class CDeckIconDelegate : public QStyledItemDelegate
     }
 };
 
+enum EInputDeckTarget
+{
+    BaseDeckInputTarget,
+    EnemyDeckInputTarget,
+    ActiveDeckInputTarget
+};
+
 class CDeckManagementWidget : public QWidget
 {
     Q_OBJECT
@@ -34,18 +41,16 @@ public:
     ~CDeckManagementWidget();
 
 signals:
-    void setBaseOrEnemyDeck(const QString &deckStr);
-    void setBaseDeck(const QString &deckStr);
-    void setEnemyDeck(const QString &deckStr);
+    void setDeck(const QString &deckStr, EInputDeckTarget target);
 
 public slots:
     void updateButtonAvailability();
 
 private slots:
-    void deleteSelectedDecks();
-    void setSelectedEnemyDecks();
+    void deleteSelectedDeck();
     void setSelectedBaseDeck();
-    void setSelectedDecks();
+    void setSelectedEnemyDeck();
+    void setSelectedDeck();
     
 private:
     Ui::DeckManagementWidget *mUi;
