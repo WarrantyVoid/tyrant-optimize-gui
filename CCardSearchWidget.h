@@ -3,6 +3,7 @@
 
 #include <QWidget>
 #include <QGraphicsScene>
+#include <QComboBox>
 #include <QList>
 #include "model/CCardTable.h"
 #include "CCardSearchParameters.h"
@@ -34,6 +35,9 @@ protected:
     virtual void showEvent(QShowEvent *event);
     virtual void resizeEvent(QResizeEvent *event);
     virtual bool eventFilter(QObject *obj, QEvent *e);
+
+private:
+    void updateBoxHistory(QComboBox* box);
     
 private:
     static const int NUM_RESULT_WIDGETS;

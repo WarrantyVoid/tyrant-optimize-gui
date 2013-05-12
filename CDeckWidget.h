@@ -42,6 +42,7 @@ protected slots:
 private:
     Ui::DeckWidget *mUi;
     CDeckTable &mDecks;
+    bool mIsLocked;
 
     // @todo make this member useful
     mutable CDeck mDeck;

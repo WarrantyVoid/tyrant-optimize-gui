@@ -3,6 +3,7 @@
 #include "model/CCardTable.h"
 #include "CCardLabel.h"
 #include <QGraphicsProxyWidget>
+#include <QLineEdit>
 
 const int CCardSearchWidget::NUM_RESULT_WIDGETS = 50;
 
@@ -188,13 +189,36 @@ bool CCardSearchWidget::eventFilter(QObject *obj, QEvent *e)
             if (card.isValid())
             {
                 emit cardSelected(card.getId());
+                updateBoxHistory(mUi->nameBox);
+                updateBoxHistory(mUi->skillBox);
             }
             return true;
+        }
+        case QEvent::DragEnter:
+        {
+            updateBoxHistory(mUi->nameBox);
+            updateBoxHistory(mUi->skillBox);
+             return QObject::eventFilter(obj, e);
         }
         default:
         {
             // standard event processing
             return QObject::eventFilter(obj, e);
+        }
+    }
+}
+
+void CCardSearchWidget::updateBoxHistory(QComboBox* box)
+{
+    if (box && box->lineEdit())
+    {
+        QString deckStr = box->lineEdit()->text();
+        if (!deckStr.isEmpty())
+        {
+            if (box->count() == 0 || box->itemText(0).compare(deckStr) != 0)
+            {
+                box->insertItem(0, box->lineEdit()->text());
+            }
         }
     }
 }
