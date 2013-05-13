@@ -6,38 +6,74 @@ CCardFilter::CCardFilter()
 {
 }
 
-int CCardFilter::updateOwnedCards(const QString &cardsStr, const QString &cardsPath)
+SOwnedCardStatistics CCardFilter::writeOwnedCardsToFile(const QString &filePath, const QList<TOwnedCard> &cards)
 {
-    int numOwned = 0;
-    QList<TOwnedCard> ownedCards;
-    if (!cardsStr.isEmpty() && cardsStr.length() < 1024 * 1024)
+    SOwnedCardStatistics stats;
+    stats.numCards = 0;
+    stats.numCopies = 0;
+    if (!cards.isEmpty())
     {
-        QStringList cardsSplit = cardsStr.split("\n");
+        QFile file(filePath);
+        if (file.open(QIODevice::WriteOnly | QIODevice::Truncate))
+        {
+            QTextStream outStream(&file);
+            for (QList<TOwnedCard>::const_iterator i = cards.begin(); i != cards.end(); ++i)
+            {
+                writeOwnedCard(outStream, *i);
+                ++stats.numCards;
+                stats.numCopies += (*i).second;
+            }
+        }
+    }
+    return stats;
+}
+
+SOwnedCardStatistics CCardFilter::readOwnedCardsFromFile(const QString &filePath, QList<TOwnedCard> &cards)
+{
+    SOwnedCardStatistics stats;
+    stats.numCards = 0;
+    stats.numCopies = 0;
+    cards.clear();
+    QFile file(filePath);
+    if (file.open(QIODevice::ReadOnly))
+    {
+        while (!file.atEnd())
+        {
+            QString curCardStr(file.readLine());
+            TOwnedCard curOwned;
+            if (readOwnedCard(curCardStr, curOwned))
+            {
+                cards.push_back(curOwned);
+                ++stats.numCards;
+                stats.numCopies += curOwned.second;
+            }
+        }
+    }
+    return stats;
+}
+
+SOwnedCardStatistics CCardFilter::readOwnedCardsFromClipboard(const QString &clipboardStr, QList<TOwnedCard> &cards)
+{
+    SOwnedCardStatistics stats;
+    stats.numCards = 0;
+    stats.numCopies = 0;
+    cards.clear();
+    if (!clipboardStr.isEmpty() && clipboardStr.length() < 1024 * 1024)
+    {
+        QStringList cardsSplit = clipboardStr.split("\n");
         for (QStringList::const_iterator i = cardsSplit.begin(); i != cardsSplit.end(); ++i)
         {
             const QString &curCardStr = *i;
             TOwnedCard curOwned;
             if (readOwnedCard(curCardStr, curOwned))
             {
-                ownedCards.push_back(curOwned);
+                cards.push_back(curOwned);
+                ++stats.numCards;
+                stats.numCopies += curOwned.second;
             }
         }
     }
-
-    if (!ownedCards.isEmpty())
-    {
-        QFile outputFile(cardsPath);
-        if (outputFile.open(QIODevice::WriteOnly | QIODevice::Truncate))
-        {
-            QTextStream outStream(&outputFile);
-            for (QList<TOwnedCard>::const_iterator i = ownedCards.begin(); i != ownedCards.end(); ++i)
-            {
-                numOwned += (*i).second;
-                writeOwnedCard(outStream, *i);
-            }
-        }
-    }
-    return numOwned;
+    return stats;
 }
 
 void CCardFilter::execute(const QString &inputFilePath, const QString &outputFilePath, const CCardFilterParameters &parameters)

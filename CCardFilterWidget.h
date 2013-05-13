@@ -26,10 +26,10 @@ public:
 
 signals:
     void filterUpdated(bool accepted);
-    void ownedCardsUpdated(int numCards);
+    void ownedCardsUpdated(const QStringList &result);
 
 public slots:
-    void updateOwnedCards();
+    void updateOwnedCardsFile(const QString &fileName);
     void setOwnedCardsFile(const QString &fileName);
 
 protected slots:

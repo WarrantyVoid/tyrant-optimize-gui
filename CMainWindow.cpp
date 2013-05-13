@@ -12,7 +12,7 @@
 #include <QHelpEvent>
 #include <QClipboard>
 
-const QString CMainWindow::VERSION = "1.1.0";
+const QString CMainWindow::VERSION = "1.1.1";
 
 CMainWindow::CMainWindow(QWidget *parent)
 : QMainWindow(parent)
@@ -157,7 +157,7 @@ CMainWindow::CMainWindow(QWidget *parent)
         mFilterDialog, SLOT(show()));
     connect(
         mUi->updateOwnedCardsAction, SIGNAL(triggered(bool)),
-        mFilterWidget, SLOT(updateOwnedCards()));
+        this, SLOT(updateOwnedCards()));
     connect(
         mUi->updateXmlAction, SIGNAL(triggered(bool)),
         this, SLOT(updateXmlData()));
@@ -233,8 +233,8 @@ CMainWindow::CMainWindow(QWidget *parent)
         &mCards, SIGNAL(dataUpdated(const QStringList&)),
         this, SLOT(dataUpdated(const QStringList&)));
     connect(
-        mFilterWidget, SIGNAL(ownedCardsUpdated(int)),
-        this, SLOT(ownedCardsUpdated(int)));
+        mFilterWidget, SIGNAL(ownedCardsUpdated(const QStringList &)),
+        this, SLOT(ownedCardsUpdated(const QStringList &)));
     connect(
         mFilterWidget, SIGNAL(filterUpdated(bool)),
         mFilterDialog, SLOT(hide()));    
@@ -584,6 +584,11 @@ void CMainWindow::updateXmlData()
     mCards.updateData();
 }
 
+void CMainWindow::updateOwnedCards()
+{
+    mFilterWidget->updateOwnedCardsFile(mUi->ownedCardsFileBox->currentText());
+}
+
 void CMainWindow::displayAboutMessage()
 {
     QMessageBox::about(this, "About..", QString("%1\nVersion: %2\nAuthor: warranty_void").arg(windowTitle()).arg(CMainWindow::VERSION));
@@ -888,18 +893,9 @@ void CMainWindow::dataUpdated(const QStringList &result)
     QMessageBox::information(this, "xml update result", result.join("\n"));
 }
 
-void CMainWindow::ownedCardsUpdated(int numCards)
+void CMainWindow::ownedCardsUpdated(const QStringList &result)
 {
-    QString msg;
-    if (numCards > 0)
-    {
-        msg = QString("Updated 'ownedcards.txt' from clipboard, new #cards=%1").arg(numCards);
-    }
-    else
-    {
-        msg = "Could not update 'ownedcards.txt' from clipboard. Please copy card export string from fansite into clipboard first.";
-    }
-    QMessageBox::information(this, "owned cards update result", msg);
+    QMessageBox::information(this, "owned cards update result", result.join("\n"));
 }
 
 void CMainWindow::setOwnedCardsWatchingEnabled(bool enabled)

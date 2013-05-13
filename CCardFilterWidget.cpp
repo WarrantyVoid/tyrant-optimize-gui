@@ -74,21 +74,37 @@ bool CCardFilterWidget::hasOwnedCardsChanged(const QString &fileName) const
     return true;
 }
 
-void CCardFilterWidget::updateOwnedCards()
+void CCardFilterWidget::updateOwnedCardsFile(const QString &fileName)
 {
     QClipboard* clip =  QApplication::clipboard();
-    QString cardStr = clip->text();
-
     const CPathManager &pm = CPathManager::getPathManager();
-    QString input = pm.getToolPath() + mOwnedCardsFile;
-    QString output = pm.getToolPath() + "ownedcards_f.txt";
+    mOwnedCardsFile = fileName;
+    QString filePath = pm.getToolPath() + mOwnedCardsFile;
     CCardFilter filter;
-    int numCards = filter.updateOwnedCards(cardStr, input);
-    if (numCards > 0)
+    QList<TOwnedCard> ownedCards;
+    SOwnedCardStatistics oldStats = filter.readOwnedCardsFromFile(filePath, ownedCards);
+    SOwnedCardStatistics newStats = filter.readOwnedCardsFromClipboard(clip->text(), ownedCards);
+    if (newStats.numCards > 0)
     {
-        filter.execute(input, output, mParameters);
+        newStats = filter.writeOwnedCardsToFile(filePath, ownedCards);
     }
-    emit ownedCardsUpdated(numCards);
+
+    QStringList updateResult;
+    if (newStats.numCards > 0)
+    {
+        updateResult << "<p>Updated 'ownedcards.txt' from clipboard:</p>";
+        updateResult << "<table>";
+        updateResult << QString("<tr><td>#Cards:</td><td>%1</td><td>-></td><td>%2</td></tr>")
+                        .arg(oldStats.numCards).arg(newStats.numCards);
+        updateResult << QString("<tr><td>#Copies:</td><td>%1</td><td>-></td><td>%2</td></tr>")
+                        .arg(oldStats.numCopies).arg(newStats.numCopies);
+        updateResult.append("</table>");
+    }
+    else
+    {
+         updateResult << "Could not update 'ownedcards.txt' from clipboard. Please copy card export string from fansite into clipboard first.";
+    }
+    emit ownedCardsUpdated(updateResult);
 }
 
 void CCardFilterWidget::setOwnedCardsFile(const QString &fileName)

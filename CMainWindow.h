@@ -49,6 +49,7 @@ protected slots:
 	void saveParameterSettings();
     void toggleAlwaysOnTop(bool checked);
     void updateXmlData();
+    void updateOwnedCards();
     void displayAboutMessage();
 
     // Button slots
@@ -69,7 +70,7 @@ protected slots:
     void processStarted();
     void downloadProgress(int numDone, int numDownloads);
     void dataUpdated(const QStringList &result);
-    void ownedCardsUpdated(int numCards);
+    void ownedCardsUpdated(const QStringList &result);
     void setOwnedCardsWatchingEnabled(bool enabled);
     void scanForOwnedCards();
     void addCard(unsigned int cardId);
