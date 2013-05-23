@@ -48,6 +48,7 @@ enum ECardSet
     ETerminusSet = 9,
     EOccupationSet = 10,
     EWorldshipSet = 11,
+    EFlashpointSet = 12,
     EStandardSet = 1000,
     ERewardSet = 5000,
     EPromotionalSet = 5001,

@@ -93,6 +93,7 @@
         <file>tyrant/SplitSkillIcon.png</file>
         <file>tyrant/StunSkillIcon.png</file>
         <file>tyrant/SummonSkillIcon.png</file>
+        <file>tyrant/SunderSkillIcon.png</file>
         <file>tyrant/SupplySkillIcon.png</file>
         <file>tyrant/SwipeSkillIcon.png</file>
         <file>tyrant/TributeSkillIcon.png</file>
@@ -131,6 +132,7 @@
         <file>tyrant/AftermathSetIcon.png</file>
         <file>tyrant/WorldshipSetIcon.png</file>
         <file>tyrant/AwakeningSetIcon.png</file>
+        <file>tyrant/FlashpointSetIcon.png</file>
         <file>tyrant/OccupationPackIcon.png</file>
         <file>tyrant/TerminusSetIcon.png</file>
         <file>tyrant/UpgradedSetIcon.png</file>

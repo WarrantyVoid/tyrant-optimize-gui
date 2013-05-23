@@ -28,7 +28,7 @@ public:
 
 private:
     static const int NUM_RARITY = 4;
-    static const int NUM_SET = 15;
+    static const int NUM_SET = 16;
 
 private:
     CCardTable &mCards;

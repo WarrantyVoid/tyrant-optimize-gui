@@ -34,9 +34,9 @@ CCardFilterParameters::CCardFilterParameters()
     mComplement[1] = 3;
     mComplement[2] = 3;
     mComplement[3] = 3;
-    mComplement[12] = 3;
     mComplement[13] = 3;
     mComplement[14] = 3;
+    mComplement[15] = 3;
 }
 
 void CCardFilterParameters::fetchFromUi(const Ui::CardFilterWidget &ui)
@@ -78,9 +78,10 @@ void CCardFilterParameters::fetchFromUi(const Ui::CardFilterWidget &ui)
     mComplement[9] = ui.terminusSpinBox->value();
     mComplement[10] = ui.occupationSpinBox->value();
     mComplement[11] = ui.worldShipSpinBox->value();
-    mComplement[12] = ui.rewardSpinBox->value();
-    mComplement[13] = ui.promotionalSpinBox->value();
-    mComplement[14] = ui.upgradedSpinBox->value();
+    mComplement[12] = ui.flashPointSpinBox->value();
+    mComplement[13] = ui.rewardSpinBox->value();
+    mComplement[14] = ui.promotionalSpinBox->value();
+    mComplement[15] = ui.upgradedSpinBox->value();
 
     mWhiteList.clear();
     QStringList whiteList = ui.whiteListEdit->toPlainText().split("\n", QString::SkipEmptyParts);
@@ -185,9 +186,10 @@ void CCardFilterParameters::updateUi(Ui::CardFilterWidget &ui) const
     ui.terminusSpinBox->setValue(mComplement[9]);
     ui.occupationSpinBox->setValue(mComplement[10]);
     ui.worldShipSpinBox->setValue(mComplement[11]);
-    ui.rewardSpinBox->setValue(mComplement[12]);
-    ui.promotionalSpinBox->setValue(mComplement[13]);
-    ui.upgradedSpinBox->setValue(mComplement[14]);
+    ui.flashPointSpinBox->setValue(mComplement[12]);
+    ui.rewardSpinBox->setValue(mComplement[13]);
+    ui.promotionalSpinBox->setValue(mComplement[14]);
+    ui.upgradedSpinBox->setValue(mComplement[15]);
 
     ui.filterOptionsBox->setChecked(mIsFilterOptionEnabled);
     ui.whiteListBox->setChecked(mIsWhiteListEnabled);
@@ -277,9 +279,10 @@ void CCardFilterParameters::fetchFromSettings(QSettings &settings)
     mComplement[9] = settings.value("terminusSetComplement", mComplement[9]).toInt();
     mComplement[10] = settings.value("occupationSetComplement", mComplement[10]).toInt();
     mComplement[11] = settings.value("worldshipSetComplement", mComplement[11]).toInt();
-    mComplement[12] = settings.value("rewardSetComplement", mComplement[12]).toInt();
-    mComplement[13] = settings.value("promotionalSetComplement", mComplement[13]).toInt();
-    mComplement[14] = settings.value("upgradedSetComplement", mComplement[14]).toInt();
+    mComplement[12] = settings.value("flashpointSetComplement", mComplement[12]).toInt();
+    mComplement[13] = settings.value("rewardSetComplement", mComplement[13]).toInt();
+    mComplement[14] = settings.value("promotionalSetComplement", mComplement[14]).toInt();
+    mComplement[15] = settings.value("upgradedSetComplement", mComplement[15]).toInt();
 
 
     mIsFilterOptionEnabled = settings.value("isFilterOptionEnabled", mIsFilterOptionEnabled).toBool();
@@ -345,9 +348,10 @@ void CCardFilterParameters::updateSettings(QSettings &settings) const
     settings.setValue("terminusSetComplement", mComplement[9]);
     settings.setValue("occupationSetComplement", mComplement[10]);
     settings.setValue("worldshipSetComplement", mComplement[11]);
-    settings.setValue("rewardSetComplement", mComplement[12]);
-    settings.setValue("promotionalSetComplement", mComplement[13]);
-    settings.setValue("upgradedSetComplement", mComplement[14]);
+    settings.setValue("flashpointSetComplement", mComplement[12]);
+    settings.setValue("rewardSetComplement", mComplement[13]);
+    settings.setValue("promotionalSetComplement", mComplement[14]);
+    settings.setValue("upgradedSetComplement", mComplement[15]);
 
     settings.setValue("isFilterOptionEnabled", mIsFilterOptionEnabled);
     settings.setValue("isWhiteListEnabled", mIsWhiteListEnabled);
@@ -374,10 +378,11 @@ bool CCardFilterParameters::checkCard(const CCard &card, int &num) const
         case ETerminusSet: num = qMax(num, mComplement[9]); break;
         case EOccupationSet: num = qMax(num, mComplement[10]); break;
         case EWorldshipSet: num = qMax(num, mComplement[11]); break;
+        case EFlashpointSet: num = qMax(num, mComplement[12]); break;
         case EStandardSet: num = qMax(num, mComplement[0]); break;
-        case ERewardSet: num = qMax(num, mComplement[12]); break;
-        case EPromotionalSet: num = qMax(num, mComplement[13]); break;
-        case EUpgradedSet: num = qMax(num, mComplement[14]); break;
+        case ERewardSet: num = qMax(num, mComplement[13]); break;
+        case EPromotionalSet: num = qMax(num, mComplement[14]); break;
+        case EUpgradedSet: num = qMax(num, mComplement[15]); break;
         default: break;
         }
     }
