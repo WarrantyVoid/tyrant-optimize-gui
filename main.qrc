@@ -6,6 +6,7 @@
         <file>common.png</file>
         <file>hash.png</file>
         <file>legendary.png</file>
+        <file>locked.png</file>
         <file>multi.png</file>
         <file>rare.png</file>
         <file>save.png</file>
@@ -13,6 +14,7 @@
         <file>search.png</file>
         <file>uncommon.png</file>
         <file>unique.png</file>
+        <file>unlocked.png</file>
         <file>use.png</file>
         <file>view.png</file>
         <file>tyrant/ActionGoldIcon.png</file>

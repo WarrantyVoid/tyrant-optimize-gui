@@ -543,38 +543,6 @@
            </property>
           </widget>
          </item>
-         <item row="1" column="1">
-          <widget class="QCheckBox" name="cardCountLockBox">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-           <property name="toolTip">
-            <string>Locks number of cards in place during optimization</string>
-           </property>
-           <property name="text">
-            <string>Lock card count</string>
-           </property>
-          </widget>
-         </item>
-         <item row="0" column="1">
-          <widget class="QCheckBox" name="commanderLockBox">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-           <property name="toolTip">
-            <string>Locks commander card in place during optimization</string>
-           </property>
-           <property name="text">
-            <string>Lock commander</string>
-           </property>
-          </widget>
-         </item>
          <item row="0" column="2">
           <widget class="QCheckBox" name="orderedBaseBox">
            <property name="sizePolicy">
@@ -621,6 +589,76 @@
            <property name="text">
             <string>Opt ANP</string>
            </property>
+          </widget>
+         </item>
+         <item row="0" column="1">
+          <widget class="QCheckBox" name="cardCountLockBox">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="toolTip">
+            <string>Locks number of cards in place during optimization to the range specified below</string>
+           </property>
+           <property name="text">
+            <string>Lock card count:</string>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="1">
+          <widget class="QWidget" name="widget" native="true">
+           <layout class="QHBoxLayout" name="horizontalLayout_4">
+            <property name="margin">
+             <number>0</number>
+            </property>
+            <item>
+             <widget class="QSpinBox" name="minCardCountLockBox">
+              <property name="enabled">
+               <bool>false</bool>
+              </property>
+              <property name="minimumSize">
+               <size>
+                <width>24</width>
+                <height>0</height>
+               </size>
+              </property>
+              <property name="minimum">
+               <number>1</number>
+              </property>
+              <property name="maximum">
+               <number>10</number>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QLabel" name="label">
+              <property name="text">
+               <string>to</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QSpinBox" name="maxCardCountLockBox">
+              <property name="enabled">
+               <bool>false</bool>
+              </property>
+              <property name="minimumSize">
+               <size>
+                <width>24</width>
+                <height>0</height>
+               </size>
+              </property>
+              <property name="minimum">
+               <number>1</number>
+              </property>
+              <property name="maximum">
+               <number>10</number>
+              </property>
+             </widget>
+            </item>
+           </layout>
           </widget>
          </item>
         </layout>
@@ -919,6 +957,11 @@
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>
   <customwidget>
+   <class>CDeckInput</class>
+   <extends>QComboBox</extends>
+   <header>CDeckInput.h</header>
+  </customwidget>
+  <customwidget>
    <class>CDeckWidget</class>
    <extends>QWidget</extends>
    <header>CDeckWidget.h</header>
@@ -936,11 +979,6 @@
    <header>CDeckManagementWidget.h</header>
    <container>1</container>
   </customwidget>
-  <customwidget>
-   <class>CDeckInput</class>
-   <extends>QComboBox</extends>
-   <header>CDeckInput.h</header>
-  </customwidget>
  </customwidgets>
  <resources>
   <include location="main.qrc"/>
@@ -953,7 +991,7 @@
    <slot>setVisible(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>368</x>
+     <x>748</x>
      <y>78</y>
     </hint>
     <hint type="destinationlabel">
@@ -969,7 +1007,7 @@
    <slot>setVisible(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>368</x>
+     <x>748</x>
      <y>128</y>
     </hint>
     <hint type="destinationlabel">
@@ -985,12 +1023,44 @@
    <slot>setEnabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>305</x>
-     <y>216</y>
+     <x>739</x>
+     <y>224</y>
     </hint>
     <hint type="destinationlabel">
-     <x>387</x>
-     <y>217</y>
+     <x>739</x>
+     <y>250</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>cardCountLockBox</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>minCardCountLockBox</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>411</x>
+     <y>222</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>404</x>
+     <y>240</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>cardCountLockBox</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>maxCardCountLockBox</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>435</x>
+     <y>219</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>457</x>
+     <y>240</y>
     </hint>
    </hints>
   </connection>

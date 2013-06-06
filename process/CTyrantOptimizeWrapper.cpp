@@ -33,14 +33,19 @@ void CTyrantOptimizeWrapper::getCommandLineParameters(const CProcessParameters &
     {
         comLineParams << "-a";
     }
-    if (guiParams.lockCommander())
-    {
-        comLineParams << "-c";
-    }
     if (guiParams.lockCardCount())
     {
-        comLineParams << "-fixedlen";
+    //    comLineParams << "-fixedlen";
+        if (guiParams.lockCardCountMin() > 1)
+        {
+            comLineParams << "minlen" << QString("%1").arg(guiParams.lockCardCountMin());
+        }
+        if (guiParams.lockCardCountMax() < 10)
+        {
+            comLineParams << "maxlen" << QString("%1").arg(guiParams.lockCardCountMax());
+        }
     }
+
     if (guiParams.ownedCardsOnly())
     {
         if (QFileInfo(pm.getToolPath() + "ownedcards_f.txt").exists())

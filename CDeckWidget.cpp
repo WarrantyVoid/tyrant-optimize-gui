@@ -45,6 +45,39 @@ void CDeckWidget::setDropEnabled(bool enabled)
     }
 }
 
+void CDeckWidget::setLockEnabled(bool enabled)
+{
+    mUi->commanderLabel->setLockEnabled(enabled);
+    for(int i = 0; i < 10; ++i)
+    {
+        QString widgetName = QString("unit%1Label").arg(i, 2, 10, QChar('0'));
+        CCardLabel* widget = findChild<CCardLabel*>(widgetName);
+        if (widget)
+        {
+            widget->setLockEnabled(enabled);
+        }
+    }
+}
+
+void  CDeckWidget::setLocked(int slot, bool locked)
+{
+    CCardLabel* widget = getLabelForSlot(slot);
+    if (widget)
+    {
+        widget->setLocked(locked);
+    }
+}
+
+bool  CDeckWidget::isLocked(int slot) const
+{
+    CCardLabel* widget = getLabelForSlot(slot);
+    if (widget)
+    {
+        return widget->isLocked();
+    }
+    return false;
+}
+
 void CDeckWidget::setWinLabel(const QString &text)
 {
     if (!mIsLocked)
@@ -79,19 +112,7 @@ void CDeckWidget::setUnit(int slot, const CCard &unit)
 {
     if (!mIsLocked)
     {
-        CCardLabel* widget = 0;
-        if (slot == -1)
-        {
-            // Commander slot
-            widget = mUi->commanderLabel;
-        }
-        else if (slot > -1 && slot < 10)
-        {
-            // Assault/Action slot
-            QString widgetName = QString("unit%1Label").arg(slot, 2, 10, QChar('0'));
-            widget = findChild<CCardLabel*>(widgetName);
-        }
-
+        CCardLabel* widget = getLabelForSlot(slot);
         if (widget)
         {
             widget->setCard(unit);
@@ -217,5 +238,22 @@ void CDeckWidget::updateDeck()
         emit deckChanged(deckId);
         mIsLocked = false;
     }
+}
+
+CCardLabel* CDeckWidget::getLabelForSlot(int slot) const
+{
+    CCardLabel* widget = 0;
+    if (slot == -1)
+    {
+        // Commander slot
+        widget = mUi->commanderLabel;
+    }
+    else if (slot > -1 && slot < 10)
+    {
+        // Assault/Action slot
+        QString widgetName = QString("unit%1Label").arg(slot, 2, 10, QChar('0'));
+        widget = findChild<CCardLabel*>(widgetName);
+    }
+    return widget;
 }
 

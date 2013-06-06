@@ -21,7 +21,11 @@ public:
     explicit CDeckWidget(QWidget *parent = 0);
 
 public:
-    void setDropEnabled(bool enabled);
+    void setLockEnabled(bool enabled);
+    void setLocked(int slot, bool locked);
+    bool isLocked(int slot) const;
+
+    void setDropEnabled(bool enabled);    
     void setWinLabel(const QString &text);
     void setWinLabel(const QPixmap &pixmap);
     void setDefaultUnits();
@@ -38,6 +42,9 @@ public slots:
 
 protected slots:
     void updateDeck();
+
+private:
+    CCardLabel* getLabelForSlot(int slot) const;
 
 private:
     Ui::DeckWidget *mUi;

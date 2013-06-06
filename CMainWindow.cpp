@@ -12,7 +12,7 @@
 #include <QHelpEvent>
 #include <QClipboard>
 
-const QString CMainWindow::VERSION = "1.1.1";
+const QString CMainWindow::VERSION = "1.1.2";
 
 CMainWindow::CMainWindow(QWidget *parent)
 : QMainWindow(parent)
@@ -84,6 +84,8 @@ CMainWindow::CMainWindow(QWidget *parent)
     connect(
         mUi->ownedCardsBox, SIGNAL(toggled(bool)),
         this, SLOT(setOwnedCardsWatchingEnabled(bool)));
+
+    mUi->baseDeckWidget->setLockEnabled(true);
     loadDefaultSettings();
 
     // Base deck view setup
@@ -91,7 +93,7 @@ CMainWindow::CMainWindow(QWidget *parent)
     getInputDeck(mUi->baseDeckEdit, baseDeck);    
     mUi->baseDeckWidget->setVisible(mUi->displayBaseButton->isChecked());
     mUi->baseDeckWidget->setDeck(baseDeck);
-    mUi->baseDeckWidget->setWinLabel(QPixmap(":/img/trash.png"));
+    mUi->baseDeckWidget->setWinLabel(QPixmap(":/img/trash.png"));        
     mUi->baseDeckWidget->setDropEnabled(true);
 
     // Enemy deck view setup
@@ -102,7 +104,6 @@ CMainWindow::CMainWindow(QWidget *parent)
     mUi->enemyDeckWidget->setWinLabel(QPixmap(":/img/trash.png"));
     mUi->enemyDeckWidget->setDropEnabled(true);
     adjustSize();
-
 
     // Status bar setup
     mUi->statusBar->addWidget(mProcessStatusLabel);

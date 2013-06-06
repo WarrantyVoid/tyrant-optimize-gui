@@ -10,8 +10,44 @@ CCardLabel::CCardLabel(QWidget *parent)
 , mCards(CCardTable::getCardTable())
 , mTitleIcon()
 , mLastLeftClickPos(0)
+, mLockButton(0)
 {
-    setScaledContents(true);
+    setScaledContents(true);   
+}
+
+void CCardLabel::setLockEnabled(bool enabled)
+{
+    if (enabled && mLockButton == 0)
+    {
+        mLockButton = new QPushButton(this);
+
+        QIcon icon;
+        icon.addPixmap(QPixmap(":/img/unlocked.png"), QIcon::Normal, QIcon::Off);
+        icon.addPixmap(QPixmap(":/img/locked.png"), QIcon::Normal, QIcon::On);
+        mLockButton->setIcon(icon);
+        mLockButton->setCheckable(true);
+        mLockButton->setVisible(false);
+    }
+    else if (mLockButton != 0)
+    {
+        delete mLockButton;
+        mLockButton = 0;
+    }
+    setMouseTracking(enabled);
+}
+
+void CCardLabel::setLocked(bool locked)
+{
+    if (mLockButton)
+    {
+        mLockButton->setChecked(locked);
+        mLockButton->setVisible(locked);
+    }
+}
+
+bool CCardLabel::isLocked() const
+{
+    return mLockButton && mLockButton->isChecked();
 }
 
 void CCardLabel::setCard(const CCard& card)
@@ -122,21 +158,27 @@ const CCard& CCardLabel::getCard() const
 
 void CCardLabel::paintEvent(QPaintEvent *ev)
 {
-    QLabel::paintEvent(ev);    
+    int dx = int(width() / 32.0 + 0.5);        // horizonal border
+    int dy = int(height() / 110.0 + 0.5);      // vertical border
+    int w = width() - dx * 2;                  // width (without border)
+    int h = height() - dy * 2;                 // height (without border)
+    int title = int(height() / 9.167 + 0.5);   // title height
+    int stat = int(height() / 11.0 + 0.5);     // stat size
+    int dySkill = int(height() / 1.447 + 0.5); // skill offset (y)
+    int skill = 16;                            // skill size
+    int delay = 20;
+
+    if (mLockButton)
+    {
+        mLockButton->setGeometry(QRect(dx + 2, title + 2, 24, 24));
+    }
+
+    QLabel::paintEvent(ev);
 
     if (mCard.isValid())
     {
         const CPathManager &pm = CPathManager::getPathManager();
         QPainter painter(this);
-        int dx = int(width() / 32.0 + 0.5);        // horizonal border
-        int dy = int(height() / 110.0 + 0.5);      // vertical border
-        int w = width() - dx * 2;                  // width (without border)
-        int h = height() - dy * 2;                 // height (without border)
-        int title = int(height() / 9.167 + 0.5);   // title height
-        int stat = int(height() / 11.0 + 0.5);     // stat size
-        int dySkill = int(height() / 1.447 + 0.5); // skill offset (y)
-        int skill = 16;                            // skill size
-        int delay = 20;
 
         QPen inPen(Qt::white);
         painter.setPen(inPen);
@@ -228,6 +270,10 @@ void CCardLabel::mouseReleaseEvent(QMouseEvent * /*ev*/)
 
 void CCardLabel::mouseMoveEvent(QMouseEvent *ev)
 {
+    if (mLockButton)
+    {
+        mLockButton->setVisible(mLockButton->isChecked() || mLockButton->geometry().contains(ev->pos()));
+    }
     if (mLastLeftClickPos && mCard.isValid())
     {
         QLineF moveLine(ev->globalPos(), *mLastLeftClickPos);
@@ -268,8 +314,19 @@ void CCardLabel::mouseMoveEvent(QMouseEvent *ev)
                     setCard(cardBuf);
                 }
             }
+            delete mLastLeftClickPos;
+            mLastLeftClickPos = 0;
         }
     }
+}
+
+void CCardLabel::leaveEvent(QEvent *ev)
+{
+    if (mLockButton)
+    {
+        mLockButton->setVisible(mLockButton->isChecked());
+    }
+    QLabel::leaveEvent(ev);
 }
 
 void CCardLabel::dropEvent(QDropEvent *ev)
@@ -285,7 +342,7 @@ void CCardLabel::dropEvent(QDropEvent *ev)
             if (ok)
             {
                 ev->accept();
-                CCard card = CCardTable::getCardTable().getCardForId(id);
+                const CCard &card = CCardTable::getCardTable().getCardForId(id);
                 if (card.isValid())
                 {
                     CCard cardBuf = mCard;

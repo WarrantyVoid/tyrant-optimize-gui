@@ -25,16 +25,17 @@ public:
     void setOptimizationEnabled(bool enabled) { mIsOptimizationEnabled = enabled; }
     bool isOptimizationEnabled() const { return mIsOptimizationEnabled; }
 
-	QString baseDeck() const { return mBaseDeck; }
+    QString baseDeck() const { return mBaseDeckOut; }
 	QString enemyDeck() const { return mEnemyDeck; }
 	QString battleGround() const { return mBattleGround; }
     QString ownedCardsFile() const { return mOwnedCardsFile; }
     unsigned int achievement() const { return mAchievement; }
+    unsigned int lockCardCountMin() const { return mLockCardCountMin; }
+    unsigned int lockCardCountMax() const { return mLockCardCountMax; }
 	int numThreads() const { return mNumThreads; }
 	int numTurns() const { return mNumTurns; }
 	int numBattles() const { return mNumBattles; }
 	bool anpOnly() const { return mAnpOnly; }
-	bool lockCommander() const { return mLockCommander; }
     bool lockCardCount() const { return mLockCardCount; }
 	bool ownedCardsOnly() const { return mOwnedCardsOnly; }    
     bool orderedBase() const { return mOrderedBase; }
@@ -45,16 +46,18 @@ public:
     
 private:
     bool mIsOptimizationEnabled;
-    QString mBaseDeck;
+    QString mBaseDeckOrig;
+    QString mBaseDeckOut;
 	QString mEnemyDeck;
 	QString mBattleGround;
     QString mOwnedCardsFile;
     unsigned int mAchievement;
+    unsigned int mLockCardCountMin;
+    unsigned int mLockCardCountMax;
 	int mNumThreads;
 	int mNumTurns;
 	int mNumBattles;
 	bool mAnpOnly;
-	bool mLockCommander;
     bool mLockCardCount;
 	bool mOwnedCardsOnly;
     bool mOrderedBase;
