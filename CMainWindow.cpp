@@ -1,13 +1,14 @@
 #include "CMainWindow.h"
 #include "ui_MainWindow.h"
 #include "CPathManager.h"
+#include "CDeckSaveWidget.h"
 #include "process/CTyrantOptimizeWrapper.h"
 #include <QSortFilterProxyModel>
 #include <QDesktopWidget>
 #include <QSettings>
 #include <QFileDialog>
 #include <QMessageBox>
-#include <QInputDialog>
+#include <QLineEdit>
 #include <QThread>
 #include <QHelpEvent>
 #include <QClipboard>
@@ -676,45 +677,19 @@ void CMainWindow::saveCustomDeck()
         }
     }
 
-    if (!customDeck.isEmpty() && !customDeckName.isEmpty())
-    {
-        QMessageBox::StandardButton ok = QMessageBox::NoButton;
-        do
-        {
-            customDeckName = QInputDialog::getText(
-                this,
-                "Add custom deck",
-                "Enter custom deck name:",
-                QLineEdit::Normal,
-                customDeckName);
-
-            customDeck.setName(customDeckName);
-            customDeck.setType(ECustomDeckType);
-            if (customDeck.isValid())
-            {
-                const CDeck &existingDeck = mDecks.getDeckForName(customDeckName);
-                if (existingDeck.isValid())
-                {
-                    ok = QMessageBox::question(
-                        this,
-                        "Overwrite existing Deck",
-                        "A deck with given name does already exist, overwrite?",
-                        QMessageBox::Yes | QMessageBox::No);
-                }
-                else
-                {
-                    ok = QMessageBox::Yes;
-                }
-            }
-            else
-            {
-                ok = QMessageBox::No;
-            }
-        }
-        while(customDeck.isValid() && ok != QMessageBox::Yes);
-
-
-        if (customDeck.isValid() && ok == QMessageBox::Yes)
+    customDeck.setName("CustomDeck");
+    customDeck.setType(ECustomDeckType);
+    if (customDeck.isValid())
+    {        
+        QDialog saveDialog(this);
+        CDeckSaveWidget* saveWidget = new CDeckSaveWidget(customDeckName, &saveDialog);
+        QBoxLayout *vLayout = new QBoxLayout(QBoxLayout::TopToBottom, &saveDialog);
+        vLayout->addWidget(saveWidget);
+        saveDialog.setWindowTitle("Add custom deck");
+        saveDialog.setFixedHeight(saveDialog.sizeHint().height());
+        saveDialog.exec();
+        customDeck.setName(saveWidget->deckName());
+        if (customDeck.isValid())
         {
             mDecks.addCustomDeck(customDeck);
         }

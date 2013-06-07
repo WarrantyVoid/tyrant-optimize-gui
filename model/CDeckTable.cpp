@@ -264,6 +264,21 @@ bool CDeckTable::deleteCustomDecks(const QStringList &customDecks)
     return deckDeleted;
 }
 
+void CDeckTable::getCustomDecks(QStringList &customDecks) const
+{
+    for (QList<CDeck*>::const_iterator i = mDecks.begin(); i != mDecks.end(); ++i)
+    {
+        if ((*i)->getType() == ECustomDeckType)
+        {
+            customDecks.push_back((*i)->getName());
+        }
+        else
+        {
+            break;
+        }
+    }
+}
+
 void CDeckTable::clearDecks()
 {
     for (QList<CDeck*>::iterator i = mDecks.begin(); i != mDecks.end(); ++i)
@@ -531,17 +546,7 @@ bool CDeckTable::writeCustomDecksFile()
     if (customDeckFile.open(QIODevice::ReadWrite | QIODevice::Truncate))
     {
         QStringList customDecks;
-        for (QList<CDeck*>::iterator i = mDecks.begin(); i != mDecks.end(); ++i)
-        {
-            if ((*i)->getType() == ECustomDeckType)
-            {
-                customDecks.push_back((*i)->getName());
-            }
-            else
-            {
-                break;
-            }
-        }
+        getCustomDecks(customDecks);
         customDecks.sort();
         QTextStream out(&customDeckFile);
         int deckNameWidth = 18;

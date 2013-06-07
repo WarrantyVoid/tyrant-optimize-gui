@@ -23,6 +23,7 @@ public:
 
     bool addCustomDeck(CDeck &customDeck);
     bool deleteCustomDecks(const QStringList &customDecks);
+    void getCustomDecks(QStringList &customDecks) const;
     void clearDecks();    
 
 protected slots:

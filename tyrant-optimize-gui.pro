@@ -35,6 +35,8 @@ HEADERS += \
     model/CDeck.h \
     model/CSkill.h \
     model/CBattleground.h \
+    model/CDeckTable.h \
+    model/CCardTable.h \
     process/CProcessParameters.h \
     process/IProcessWrapper.h \
     process/CTyrantOptimizeWrapper.h \
@@ -44,8 +46,7 @@ HEADERS += \
     CDeckManagementWidget.h \
     CCardLabel.h \
     CDeckInput.h \
-    model/CDeckTable.h \
-    model/CCardTable.h
+    CDeckSaveWidget.h
 
 
 	   
@@ -55,7 +56,8 @@ FORMS += \
     CardFilterWidget.ui \
     MultiDeckEditorWidget.ui \
     CardSearchWidget.ui \
-    DeckManagementWidget.ui
+    DeckManagementWidget.ui \
+    DeckSaveWidget.ui
 
 SOURCES += \
     CMainWindow.cpp \
@@ -80,6 +82,8 @@ SOURCES += \
     model/CDeck.cpp \
     model/CSkill.cpp \
     model/CBattleground.cpp \
+    model/CCardTable.cpp \
+    model/CDeckTable.cpp \
     process/CProcessParameters.cpp \
     process/CTyrantOptimizeWrapper.cpp \
     CCardSearchParameters.cpp \
@@ -87,8 +91,7 @@ SOURCES += \
     CDeckManagementWidget.cpp \
     CCardLabel.cpp \
     CDeckInput.cpp \
-    model/CCardTable.cpp \
-    model/CDeckTable.cpp
+    CDeckSaveWidget.cpp
 
 RESOURCES += main.qrc
 RC_FILE    = main.rc

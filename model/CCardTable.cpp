@@ -153,6 +153,7 @@ const CBattleground& CCardTable::getBattlegroundForId(unsigned int id) const
             return *i;
         }
     }
+    return CBattleground::INVALID_BATTLEGROUND;
 }
 
 const QList<CBattleground>& CCardTable::getBattlegrounds() const
