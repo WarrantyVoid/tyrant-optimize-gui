@@ -125,8 +125,7 @@ bool CCardsXmlParser::startElement(const QString & /*namespaceURI*/, const QStri
                 }
                 if (atts.qName(i).compare("all") == 0)
                 {
-                    bool ok(true);
-                    all = (atts.value(i).toInt(&ok) == 1);
+                    atts.value(i).toInt(&all);
                 }
                 if (atts.qName(i).compare("attacked") == 0)
                 {
