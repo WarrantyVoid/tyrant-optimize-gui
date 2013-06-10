@@ -578,6 +578,7 @@ void CMainWindow::toggleAlwaysOnTop(bool checked)
         setWindowFlags(flags & ~(Qt::CustomizeWindowHint | Qt::WindowStaysOnTopHint));
         setVisible(true);
     }
+    setAcceptDrops(true);
 }
 
 void CMainWindow::updateXmlData()
