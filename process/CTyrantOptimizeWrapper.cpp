@@ -25,8 +25,8 @@ void CTyrantOptimizeWrapper::getCommandLineParameters(const CProcessParameters &
     comLineParams.clear();
 
     // Decks
-    comLineParams <<  guiParams.baseDeck();
-    comLineParams << guiParams.enemyDeck();
+    comLineParams << processDeckString(guiParams.baseDeck());
+    comLineParams << processDeckString(guiParams.enemyDeck());
 
     // Switches
     if (guiParams.anpOnly())
@@ -174,4 +174,27 @@ void CTyrantOptimizeWrapper::processCommandLineOutput(const QStringList &output)
             }
         }
     }
+}
+
+QString CTyrantOptimizeWrapper::processDeckString(const QString &deckStr)
+{
+    QStringList subDecks = deckStr.split(";", QString::SkipEmptyParts);
+    for (QStringList::iterator i = subDecks.begin(); i != subDecks.end(); ++i)
+    {
+        QString &curStr = *i;
+        curStr = curStr.trimmed().remove("\"");
+        if (!curStr.isEmpty())
+        {
+            curStr = curStr.at(0).toUpper() + curStr.mid(1);
+        }
+        if (curStr.startsWith("Mission"))
+        {
+            curStr = QString("Mission ") + curStr.mid(7).trimmed();
+        }
+        if (curStr.startsWith("Step"))
+        {
+            curStr = QString("Step ") + curStr.mid(4).trimmed();
+        }
+    }
+    return subDecks.join(";");
 }
