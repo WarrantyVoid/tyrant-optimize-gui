@@ -76,30 +76,15 @@ SOwnedCardStatistics CCardFilter::readOwnedCardsFromClipboard(const QString &cli
     return stats;
 }
 
-void CCardFilter::execute(const QString &inputFilePath, const QString &outputFilePath, const CCardFilterParameters &parameters)
+void CCardFilter::execute(const QList<TOwnedCard> &inputCards, QList<TOwnedCard> &outputCards, const CCardFilterParameters &parameters)
 {
-    QFile inputFile(inputFilePath);
-    if (inputFile.open(QIODevice::ReadOnly))
+    outputCards.clear();
+    for (QList<TOwnedCard>::const_iterator i = inputCards.begin(); i != inputCards.end(); ++i)
     {
-        QList<TOwnedCard> ownedCards;
-        while (!inputFile.atEnd())
+        TOwnedCard curOwned = *i;
+        if (parameters.checkCard(curOwned.first, curOwned.second))
         {
-            QString curCardStr(inputFile.readLine());
-            TOwnedCard curOwned;
-            if (readOwnedCard(curCardStr, curOwned) && parameters.checkCard(curOwned.first, curOwned.second))
-            {
-                ownedCards.push_back(curOwned);
-            }
-        }
-
-        QFile outputFile(outputFilePath);
-        if (outputFile.open(QIODevice::WriteOnly | QIODevice::Truncate))
-        {
-            QTextStream outStream(&outputFile);
-            for (QList<TOwnedCard>::const_iterator i = ownedCards.begin(); i != ownedCards.end(); ++i)
-            {
-                writeOwnedCard(outStream, *i);
-            }
+            outputCards.push_back(curOwned);
         }
     }
 }

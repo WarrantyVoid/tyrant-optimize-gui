@@ -1,6 +1,6 @@
 #include "CDeckWidget.h"
 #include "ui_DeckWidget.h"
-#include "CPathManager.h"
+#include "CGlobalConfig.h"
 
 CDeckWidget::CDeckWidget(QWidget *parent)
 : QWidget(parent)
@@ -218,6 +218,11 @@ void CDeckWidget::setDeck(const QString &deckIdParam)
             setDefaultUnits();
         }
     }
+}
+
+void CDeckWidget::updateView()
+{
+    update();
 }
 
 void CDeckWidget::updateDeck()

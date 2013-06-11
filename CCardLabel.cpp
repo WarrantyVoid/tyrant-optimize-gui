@@ -1,5 +1,5 @@
 #include "CCardLabel.h"
-#include "CPathManager.h"
+#include "CGlobalConfig.h"
 #include "model/CCardTable.h"
 #include <QApplication>
 #include <QPaintEvent>
@@ -13,6 +13,15 @@ CCardLabel::CCardLabel(QWidget *parent)
 , mLockButton(0)
 {
     setScaledContents(true);   
+}
+
+CCardLabel::~CCardLabel()
+{
+    if (mLastLeftClickPos)
+    {
+        delete mLastLeftClickPos;
+        mLastLeftClickPos = 0;
+    }
 }
 
 void CCardLabel::setLockEnabled(bool enabled)
@@ -52,7 +61,7 @@ bool CCardLabel::isLocked() const
 
 void CCardLabel::setCard(const CCard& card)
 {
-    const CPathManager &pm = CPathManager::getPathManager();
+    const CGlobalConfig &cfg = CGlobalConfig::getCfg();
     mCard = card;
     mTitleIcon = QPixmap();
     switch(card.getType())
@@ -60,40 +69,40 @@ void CCardLabel::setCard(const CCard& card)
     case EAssaultType:
         switch(card.getRarity())
         {
-        case ECommonRarity: mTitleIcon.load(pm.getResourcePicturePath() + "AssaultRegIcon.png"); break;
-        case EUncommonRarity: mTitleIcon.load(pm.getResourcePicturePath() + "AssaultSilverIcon.png"); break;
-        case ERareRarity: mTitleIcon.load(pm.getResourcePicturePath() + "AssaultGoldIcon.png"); break;
-        case ELegendaryRarity: mTitleIcon.load(pm.getResourcePicturePath() + "AssaultLegendaryIcon.png"); break;
+        case ECommonRarity: mTitleIcon.load(cfg.getResourcePicturePath() + "AssaultRegIcon.png"); break;
+        case EUncommonRarity: mTitleIcon.load(cfg.getResourcePicturePath() + "AssaultSilverIcon.png"); break;
+        case ERareRarity: mTitleIcon.load(cfg.getResourcePicturePath() + "AssaultGoldIcon.png"); break;
+        case ELegendaryRarity: mTitleIcon.load(cfg.getResourcePicturePath() + "AssaultLegendaryIcon.png"); break;
         default: break;
         }
         break;
     case ECommanderType:
         switch(card.getRarity())
         {
-        case ECommonRarity: mTitleIcon.load(pm.getResourcePicturePath() + "CommanderRegIcon.png"); break;
-        case EUncommonRarity: mTitleIcon.load(pm.getResourcePicturePath() + "CommanderSilverIcon.png"); break;
-        case ERareRarity: mTitleIcon.load(pm.getResourcePicturePath() + "CommanderGoldIcon.png"); break;
-        case ELegendaryRarity: mTitleIcon.load(pm.getResourcePicturePath() + "CommanderLegendaryIcon.png"); break;
+        case ECommonRarity: mTitleIcon.load(cfg.getResourcePicturePath() + "CommanderRegIcon.png"); break;
+        case EUncommonRarity: mTitleIcon.load(cfg.getResourcePicturePath() + "CommanderSilverIcon.png"); break;
+        case ERareRarity: mTitleIcon.load(cfg.getResourcePicturePath() + "CommanderGoldIcon.png"); break;
+        case ELegendaryRarity: mTitleIcon.load(cfg.getResourcePicturePath() + "CommanderLegendaryIcon.png"); break;
         default: break;
         }
         break;
     case EStructureType:
         switch(card.getRarity())
         {
-        case ECommonRarity: mTitleIcon.load(pm.getResourcePicturePath() + "StructureRegIcon.png"); break;
-        case EUncommonRarity: mTitleIcon.load(pm.getResourcePicturePath() + "StructureSilverIcon.png"); break;
-        case ERareRarity: mTitleIcon.load(pm.getResourcePicturePath() + "StructureGoldIcon.png"); break;
-        case ELegendaryRarity: mTitleIcon.load(pm.getResourcePicturePath() + "StructureLegendaryIcon.png"); break;
+        case ECommonRarity: mTitleIcon.load(cfg.getResourcePicturePath() + "StructureRegIcon.png"); break;
+        case EUncommonRarity: mTitleIcon.load(cfg.getResourcePicturePath() + "StructureSilverIcon.png"); break;
+        case ERareRarity: mTitleIcon.load(cfg.getResourcePicturePath() + "StructureGoldIcon.png"); break;
+        case ELegendaryRarity: mTitleIcon.load(cfg.getResourcePicturePath() + "StructureLegendaryIcon.png"); break;
         default: break;
         }
         break;
     case EActionType:
         switch(card.getRarity())
         {
-        case ECommonRarity: mTitleIcon.load(pm.getResourcePicturePath() + "ActionRegIcon.png"); break;
-        case EUncommonRarity: mTitleIcon.load(pm.getResourcePicturePath() + "ActionSilverIcon.png"); break;
-        case ERareRarity: mTitleIcon.load(pm.getResourcePicturePath() + "ActionGoldIcon.png"); break;
-        case ELegendaryRarity: mTitleIcon.load(pm.getResourcePicturePath() + "ActionLegendaryIcon.png"); break;
+        case ECommonRarity: mTitleIcon.load(cfg.getResourcePicturePath() + "ActionRegIcon.png"); break;
+        case EUncommonRarity: mTitleIcon.load(cfg.getResourcePicturePath() + "ActionSilverIcon.png"); break;
+        case ERareRarity: mTitleIcon.load(cfg.getResourcePicturePath() + "ActionGoldIcon.png"); break;
+        case ELegendaryRarity: mTitleIcon.load(cfg.getResourcePicturePath() + "ActionLegendaryIcon.png"); break;
         default: break;
         }
         break;
@@ -104,20 +113,20 @@ void CCardLabel::setCard(const CCard& card)
     QPixmap cardImg;
     switch(card.getFaction())
     {
-    case EImperialFaction: cardImg.load(pm.getResourcePicturePath() + "CardImperialStyled.png"); break;
-    case EBloodthirstyFaction: cardImg.load(pm.getResourcePicturePath() + "CardBloodthirstyStyle.png"); break;
-    case EXenoFaction: cardImg.load(pm.getResourcePicturePath() + "CardXenoStyle.png"); break;
-    case ERighteousFaction: cardImg.load(pm.getResourcePicturePath() + "CardRighteousStyle.png"); break;
-    case ERaiderFaction: cardImg.load(pm.getResourcePicturePath() + "CardRaiderStyle.png"); break;
-    case ENoFaction: cardImg.load(pm.getResourcePicturePath() + "CardBasic.png"); break;
-    default: cardImg.load(pm.getResourcePicturePath() + "CardBack.png"); break;
+    case EImperialFaction: cardImg.load(cfg.getResourcePicturePath() + "CardImperialStyled.png"); break;
+    case EBloodthirstyFaction: cardImg.load(cfg.getResourcePicturePath() + "CardBloodthirstyStyle.png"); break;
+    case EXenoFaction: cardImg.load(cfg.getResourcePicturePath() + "CardXenoStyle.png"); break;
+    case ERighteousFaction: cardImg.load(cfg.getResourcePicturePath() + "CardRighteousStyle.png"); break;
+    case ERaiderFaction: cardImg.load(cfg.getResourcePicturePath() + "CardRaiderStyle.png"); break;
+    case ENoFaction: cardImg.load(cfg.getResourcePicturePath() + "CardBasic.png"); break;
+    default: cardImg.load(cfg.getResourcePicturePath() + "CardBack.png"); break;
     }
 
     QPixmap unitImg;
-    if (!unitImg.load(CPathManager::getPathManager().getPicturePath() + card.getPicture()))
+    if (!unitImg.load(cfg.getPicturePath() + card.getPicture()))
     {
         // workaround for invalid file extension
-        unitImg.load(CPathManager::getPathManager().getPicturePath() + card.getPicture(), "png");
+        unitImg.load(cfg.getPicturePath() + card.getPicture(), "png");
     }
     QPainter painter(&cardImg);
     painter.drawPixmap(5, 24, 150, 120, unitImg.copy(0, 15, unitImg.width(), unitImg.height() - 30));
@@ -143,7 +152,7 @@ void CCardLabel::setCard(const CCard& card)
         const CSkill& curSkill = mCards.getSkillForId(skills.at(i).getId());
         if (curSkill.isValid())
         {
-            skillDescr.append(QString("<img src='" + pm.getResourcePicturePath() + "%1.png'/> %2<br>")
+            skillDescr.append(QString("<img src='" + cfg.getResourcePicturePath() + "%1.png'/> %2<br>")
                 .arg(curSkill.getPicture())
                 .arg(curSkill.makeSignature(skills.at(i))));
         }
@@ -177,7 +186,7 @@ void CCardLabel::paintEvent(QPaintEvent *ev)
 
     if (mCard.isValid())
     {
-        const CPathManager &pm = CPathManager::getPathManager();
+        const CGlobalConfig &cfg = CGlobalConfig::getCfg();
         QPainter painter(this);
 
         QPen inPen(Qt::white);
@@ -190,7 +199,7 @@ void CCardLabel::paintEvent(QPaintEvent *ev)
             {
                 cardName.replace("*", "");
             }
-            painter.drawPixmap((w - 20) / 2 , h - stat / 2 - 7, QPixmap(pm.getResourcePicturePath() + "UpgradeIcon.png"));
+            painter.drawPixmap((w - 20) / 2 , h - stat / 2 - 7, QPixmap(cfg.getResourcePicturePath() + "UpgradeIcon.png"));
         }
         painter.drawText(dx + title + 2, dy - 1, w - title - 2, title - 1, Qt::AlignLeft | Qt::AlignVCenter, cardName);
         painter.setRenderHint(QPainter::SmoothPixmapTransform, true);
@@ -213,7 +222,7 @@ void CCardLabel::paintEvent(QPaintEvent *ev)
             if (curSkill.isValid())
             {
                 QPoint skillPos(dx + 2 + curIdx * (2 + skill), dySkill);
-                painter.drawPixmap(skillPos, QPixmap(pm.getResourcePicturePath() + curSkill.getPicture() + ".png"));
+                painter.drawPixmap(skillPos, QPixmap(cfg.getResourcePicturePath() + curSkill.getPicture() + ".png"));
                 //painter.drawText(dx, 80 + i*10, 100, 10, Qt::AlignLeft | Qt::AlignVCenter, curSkill.makeSignature(skills.at(i)));
             }
         }
@@ -221,27 +230,35 @@ void CCardLabel::paintEvent(QPaintEvent *ev)
         if (mCard.getSet() != EUnknownSet)
         {
             QRect cardSetBounds(dx + w - skill, dySkill, skill, skill);
-            painter.drawPixmap(cardSetBounds, QPixmap(pm.getResourcePicturePath() + mCards.getPictureForCardSet(mCard.getSet())));
+            painter.drawPixmap(cardSetBounds, QPixmap(cfg.getResourcePicturePath() + mCards.getPictureForCardSet(mCard.getSet())));
         }
 
 
         if (mCard.getDelay() > -1)
         {
             QRect delayBounds(w + dx - delay + 1, title - 1, delay, delay);
-            painter.drawPixmap(delayBounds, QPixmap(pm.getResourcePicturePath() + "ClockIcon.png").scaled(delay, delay, Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
+            painter.drawPixmap(delayBounds, QPixmap(cfg.getResourcePicturePath() + "ClockIcon.png").scaled(delay, delay, Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
             painter.drawText(delayBounds, Qt::AlignCenter, QString("%1").arg(mCard.getDelay()));
         }
 
         if (mCard.hasAttack())
         {
-            painter.drawPixmap(dx, h - stat, QPixmap(pm.getResourcePicturePath() + "AttackIcon.png").scaled(stat, stat, Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
+            painter.drawPixmap(dx, h - stat, QPixmap(cfg.getResourcePicturePath() + "AttackIcon.png").scaled(stat, stat, Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
             painter.drawText(dx + stat + 2, h - stat - 1, 2 * stat, stat - 1, Qt::AlignLeft | Qt::AlignVCenter, QString("%1").arg(mCard.getAttack()));
         }
 
         if (mCard.hasHealth())
         {
-            painter.drawPixmap(w + dx - stat, h - stat, QPixmap(pm.getResourcePicturePath() + "HealthIcon.png").scaled(stat, stat, Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
+            painter.drawPixmap(w + dx - stat, h - stat, QPixmap(cfg.getResourcePicturePath() + "HealthIcon.png").scaled(stat, stat, Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
             painter.drawText(w + dx - 3 * stat - 2, h - stat - 1, 2 * stat, stat - 1, Qt::AlignRight | Qt::AlignVCenter, QString("%1").arg(mCard.getHealth()));
+        }
+
+        if (cfg.isCardShadingEnabled() && !mCards.isCardOwned(&mCard))
+        {
+            QBrush darkBrush(Qt::black);
+            painter.setBrush(darkBrush);
+            painter.setOpacity(0.6);
+            painter.fillRect(rect(), Qt::SolidPattern);
         }
     }
 }

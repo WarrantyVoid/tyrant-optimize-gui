@@ -1,5 +1,5 @@
 #include "CTyrantOptimizeWrapper.h"
-#include "CPathManager.h"
+#include "CGlobalConfig.h"
 #include <QStringList>
 
 const QString CTyrantOptimizeWrapper::PROCESS_NAME = "tyrant_optimize.exe";
@@ -15,13 +15,13 @@ CTyrantOptimizeWrapper::~CTyrantOptimizeWrapper()
 
 QFileInfo CTyrantOptimizeWrapper::getProcessExecutable()
 {
-    const CPathManager &pm = CPathManager::getPathManager();
-    return QFileInfo(pm.getToolPath() + PROCESS_NAME);
+    const CGlobalConfig &cfg = CGlobalConfig::getCfg();
+    return QFileInfo(cfg.getToolPath() + PROCESS_NAME);
 }
 
 void CTyrantOptimizeWrapper::getCommandLineParameters(const CProcessParameters &guiParams, QStringList &comLineParams)
 {
-    const CPathManager &pm = CPathManager::getPathManager();
+    const CGlobalConfig &cfg = CGlobalConfig::getCfg();
     comLineParams.clear();
 
     // Decks
@@ -48,7 +48,7 @@ void CTyrantOptimizeWrapper::getCommandLineParameters(const CProcessParameters &
 
     if (guiParams.ownedCardsOnly())
     {
-        if (QFileInfo(pm.getToolPath() + "ownedcards_f.txt").exists())
+        if (QFileInfo(cfg.getToolPath() + "ownedcards_f.txt").exists())
         {
             comLineParams << "-o=ownedcards_f.txt";
         }

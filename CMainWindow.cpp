@@ -1,6 +1,6 @@
 #include "CMainWindow.h"
 #include "ui_MainWindow.h"
-#include "CPathManager.h"
+#include "CGlobalConfig.h"
 #include "CDeckSaveWidget.h"
 #include "process/CTyrantOptimizeWrapper.h"
 #include <QSortFilterProxyModel>
@@ -32,7 +32,6 @@ CMainWindow::CMainWindow(QWidget *parent)
 , mCards(CCardTable::getCardTable())
 , mDecks(CDeckTable::getDeckTable())
 , mParameters()
-, mLastDir(QApplication::applicationDirPath())
 {
     mUi->setupUi(this);
     setWindowTitle(QString("%1 GUI").arg(mProcessWrapper->getProcessExecutable().baseName()));
@@ -53,7 +52,7 @@ CMainWindow::CMainWindow(QWidget *parent)
     {
         mUi->battleGroundBox->addItem(battlegrounds.at(i).getName());
         mUi->battleGroundBox->setItemData(mUi->battleGroundBox->count() - 1, battlegrounds.at(i).getDescription(), Qt::ToolTipRole);
-        mUi->battleGroundBox->setItemIcon(mUi->battleGroundBox->count() - 1, QIcon(CPathManager::getPathManager().getResourcePicturePath() + battlegrounds.at(i).getPicture()));
+        mUi->battleGroundBox->setItemIcon(mUi->battleGroundBox->count() - 1, QIcon(CGlobalConfig::getCfg().getResourcePicturePath() + battlegrounds.at(i).getPicture()));
     }
     QSortFilterProxyModel* battlegroundProxy = new QSortFilterProxyModel(mUi->battleGroundBox);
     battlegroundProxy->setSourceModel(mUi->battleGroundBox->model());
@@ -85,8 +84,12 @@ CMainWindow::CMainWindow(QWidget *parent)
     connect(
         mUi->ownedCardsBox, SIGNAL(toggled(bool)),
         this, SLOT(setOwnedCardsWatchingEnabled(bool)));
+    connect(
+        mUi->ownedCardsFileBox, SIGNAL(currentIndexChanged(const QString&)),
+        mFilterWidget, SLOT(setOwnedCardsFile(const QString&)));
 
     mUi->baseDeckWidget->setLockEnabled(true);
+    scanForOwnedCards();
     loadDefaultSettings();
 
     // Base deck view setup
@@ -154,6 +157,9 @@ CMainWindow::CMainWindow(QWidget *parent)
     connect(
         mUi->alwaysOnTopAction, SIGNAL(triggered(bool)),
         this, SLOT(toggleAlwaysOnTop(bool)));
+    connect(
+        mUi->shadeOwnedCardsAction, SIGNAL(triggered(bool)),
+        this, SLOT(toggleCardsShading(bool)));
     connect(
         mUi->cardFilterAction, SIGNAL(triggered()),
         mFilterDialog, SLOT(show()));
@@ -234,6 +240,9 @@ CMainWindow::CMainWindow(QWidget *parent)
     connect(
         &mCards, SIGNAL(dataUpdated(const QStringList&)),
         this, SLOT(dataUpdated(const QStringList&)));
+    connect(
+        &mCards, SIGNAL(ownedCardsUpdated()),
+        this, SLOT(updateView()));
     connect(
         mFilterWidget, SIGNAL(ownedCardsUpdated(const QStringList &)),
         this, SLOT(ownedCardsUpdated(const QStringList &)));
@@ -426,12 +435,11 @@ void CMainWindow::loadDefaultSettings()
     mUi->displayBaseButton->setChecked(baseDisplayed);
     mUi->displayEnemyButton->setChecked(enemyDisplayed);
 
-    mLastDir = settings.value("paths/lastDir", mLastDir).toString();
-
+    loadDefaultParameterSettings();
+    CGlobalConfig::getCfg().load(settings);
+    mUi->shadeOwnedCardsAction->setChecked(CGlobalConfig::getCfg().isCardShadingEnabled());
     mFilterWidget->loadParameterSettings(settings);
     mUi->cardSearchWidget->loadParameterSettings(settings);
-
-    loadDefaultParameterSettings();
 }
 
 void CMainWindow::closeEvent(QCloseEvent *e)
@@ -442,8 +450,8 @@ void CMainWindow::closeEvent(QCloseEvent *e)
     settings.setValue("window/alwaysOnTop",  mUi->alwaysOnTopAction->isChecked());
     settings.setValue("window/baseDeckDisplayed", mUi->displayBaseButton->isChecked());
     settings.setValue("window/enemyDeckDisplayed", mUi->displayEnemyButton->isChecked());
-	settings.setValue("paths/lastDir", mLastDir);
 
+    CGlobalConfig::getCfg().save(settings);
     mFilterWidget->saveParameterSettings(settings);
     mUi->cardSearchWidget->saveParameterSettings(settings);
     QMainWindow::closeEvent(e);
@@ -527,7 +535,8 @@ void CMainWindow::saveDefaultParameterSettings()
 
 void CMainWindow::loadParameterSettings()
 {
-    QFileDialog fileDialog(this, "Load Parameters", mLastDir, "*.ini");
+    CGlobalConfig &cfg = CGlobalConfig::getCfg();
+    QFileDialog fileDialog(this, "Load Parameters", cfg.getLastDir(), "*.ini");
     fileDialog.setDefaultSuffix("ini");
     fileDialog.setAcceptMode(QFileDialog::AcceptOpen);
     fileDialog.setFileMode(QFileDialog::ExistingFile);
@@ -540,14 +549,15 @@ void CMainWindow::loadParameterSettings()
             mParameters.fetchFromSettings(settings);
             mParameters.updateUi(*mUi);
             mProcessStatusLabel->setText("Parameters loaded: " + selectedFiles.at(0));
-            mLastDir = fileDialog.directory().absolutePath();
+            cfg.setLastDir(fileDialog.directory().absolutePath());
         }
     }
 }
 
 void CMainWindow::saveParameterSettings()
 {
-    QFileDialog fileDialog(this, "Load Parameters", mLastDir, "*.ini");
+    CGlobalConfig &cfg = CGlobalConfig::getCfg();
+    QFileDialog fileDialog(this, "Load Parameters", cfg.getLastDir(), "*.ini");
     fileDialog.setDefaultSuffix("ini");
     fileDialog.setAcceptMode(QFileDialog::AcceptSave);
     QStringList	selectedFiles;
@@ -560,7 +570,7 @@ void CMainWindow::saveParameterSettings()
             mParameters.fetchFromUi(*mUi);
             mParameters.updateSettings(settings);
             mProcessStatusLabel->setText("Parameters saved: " + selectedFiles.at(0));
-            mLastDir = fileDialog.directory().absolutePath();
+            cfg.setLastDir(fileDialog.directory().absolutePath());
         }
     }
 }
@@ -579,6 +589,12 @@ void CMainWindow::toggleAlwaysOnTop(bool checked)
         setVisible(true);
     }
     setAcceptDrops(true);
+}
+
+void CMainWindow::toggleCardsShading(bool checked)
+{
+    CGlobalConfig::getCfg().setCardShadingEnabled(checked);
+    updateView();
 }
 
 void CMainWindow::updateXmlData()
@@ -750,6 +766,14 @@ void CMainWindow::switchDecks()
     mUi->orderedEnemyBox->setChecked(orderedBase);
 }
 
+void CMainWindow::updateView()
+{
+    mUi->baseDeckWidget->updateView();
+    mUi->enemyDeckWidget->updateView();
+    mUi->cardSearchWidget->updateView();
+    mDeckToolTipContent->updateView();
+}
+
 void CMainWindow::updateWindowHeight(bool grow)
 {
     if (!grow)
@@ -877,14 +901,14 @@ void CMainWindow::ownedCardsUpdated(const QStringList &result)
 
 void CMainWindow::setOwnedCardsWatchingEnabled(bool enabled)
 {
-    const CPathManager &pm = CPathManager::getPathManager();
+    const CGlobalConfig &cfg = CGlobalConfig::getCfg();
     QStringList watchedDirs = mOwnedCardsWatcher->directories();
     if (enabled)
     {
         if (watchedDirs.isEmpty())
         {
             scanForOwnedCards();
-            mOwnedCardsWatcher->addPath(pm.getToolPath());
+            mOwnedCardsWatcher->addPath(cfg.getToolPath());
         }
     }
     else

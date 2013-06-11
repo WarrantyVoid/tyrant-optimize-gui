@@ -73,7 +73,7 @@ void CProcessParameters::updateUi(Ui::MainWindow &ui) const
 
     ui.enemyDeckEdit->setDeckId(mEnemyDeck);
     ui.battleGroundBox->setCurrentIndex(ui.battleGroundBox->findText(mBattleGround)); 
-    ui.ownedCardsFileBox->setCurrentIndex(ui.ownedCardsFileBox->findText(mOwnedCardsFile));
+    ui.ownedCardsFileBox->setCurrentIndex(qMax(0, ui.ownedCardsFileBox->findText(mOwnedCardsFile)));
     ui.achievementBox->setCurrentIndex(ui.achievementBox->findData(mAchievement));
     ui.minCardCountLockBox->setValue(mLockCardCountMin);
     ui.maxCardCountLockBox->setValue(mLockCardCountMax);

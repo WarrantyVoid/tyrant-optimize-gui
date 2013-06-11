@@ -1,5 +1,5 @@
 #include "CDeckTable.h"
-#include "CPathManager.h"
+#include "CGlobalConfig.h"
 #include "CCardTable.h"
 #include "xml/CMissionsXmlParser.h"
 #include "xml/CRaidsXmlParser.h"
@@ -334,7 +334,7 @@ QVariant CDeckTable::data(const QModelIndex &index, int role) const
             case Qt::DecorationRole:
             {
                 QPixmap comImg;
-                comImg.load(CPathManager::getPathManager().getPicturePath() + mDecks[index.row()]->getCommander().getPicture());
+                comImg.load(CGlobalConfig::getCfg().getPicturePath() + mDecks[index.row()]->getCommander().getPicture());
                 return QVariant(comImg.scaledToHeight(20, Qt::SmoothTransformation));
             }
             case Qt::ToolTipRole:
@@ -460,7 +460,7 @@ void CDeckTable::processDeck(const QString &deckName, EDeckType type, unsigned i
 
 void CDeckTable::initData()
 {
-    const CPathManager& pm = CPathManager::getPathManager();
+    const CGlobalConfig& pm = CGlobalConfig::getCfg();
     clearDecks();
 
     //load custom decks
@@ -542,7 +542,7 @@ void CDeckTable::initData()
 
 bool CDeckTable::writeCustomDecksFile()
 {
-    QFile customDeckFile(CPathManager::getPathManager().getToolPath() + "custom.txt");
+    QFile customDeckFile(CGlobalConfig::getCfg().getToolPath() + "custom.txt");
     if (customDeckFile.open(QIODevice::ReadWrite | QIODevice::Truncate))
     {
         QStringList customDecks;

@@ -1,6 +1,6 @@
 #include "CCardTable.h"
 #include "CPictureDownload.h"
-#include "CPathManager.h"
+#include "CGlobalConfig.h"
 #include <QFileInfo>
 #include <QDateTime>
 #include <QXmlSimpleReader>
@@ -96,7 +96,7 @@ void CCardTable::searchCards(const ICardCheck &search, QList<CCard*> &cards, int
 {
     cards.clear();
     int dummy(0);
-    for (QHash<QString, CCard*>::const_iterator i = mCardNameMap.begin(); i != mCardNameMap.end(); ++i)
+    for (QHash<unsigned int, CCard*>::const_iterator i = mCardIdMap.begin(); i != mCardIdMap.end(); ++i)
     {
         if (search.checkCard(*i.value(), dummy))
         {
@@ -109,6 +109,21 @@ void CCardTable::searchCards(const ICardCheck &search, QList<CCard*> &cards, int
     }
 }
 
+bool CCardTable::isCardOwned(CCard *card)
+{
+    return (card && mOwnedCardMap.contains(card->getId()));
+}
+
+void CCardTable::setOwnedCards(const QList<TOwnedCard> &ownedCards)
+{
+    mOwnedCardMap.clear();
+    for ( QList<TOwnedCard>::const_iterator i = ownedCards.begin(); i != ownedCards.end(); ++i)
+    {
+        mOwnedCardMap.insert((*i).first.getId());
+    }
+    emit ownedCardsUpdated();
+}
+
 void  CCardTable::updateData()
 {
     if (mDataDownloads.isEmpty())
@@ -116,7 +131,7 @@ void  CCardTable::updateData()
         if (mPictureDownloads.isEmpty())
         {
             mDataDownloadResults.clear();
-            const CPathManager& pm = CPathManager::getPathManager();
+            const CGlobalConfig& pm = CGlobalConfig::getCfg();
 
             CDownload* cardsDownload = new CDownload("http://kg.tyrantonline.com/assets/cards.xml", pm.getToolPath() + "cards.xml", true);
             CDownload* raidsDownload = new CDownload("http://kg.tyrantonline.com/assets/raids.xml", pm.getToolPath() + "raids.xml", true);
@@ -249,7 +264,7 @@ void CCardTable::processCard(const CCard &card)
     {
         //http://cdn.tyrantonline.com/warhawk/images/cardname.jpg
         //http://www.facebook.com/media/set/?set=a.240926515984717.57623.235197086557660&type=1
-        QString pictureFileName(CPathManager::getPathManager().getPicturePath() + card.getPicture());
+        QString pictureFileName(CGlobalConfig::getCfg().getPicturePath() + card.getPicture());
         QFile pictureFile(pictureFileName);
         if (pictureFile.exists())
         {
@@ -262,7 +277,7 @@ void CCardTable::processCard(const CCard &card)
         }
         else
         {
-            QString pictureUrlName(CPathManager::getPathManager().getOnlinePicturePath() + card.getPicture());
+            QString pictureUrlName(CGlobalConfig::getCfg().getOnlinePicturePath() + card.getPicture());
             CPictureDownload *download = new CPictureDownload(pictureUrlName, pictureFileName);
             download->setPictureMetaData(card);
             mPictureDownloads.enqueue(download);
@@ -336,7 +351,7 @@ void CCardTable::initData()
     mTotalDownloads = 0;
     mFinishedDownloads = 0;
 
-    const CPathManager& pm = CPathManager::getPathManager();
+    const CGlobalConfig& pm = CGlobalConfig::getCfg();
 
     //load cards
     QFile cardFile(pm.getToolPath() + "cards.xml");

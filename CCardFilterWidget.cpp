@@ -1,5 +1,5 @@
 #include "CCardFilterWidget.h"
-#include "CPathManager.h"
+#include "CGlobalConfig.h"
 #include "CCardFilter.h"
 #include "ui_CardFilterWidget.h"
 #include <QApplication>
@@ -32,6 +32,11 @@ void CCardFilterWidget::loadParameterSettings(QSettings &settings)
 {
     mParameters.fetchFromSettings(settings);
     mParameters.updateUi(*mUi);
+
+    const CGlobalConfig &cfg = CGlobalConfig::getCfg();
+    CCardFilter filter;
+    QList<TOwnedCard> ownedCards;
+    filter.readOwnedCardsFromFile(cfg.getToolPath() + mOwnedCardsFile, ownedCards);
 }
 
 void  CCardFilterWidget::saveParameterSettings(QSettings &settings)
@@ -43,8 +48,8 @@ void  CCardFilterWidget::saveParameterSettings(QSettings &settings)
 void CCardFilterWidget::scanOwnedCards(QStringList &result) const
 {
     result.clear();
-    const CPathManager &pm = CPathManager::getPathManager();
-    QDir dir(pm.getToolPath());
+    const CGlobalConfig &cfg = CGlobalConfig::getCfg();
+    QDir dir(cfg.getToolPath());
     dir.setFilter(QDir::Files | QDir::Hidden | QDir::Readable | QDir::NoSymLinks);
     dir.setSorting(QDir::Name);
     dir.setNameFilters(QStringList("*.txt"));
@@ -64,8 +69,8 @@ bool CCardFilterWidget::hasOwnedCardsChanged(const QString &fileName) const
 {
     if (fileName.compare(mOwnedCardsFile) == 0)
     {
-        const CPathManager &pm = CPathManager::getPathManager();
-        QFileInfo fileInfo(pm.getToolPath() + mOwnedCardsFile);
+        const CGlobalConfig &cfg = CGlobalConfig::getCfg();
+        QFileInfo fileInfo(cfg.getToolPath() + mOwnedCardsFile);
         if (fileInfo.exists() && fileInfo.lastModified() == mOwnedCardsTime)
         {
             return false;
@@ -77,9 +82,9 @@ bool CCardFilterWidget::hasOwnedCardsChanged(const QString &fileName) const
 void CCardFilterWidget::updateOwnedCardsFile(const QString &fileName)
 {
     QClipboard* clip =  QApplication::clipboard();
-    const CPathManager &pm = CPathManager::getPathManager();
+    const CGlobalConfig &cfg = CGlobalConfig::getCfg();
     mOwnedCardsFile = fileName;
-    QString filePath = pm.getToolPath() + mOwnedCardsFile;
+    QString filePath = cfg.getToolPath() + mOwnedCardsFile;
     CCardFilter filter;
     QList<TOwnedCard> ownedCards;
     SOwnedCardStatistics oldStats = filter.readOwnedCardsFromFile(filePath, ownedCards);
@@ -87,6 +92,10 @@ void CCardFilterWidget::updateOwnedCardsFile(const QString &fileName)
     if (newStats.numCards > 0)
     {
         newStats = filter.writeOwnedCardsToFile(filePath, ownedCards);
+
+        // Updated owned status
+        CCardTable &cards = CCardTable::getCardTable();
+        cards.setOwnedCards(ownedCards);
     }
 
     QStringList updateResult;
@@ -104,14 +113,15 @@ void CCardFilterWidget::updateOwnedCardsFile(const QString &fileName)
     {
          updateResult << "Could not update 'ownedcards.txt' from clipboard. Please copy card export string from fansite into clipboard first.";
     }
+
     emit ownedCardsUpdated(updateResult);
 }
 
 void CCardFilterWidget::setOwnedCardsFile(const QString &fileName)
 {
-    const CPathManager &pm = CPathManager::getPathManager();
+    const CGlobalConfig &cfg = CGlobalConfig::getCfg();
     mOwnedCardsFile = fileName;
-    mOwnedCardsTime = QFileInfo(pm.getToolPath() + fileName).lastModified();
+    mOwnedCardsTime = QFileInfo(cfg.getToolPath() + fileName).lastModified();
     executeFilter();
 }
 
@@ -130,9 +140,17 @@ void CCardFilterWidget::acceptFilter()
 
 void CCardFilterWidget::executeFilter()
 {
-    const CPathManager &pm = CPathManager::getPathManager();
-    QString input = pm.getToolPath() + mOwnedCardsFile;
-    QString output = pm.getToolPath() + "ownedcards_f.txt";
+    const CGlobalConfig &cfg = CGlobalConfig::getCfg();
+    QString input = cfg.getToolPath() + mOwnedCardsFile;
+    QString output = cfg.getToolPath() + "ownedcards_f.txt";
     CCardFilter filter;
-    filter.execute(input, output, mParameters);
+    QList<TOwnedCard> originalCards;
+    QList<TOwnedCard> filteredCards;
+    filter.readOwnedCardsFromFile(input, originalCards);
+    filter.execute(originalCards, filteredCards, mParameters);
+    filter.writeOwnedCardsToFile(output, filteredCards);
+
+    // Updated owned status
+    CCardTable &cards = CCardTable::getCardTable();
+    cards.setOwnedCards(originalCards);
 }

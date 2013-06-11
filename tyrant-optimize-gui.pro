@@ -15,7 +15,6 @@ INCLUDEPATH += .
 # Input
 HEADERS += \
     CMainWindow.h \
-    CPathManager.h \
     CPictureDownload.h \
     CDownload.h \
     CDeckWidget.h \
@@ -46,7 +45,8 @@ HEADERS += \
     CDeckManagementWidget.h \
     CCardLabel.h \
     CDeckInput.h \
-    CDeckSaveWidget.h
+    CDeckSaveWidget.h \
+    CGlobalConfig.h
 
 
 	   
@@ -61,7 +61,6 @@ FORMS += \
 
 SOURCES += \
     CMainWindow.cpp \
-    CPathManager.cpp \
     CPictureDownload.cpp \
     main.cpp \
     CDownload.cpp \
@@ -84,14 +83,15 @@ SOURCES += \
     model/CBattleground.cpp \
     model/CCardTable.cpp \
     model/CDeckTable.cpp \
-    process/CProcessParameters.cpp \
     process/CTyrantOptimizeWrapper.cpp \
+    process/CProcessParameters.cpp \
     CCardSearchParameters.cpp \
     CCardSearchWidget.cpp \
     CDeckManagementWidget.cpp \
     CCardLabel.cpp \
     CDeckInput.cpp \
-    CDeckSaveWidget.cpp
+    CDeckSaveWidget.cpp \
+    CGlobalConfig.cpp
 
 RESOURCES += main.qrc
 RC_FILE    = main.rc

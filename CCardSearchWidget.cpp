@@ -130,6 +130,15 @@ void CCardSearchWidget::updateView()
         QList<CCard*> foundCards;
         mSearchParameters.fetchFromUi(*mUi);
         cards.searchCards(mSearchParameters, foundCards, NUM_RESULT_WIDGETS);
+
+        for (int i = qMin(foundCards.size() - 1, NUM_RESULT_WIDGETS); i > -1; --i)
+        {
+            if (!cards.isCardOwned(foundCards[i]))
+            {
+                foundCards.move(i, foundCards.size() - 1);
+            }
+        }
+
         for (int i = 0; i < NUM_RESULT_WIDGETS; ++i)
         {
             if (i < foundCards.size())

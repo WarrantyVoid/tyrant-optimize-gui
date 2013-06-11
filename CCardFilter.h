@@ -5,8 +5,6 @@
 #include "model/CCardTable.h"
 #include <QTextStream>
 
-typedef QPair<CCard, int> TOwnedCard;
-
 struct SOwnedCardStatistics
 {
     int numCards;
@@ -24,7 +22,7 @@ public:
     SOwnedCardStatistics readOwnedCardsFromFile(const QString &filePath, QList<TOwnedCard> &cards);
     SOwnedCardStatistics readOwnedCardsFromClipboard(const QString &clipboardStr, QList<TOwnedCard> &cards);
 
-    void execute(const QString &inputFilePath, const QString &outputFilePath, const CCardFilterParameters &parameters);
+    void execute(const QList<TOwnedCard> &inputCards, QList<TOwnedCard> &outputCards, const CCardFilterParameters &parameters);
 
 protected:
     bool readOwnedCard(const QString &cardStr, TOwnedCard &card);

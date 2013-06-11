@@ -12,6 +12,7 @@ class CCardLabel : public QLabel
 
 public:
     explicit CCardLabel(QWidget *parent = 0);
+    virtual ~CCardLabel();
 
 public:
     void setLockEnabled(bool enabled);

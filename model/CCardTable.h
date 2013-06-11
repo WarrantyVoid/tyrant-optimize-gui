@@ -2,6 +2,7 @@
 #define CARDTABLE_H
 
 #include <QHash>
+#include <QSet>
 #include <QQueue>
 #include <QStringList>
 #include <QNetworkAccessManager>
@@ -12,6 +13,7 @@
 
 class CDownload;
 class CPictureDownload;
+typedef QPair<CCard, int> TOwnedCard;
 
 class CCardTable : public QObject
 {
@@ -28,7 +30,9 @@ public:
     const CCard& getCardForId(unsigned int id) const;
     const CCard& getCardForName(const QString &name) const;
     void searchCards(const ICardCheck &search, QList<CCard*> &cards, int maxHits = -1) const;
+    bool isCardOwned(CCard *card);
 
+    void setOwnedCards(const QList<TOwnedCard> &ownedCards);
     void updateData();
     const CBattleground& getBattlegroundForId(unsigned int id) const;
     const QList<CBattleground>& getBattlegrounds() const;
@@ -37,6 +41,7 @@ public:
 signals:
     void downloadProgress(int numDone, int numDownloads);
     void dataUpdated(const QStringList &result);
+    void ownedCardsUpdated();
 
  protected slots:
     void processNextPictureDownload();
@@ -55,6 +60,7 @@ private:
     QHash<ECardSet, QString> mCardSetIdMap;
     QHash<unsigned int, CCard*> mCardIdMap;
     QHash<QString, CCard*> mCardNameMap;
+    QSet<unsigned int> mOwnedCardMap;
     QNetworkAccessManager* mNetManager;
     QQueue<CPictureDownload*> mPictureDownloads;
     QQueue<CDownload*> mDataDownloads;

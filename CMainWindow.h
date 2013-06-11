@@ -48,6 +48,7 @@ protected slots:
 	void loadParameterSettings();
 	void saveParameterSettings();
     void toggleAlwaysOnTop(bool checked);
+    void toggleCardsShading(bool checked);
     void updateXmlData();
     void updateOwnedCards();
     void displayAboutMessage();
@@ -59,6 +60,7 @@ protected slots:
     void copyDeckHash();
     void useOptimizedDeck();
     void switchDecks();
+    void updateView();
     void updateWindowHeight(bool grow);
     void updateParameterBoxToolTip(int boxIndex);
     void updateParameterBoxValues(const QString &deckStr);
@@ -100,7 +102,6 @@ private:
     CCardTable &mCards;
     CDeckTable &mDecks;
     CProcessParameters mParameters;
-	QString mLastDir;
 
 private:
     static const QString VERSION;

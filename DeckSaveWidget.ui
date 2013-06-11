@@ -31,7 +31,11 @@
     </widget>
    </item>
    <item>
-    <widget class="CDeckInput" name="deckSaveBox"/>
+    <widget class="CDeckInput" name="deckSaveBox">
+     <property name="maxVisibleItems">
+      <number>20</number>
+     </property>
+    </widget>
    </item>
    <item>
     <layout class="QHBoxLayout" name="horizontalLayout">

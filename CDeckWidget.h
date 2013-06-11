@@ -25,7 +25,7 @@ public:
     void setLocked(int slot, bool locked);
     bool isLocked(int slot) const;
 
-    void setDropEnabled(bool enabled);    
+    void setDropEnabled(bool enabled);
     void setWinLabel(const QString &text);
     void setWinLabel(const QPixmap &pixmap);
     void setDefaultUnits();
@@ -39,6 +39,7 @@ signals:
 
 public slots:
     void setDeck(const QString & deckId);
+    void updateView();
 
 protected slots:
     void updateDeck();
