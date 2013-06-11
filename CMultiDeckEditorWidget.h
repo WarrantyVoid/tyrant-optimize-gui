@@ -18,9 +18,10 @@ public:
     ~CMultiDeckEditorWidget();
 
 public:
+    void setToolTipHandler(QObject *handler);
     QString getResult();
     void updateHistory();
-    void reset();
+    void reset();    
 
 signals:
     void totalNumIncreased(int totalNum);

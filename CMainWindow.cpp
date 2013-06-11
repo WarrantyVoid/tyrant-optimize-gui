@@ -136,6 +136,7 @@ CMainWindow::CMainWindow(QWidget *parent)
     QBoxLayout *vLayout3 = new QBoxLayout(QBoxLayout::TopToBottom, mMultiDeckDialog);
     vLayout3->addWidget(mMultiDeckWidget);
     mMultiDeckWidget->setDeckInputWidget(mUi->enemyDeckEdit);
+    mMultiDeckWidget->setToolTipHandler(this);
     mMultiDeckDialog->setWindowTitle("Multi Deck Creation");
     connect(
         mMultiDeckDialog, SIGNAL(rejected()),
@@ -294,11 +295,11 @@ CMainWindow::~CMainWindow()
     }
 }
 
-void CMainWindow::getInputDeck(const QComboBox *input, CDeck &deck) const
+void CMainWindow::getInputDeck(const CDeckInput *input, CDeck &deck) const
 {
     if (input)
     {
-        QString deckId = input->currentText();
+        QString deckId = input->currentText().trimmed();
         if (!deckId.isEmpty())
         {
             deck = mDecks.getDeckForName(deckId);
@@ -464,44 +465,32 @@ bool CMainWindow::eventFilter(QObject *obj, QEvent *e)
         case QEvent::ToolTip:
         {
             QHelpEvent *he = static_cast<QHelpEvent *>(e);
-            QString deckName = "";
-            QString deckId = "";
-            QComboBox *deckEdit = 0;
-            if (obj == mUi->baseDeckEdit && !mUi->baseDeckWidget->isVisible())
+            CDeckInput *deckInput = dynamic_cast<CDeckInput*>(obj);
+            if (e && deckInput)
             {
-                deckName = mUi->baseLabel->text().trimmed();
-                deckId = mUi->baseDeckEdit->currentText().trimmed();
-                deckEdit = mUi->baseDeckEdit;
-            }
-            else if(obj == mUi->enemyDeckEdit && !mUi->enemyDeckWidget->isVisible())
-            {
-                deckName = mUi->enemyLabel->text().trimmed();
-                deckId = mUi->enemyDeckEdit->currentText().trimmed();
-                deckEdit = mUi->enemyDeckEdit;
-            }
-            
-            CDeck deck;
-            if (!mDeckToolTip->isVisible())
-            {
-                getInputDeck(deckEdit, deck);
-            }
-            
-            if (deck.isValid())
-            {
-                //mProcessStatusLabel->setText(QString("(%1, %2)").arg(deckHash).arg(cards.join("|")));
-                mDeckToolTipContent->setDeck(deck);
+                CDeck deck;
+                if (!mDeckToolTip->isVisible())
+                {
+                    getInputDeck(deckInput, deck);
+                }
 
-                int reqW = mDeckToolTip->width() + 5;
-                int reqH = mDeckToolTip->height() + 20;
-                int xRel = (QApplication::desktop()->width() - he->globalX() < reqW)
-                    ? -reqW
-                    : 5;
-                int yRel = (QApplication::desktop()->height() - he->globalY() < reqH)
-                    ? -reqH
-                    : 20;
-                mDeckToolTip->move(he->globalX() + xRel, he->globalY() + yRel);
-                mDeckToolTip->setVisible(true);
-                he->accept();
+                if (deck.isValid())
+                {
+                    //mProcessStatusLabel->setText(QString("(%1, %2)").arg(deckHash).arg(cards.join("|")));
+                    mDeckToolTipContent->setDeck(deck);
+
+                    int reqW = mDeckToolTip->width() + 5;
+                    int reqH = mDeckToolTip->height() + 20;
+                    int xRel = (QApplication::desktop()->width() - he->globalX() < reqW)
+                        ? -reqW
+                        : 5;
+                    int yRel = (QApplication::desktop()->height() - he->globalY() < reqH)
+                        ? -reqH
+                        : 20;
+                    mDeckToolTip->move(he->globalX() + xRel, he->globalY() + yRel);
+                    mDeckToolTip->setVisible(true);
+                    he->accept();
+                }
             }
             return true;
         } 

@@ -30,7 +30,7 @@ public:
     ~CMainWindow();
 
 protected:
-    void getInputDeck(const QComboBox *input, CDeck &deck) const;
+    void getInputDeck(const CDeckInput *input, CDeck &deck) const;
     void startToolProcess(bool isOptimizationEnabled);
     void killToolProcess();
     void setProcessActivityChanged(bool isActive);

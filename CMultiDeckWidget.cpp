@@ -58,6 +58,14 @@ void CMultiDeckWidget::setDeckInputWidget(CDeckInput* inputWidget)
     mDeckSourceWidget = inputWidget;
 }
 
+void CMultiDeckWidget::setToolTipHandler(QObject *handler)
+{
+    for (int i = 0; i < 10; ++i)
+    {
+        mMultiDeckEditors[i]->setToolTipHandler(handler);
+    }
+}
+
 void CMultiDeckWidget::updateHistory()
 {
     for (int i = 0; i < 10; ++i)

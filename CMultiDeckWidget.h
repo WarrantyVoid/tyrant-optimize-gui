@@ -15,8 +15,9 @@ public:
     explicit CMultiDeckWidget(QWidget *parent = 0);
 
 public:
-    void setDeckInputWidget(CDeckInput* inputWidget);
-    void updateHistory();
+    void setDeckInputWidget(CDeckInput* inputWidget);    
+    void setToolTipHandler(QObject *handler);
+    void updateHistory();    
     void initDecks();
 
 signals:
