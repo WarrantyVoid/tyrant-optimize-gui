@@ -98,7 +98,7 @@ void CCardTable::searchCards(const ICardCheck &search, QList<CCard*> &cards, int
     int dummy(0);
     for (QHash<unsigned int, CCard*>::const_iterator i = mCardIdMap.begin(); i != mCardIdMap.end(); ++i)
     {
-        if (search.checkCard(*i.value(), dummy))
+        if (i.value()->getSet() != EUnknownSet && search.checkCard(*i.value(), dummy))
         {
             cards.push_back(i.value());
             if (cards.size() == maxHits)
