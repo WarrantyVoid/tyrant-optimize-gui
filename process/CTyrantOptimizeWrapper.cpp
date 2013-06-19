@@ -183,15 +183,11 @@ QString CTyrantOptimizeWrapper::processDeckString(const QString &deckStr)
     {
         QString &curStr = *i;
         curStr = curStr.trimmed().remove("\"");
-        if (!curStr.isEmpty())
-        {
-            curStr = curStr.at(0).toUpper() + curStr.mid(1);
-        }
-        if (curStr.startsWith("Mission"))
+        if (curStr.startsWith("Mission", Qt::CaseInsensitive))
         {
             curStr = QString("Mission ") + curStr.mid(7).trimmed();
         }
-        if (curStr.startsWith("Step"))
+        if (curStr.startsWith("Step", Qt::CaseInsensitive))
         {
             curStr = QString("Step ") + curStr.mid(4).trimmed();
         }
