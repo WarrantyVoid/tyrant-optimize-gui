@@ -10,6 +10,9 @@ CCardFilterParameters::CCardFilterParameters()
 , mIsCommanderAllowed()
 , mIsActionAllowed()
 , mIsHealthAllowed()
+, mIsAttackAllowed()
+, mIsDelayAllowed()
+, mIsFactionAllowed()
 , mComplement()
 , mWhiteList()
 , mBlackList()
@@ -26,10 +29,27 @@ CCardFilterParameters::CCardFilterParameters()
         mIsActionAllowed[i] = true;
         mIsHealthAllowed[i] = true;
     }
+    for (int i = 0; i < NUM_HEALTH; ++i)
+    {
+        mIsHealthAllowed[i] = true;
+    }
+    for (int i = 0; i < NUM_ATTACK; ++i)
+    {
+        mIsAttackAllowed[i] = true;
+    }
+    for (int i = 0; i < NUM_DELAY; ++i)
+    {
+        mIsDelayAllowed[i] = true;
+    }
+    for (int i = 0; i < NUM_FACTION; ++i)
+    {
+        mIsFactionAllowed[i] = true;
+    }
     for (int i = 0; i < NUM_SET; ++i)
     {
         mComplement[i] = 0;
     }
+
     mComplement[0] = 5;
     mComplement[1] = 3;
     mComplement[2] = 3;
@@ -61,10 +81,29 @@ void CCardFilterParameters::fetchFromUi(const Ui::CardFilterWidget &ui)
     mIsActionAllowed[2] = ui.actionUncommonBox->isChecked();
     mIsActionAllowed[3] = ui.actionCommonBox->isChecked();
 
-    mIsHealthAllowed[0] = ui.health4Box->isChecked();
-    mIsHealthAllowed[1] = ui.health3Box->isChecked();
-    mIsHealthAllowed[2] = ui.health2Box->isChecked();
-    mIsHealthAllowed[3] = ui.health1Box->isChecked();
+    mIsHealthAllowed[0] = ui.health1Box->isChecked();
+    mIsHealthAllowed[1] = ui.health2Box->isChecked();
+    mIsHealthAllowed[2] = ui.health3Box->isChecked();
+    mIsHealthAllowed[3] = ui.health4Box->isChecked();
+    mIsHealthAllowed[4] = ui.health5Box->isChecked();
+
+    mIsAttackAllowed[0] = ui.attack0Box->isChecked();
+    mIsAttackAllowed[1] = ui.attack1Box->isChecked();
+    mIsAttackAllowed[2] = ui.attack2Box->isChecked();
+    mIsAttackAllowed[3] = ui.attack3Box->isChecked();
+    mIsAttackAllowed[4] = ui.attack4Box->isChecked();
+
+    mIsDelayAllowed[0] = ui.delay0Box->isChecked();
+    mIsDelayAllowed[1] = ui.delay1Box->isChecked();
+    mIsDelayAllowed[2] = ui.delay2Box->isChecked();
+    mIsDelayAllowed[3] = ui.delay3Box->isChecked();
+    mIsDelayAllowed[4] = ui.delay4Box->isChecked();
+
+    mIsFactionAllowed[0] = ui.factionBloodthirstyBox->isChecked();
+    mIsFactionAllowed[1] = ui.factionImperialBox->isChecked();
+    mIsFactionAllowed[2] = ui.factionRaiderBox->isChecked();
+    mIsFactionAllowed[3] = ui.factionRighteousBox->isChecked();
+    mIsFactionAllowed[4] = ui.factionXenoBox->isChecked();
 
     mComplement[0] = ui.standardSpinBox->value();
     mComplement[1] = ui.enclaveSpinBox->value();
@@ -153,10 +192,29 @@ void CCardFilterParameters::updateUi(Ui::CardFilterWidget &ui) const
     ui.actionUncommonBox->setChecked(mIsActionAllowed[2]);
     ui.actionCommonBox->setChecked(mIsActionAllowed[3]);
 
-    ui.health4Box->setChecked(mIsHealthAllowed[0]);
-    ui.health3Box->setChecked(mIsHealthAllowed[1]);
-    ui.health2Box->setChecked(mIsHealthAllowed[2]);
-    ui.health1Box->setChecked(mIsHealthAllowed[3]);
+    ui.health1Box->setChecked(mIsHealthAllowed[0]);
+    ui.health2Box->setChecked(mIsHealthAllowed[1]);
+    ui.health3Box->setChecked(mIsHealthAllowed[2]);
+    ui.health4Box->setChecked(mIsHealthAllowed[3]);
+    ui.health5Box->setChecked(mIsHealthAllowed[4]);
+
+    ui.attack0Box->setChecked(mIsAttackAllowed[0]);
+    ui.attack1Box->setChecked(mIsAttackAllowed[1]);
+    ui.attack2Box->setChecked(mIsAttackAllowed[2]);
+    ui.attack3Box->setChecked(mIsAttackAllowed[3]);
+    ui.attack4Box->setChecked(mIsAttackAllowed[4]);
+
+    ui.delay0Box->setChecked(mIsDelayAllowed[0]);
+    ui.delay1Box->setChecked(mIsDelayAllowed[1]);
+    ui.delay2Box->setChecked(mIsDelayAllowed[2]);
+    ui.delay3Box->setChecked(mIsDelayAllowed[3]);
+    ui.delay4Box->setChecked(mIsDelayAllowed[4]);
+
+    ui.factionBloodthirstyBox->setChecked(mIsFactionAllowed[0]);
+    ui.factionImperialBox->setChecked(mIsFactionAllowed[1]);
+    ui.factionRaiderBox->setChecked(mIsFactionAllowed[2]);
+    ui.factionRighteousBox->setChecked(mIsFactionAllowed[3]);
+    ui.factionXenoBox->setChecked(mIsFactionAllowed[4]);
 
     QStringList whiteList;
     for(QHash<QString, int>::const_iterator i = mWhiteList.begin(); i != mWhiteList.end(); ++i)
@@ -220,10 +278,29 @@ void CCardFilterParameters::fetchFromSettings(QSettings &settings)
     mIsActionAllowed[2] = settings.value("allowActionsUncommon", mIsActionAllowed[2]).toBool();
     mIsActionAllowed[3] = settings.value("allowActionsCommon", mIsActionAllowed[3]).toBool();
 
-    mIsHealthAllowed[0] = settings.value("allowHealth4Plus", mIsHealthAllowed[0]).toBool();
-    mIsHealthAllowed[1] = settings.value("allowHealth3", mIsHealthAllowed[1]).toBool();
-    mIsHealthAllowed[2] = settings.value("allowHealth2", mIsHealthAllowed[2]).toBool();
-    mIsHealthAllowed[3] = settings.value("allowHealth1", mIsHealthAllowed[3]).toBool();
+    mIsHealthAllowed[0] = settings.value("allowHealth1", mIsHealthAllowed[0]).toBool();
+    mIsHealthAllowed[1] = settings.value("allowHealth2", mIsHealthAllowed[1]).toBool();
+    mIsHealthAllowed[2] = settings.value("allowHealth3", mIsHealthAllowed[2]).toBool();
+    mIsHealthAllowed[3] = settings.value("allowHealth4", mIsHealthAllowed[3]).toBool();
+    mIsHealthAllowed[4] = settings.value("allowHealth5", mIsHealthAllowed[4]).toBool();
+
+    mIsAttackAllowed[0] = settings.value("allowAttack0", mIsAttackAllowed[0]).toBool();
+    mIsAttackAllowed[1] = settings.value("allowAttack1", mIsAttackAllowed[1]).toBool();
+    mIsAttackAllowed[2] = settings.value("allowAttack2", mIsAttackAllowed[2]).toBool();
+    mIsAttackAllowed[3] = settings.value("allowAttack3", mIsAttackAllowed[3]).toBool();
+    mIsAttackAllowed[4] = settings.value("allowAttack4", mIsAttackAllowed[4]).toBool();
+
+    mIsDelayAllowed[0] = settings.value("allowDelay0", mIsDelayAllowed[0]).toBool();
+    mIsDelayAllowed[1] = settings.value("allowDelay1", mIsDelayAllowed[1]).toBool();
+    mIsDelayAllowed[2] = settings.value("allowDelay2", mIsDelayAllowed[2]).toBool();
+    mIsDelayAllowed[3] = settings.value("allowDelay3", mIsDelayAllowed[3]).toBool();
+    mIsDelayAllowed[4] = settings.value("allowDelay4", mIsDelayAllowed[4]).toBool();
+
+    mIsFactionAllowed[0] = settings.value("allowFactionBloodthirsty", mIsFactionAllowed[0]).toBool();
+    mIsFactionAllowed[1] = settings.value("allowFactionImperial", mIsFactionAllowed[1]).toBool();
+    mIsFactionAllowed[2] = settings.value("allowFactionRaider", mIsFactionAllowed[2]).toBool();
+    mIsFactionAllowed[3] = settings.value("allowFactionRighteous", mIsFactionAllowed[3]).toBool();
+    mIsFactionAllowed[4] = settings.value("allowFactionXeno", mIsFactionAllowed[4]).toBool();
 
     mWhiteList.clear();
     QStringList defaultList;
@@ -317,10 +394,30 @@ void CCardFilterParameters::updateSettings(QSettings &settings) const
     settings.setValue("allowActionsUncommon", mIsActionAllowed[2]);
     settings.setValue("allowActionsCommon", mIsActionAllowed[3]);
 
-    settings.setValue("allowHealth4Plus", mIsHealthAllowed[0]);
-    settings.setValue("allowHealth3", mIsHealthAllowed[1]);
-    settings.setValue("allowHealth2", mIsHealthAllowed[2]);
-    settings.setValue("allowHealth1", mIsHealthAllowed[3]);
+    settings.setValue("allowHealth1", mIsHealthAllowed[0]);
+    settings.setValue("allowHealth2", mIsHealthAllowed[1]);
+    settings.setValue("allowHealth3", mIsHealthAllowed[2]);
+    settings.setValue("allowHealth4", mIsHealthAllowed[3]);
+    settings.setValue("allowHealth5", mIsHealthAllowed[4]);
+
+    settings.setValue("allowAttack0", mIsAttackAllowed[0]);
+    settings.setValue("allowAttack1", mIsAttackAllowed[1]);
+    settings.setValue("allowAttack2", mIsAttackAllowed[2]);
+    settings.setValue("allowAttack3", mIsAttackAllowed[3]);
+    settings.setValue("allowAttack4", mIsAttackAllowed[4]);
+
+    settings.setValue("allowDelay0", mIsDelayAllowed[0]);
+    settings.setValue("allowDelay1", mIsDelayAllowed[1]);
+    settings.setValue("allowDelay2", mIsDelayAllowed[2]);
+    settings.setValue("allowDelay3", mIsDelayAllowed[3]);
+    settings.setValue("allowDelay4", mIsDelayAllowed[4]);
+
+    settings.setValue("allowFactionBloodthirsty", mIsFactionAllowed[0]);
+    settings.setValue("allowFactionImperial", mIsFactionAllowed[1]);
+    settings.setValue("allowFactionRaider", mIsFactionAllowed[2]);
+    settings.setValue("allowFactionRighteous", mIsFactionAllowed[3]);
+    settings.setValue("allowFactionXeno", mIsFactionAllowed[4]);
+
 
     QStringList whiteList;
     for(QHash<QString, int>::const_iterator i = mWhiteList.begin(); i != mWhiteList.end(); ++i)
@@ -469,18 +566,51 @@ bool CCardFilterParameters::checkCard(const CCard &card, int &num) const
             break;
         }
 
+        bool passFaction(true);
+        switch(card.getFaction())
+        {
+        case EBloodthirstyFaction: passFaction = mIsFactionAllowed[0]; break;
+        case EImperialFaction: passFaction = mIsFactionAllowed[1]; break;
+        case ERaiderFaction: passFaction = mIsFactionAllowed[2]; break;
+        case ERighteousFaction: passFaction = mIsFactionAllowed[3]; break;
+        case EXenoFaction: passFaction = mIsFactionAllowed[4]; break;
+        default: break;
+        }
+
         bool passHealth(true);
+        bool passAttack(true);
+        bool passDelay(true);
         if (card.getType() == EAssaultType)
         {
             switch (card.getHealth())
             {
-            case 1: passHealth = mIsHealthAllowed[3]; break;
-            case 2: passHealth = mIsHealthAllowed[2]; break;
-            case 3: passHealth = mIsHealthAllowed[1]; break;
-            default: passHealth = mIsHealthAllowed[0]; break;
+            case 1: passHealth = mIsHealthAllowed[0]; break;
+            case 2: passHealth = mIsHealthAllowed[1]; break;
+            case 3: passHealth = mIsHealthAllowed[2]; break;
+            case 4: passHealth = mIsHealthAllowed[3]; break;
+            case 5:
+            default: passHealth = mIsHealthAllowed[4]; break;
+            }
+            switch (card.getAttack())
+            {
+            case 0: passAttack = mIsAttackAllowed[0]; break;
+            case 1: passAttack = mIsAttackAllowed[1]; break;
+            case 2: passAttack = mIsAttackAllowed[2]; break;
+            case 3: passAttack = mIsAttackAllowed[3]; break;
+            case 4:
+            default: passAttack = mIsAttackAllowed[4]; break;
+            }
+            switch (card.getDelay())
+            {
+                case 0: passDelay = mIsDelayAllowed[0]; break;
+                case 1: passDelay = mIsDelayAllowed[1]; break;
+                case 2: passDelay = mIsDelayAllowed[2]; break;
+                case 3: passDelay = mIsDelayAllowed[3]; break;
+                case 4: passDelay = mIsDelayAllowed[4]; break;
+                default: break;
             }
         }
-        return passRarity && passHealth;
+        return passRarity && passFaction && passHealth && passAttack && passDelay;
     }
     return true;
 }

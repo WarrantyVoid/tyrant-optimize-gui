@@ -28,6 +28,10 @@ public:
 
 private:
     static const int NUM_RARITY = 4;
+    static const int NUM_HEALTH = 5;
+    static const int NUM_ATTACK = 5;
+    static const int NUM_DELAY = 5;
+    static const int NUM_FACTION = 5;
     static const int NUM_SET = 16;
 
 private:
@@ -36,7 +40,10 @@ private:
     bool mIsStructureAllowed[NUM_RARITY];
     bool mIsCommanderAllowed[NUM_RARITY];
     bool mIsActionAllowed[NUM_RARITY];
-    bool mIsHealthAllowed[NUM_RARITY];
+    bool mIsHealthAllowed[NUM_HEALTH];
+    bool mIsAttackAllowed[NUM_ATTACK];
+    bool mIsDelayAllowed[NUM_DELAY];
+    bool mIsFactionAllowed[NUM_FACTION];
     int mComplement[NUM_SET];
     QHash<QString, int> mWhiteList;
     QHash<QString, int> mBlackList;
