@@ -145,6 +145,10 @@ void CCardSearchWidget::updateView()
             {
                 static_cast<CCardLabel*>(mResultWidgets[i]->widget())->setCard(*foundCards[i]);
                 mResultWidgets[i]->widget()->setVisible(true);
+                if (i == 0)
+                {
+                    mUi->finderView->ensureVisible(mResultWidgets[i]);
+                }
             }
             else
             {
