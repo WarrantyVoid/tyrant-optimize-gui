@@ -4,6 +4,7 @@
 #include <QWidget>
 #include <QItemSelection>
 #include <QStyledItemDelegate>
+#include <QSortFilterProxyModel>
 #include <QPainter>
 #include "model/CDeckTable.h"
 
@@ -23,6 +24,59 @@ class CDeckIconDelegate : public QStyledItemDelegate
         normRect.moveTo(0, 0);
         painter->drawPixmap(option.rect, index.data(Qt::DecorationRole).value<QPixmap>(), normRect);
     }
+};
+
+/**
+* Workaround for allowing multiple column filtering
+*/
+class DeckSortFilterProxyModel : public QSortFilterProxyModel
+{
+Q_OBJECT
+public:
+    void setFilterPattern(int column, const QString &pattern)
+    {
+        switch(column)
+        {
+        case 0: mTypePattern = QRegExp(pattern); break;
+        case 1: mCommanderPattern = pattern.toLower(); break;
+        case 3: mNamePattern = pattern.toLower(); break;
+        default:  break;
+        }
+    }
+
+    bool filterAcceptsRow(int sourceRow, const QModelIndex &sourceParent) const
+    {
+        if (!mTypePattern.isEmpty())
+        {
+            QModelIndex index = sourceModel()->index(sourceRow, 0, sourceParent);
+            if (!mTypePattern.exactMatch(index.data().toString()))
+            {
+                return false;
+            }
+        }
+        if (!mCommanderPattern.isEmpty())
+        {
+            QModelIndex index = sourceModel()->index(sourceRow, 1, sourceParent);
+            if (!index.data().toString().toLower().contains(mCommanderPattern))
+            {
+                return false;
+            }
+        }
+        if (!mNamePattern.isEmpty())
+        {
+            QModelIndex index = sourceModel()->index(sourceRow, 3, sourceParent);
+            if (!index.data().toString().toLower().contains(mNamePattern))
+            {
+                return false;
+            }
+        }
+        return true;
+    }
+
+private:
+    QRegExp mTypePattern;
+    QString mCommanderPattern;
+    QString mNamePattern;
 };
 
 enum EInputDeckTarget
@@ -45,17 +99,20 @@ signals:
 
 public slots:
     void updateButtonAvailability();
+    void updateView();
 
 private slots:
     void deleteSelectedDeck();
     void setSelectedBaseDeck();
     void setSelectedEnemyDeck();
     void setSelectedDeck();
+    void sortDeckTableRows(int column);
     
 private:
     Ui::DeckManagementWidget *mUi;
-    CDeckIconDelegate mDeckIconDelegate;
     CDeckTable &mDecks;
+    CDeckIconDelegate mDeckIconDelegate;
+    DeckSortFilterProxyModel mDeckSortProxy;
 };
 
 #endif // CDECKMANAGEMENTWIDGET_H

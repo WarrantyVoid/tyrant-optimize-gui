@@ -32,6 +32,7 @@ public:
     EDeckType getType() const;
     unsigned int getBattlegroundId() const;
     const CCard& getCommander() const;
+    const CCard& getLegendary() const;
     const QList<CCard>& getCards() const;
     int getNumCards() const;
 

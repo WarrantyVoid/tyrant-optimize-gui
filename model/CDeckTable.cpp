@@ -299,7 +299,7 @@ int CDeckTable::rowCount(const QModelIndex &/*parent*/) const
 
 int CDeckTable::columnCount(const QModelIndex &/*parent*/) const
 {
-    return 3;
+    return 4;
 }
 
 QVariant CDeckTable::data(const QModelIndex &index, int role) const
@@ -319,12 +319,19 @@ QVariant CDeckTable::data(const QModelIndex &index, int role) const
                 case ERaidDeckType: return QChar('R');
                 case EQuestDeckType: return QChar('Q');
                 case ECustomDeckType: return QChar('C');
-                default: return 'U';
+                default: return QChar('U');
                 }
             case Qt::TextAlignmentRole:
                 return Qt::AlignCenter;
             case Qt::ToolTipRole:
-                return QVariant();
+                switch(deckData->getType())
+                {
+                case EMissionDeckType: return "Mission Deck";
+                case ERaidDeckType: return "Raid Deck";
+                case EQuestDeckType: return "Quest Deck";
+                case ECustomDeckType: return "Custom Deck";
+                default: return "Unknown Deck";
+                }
             }
             break;
         case 1:
@@ -338,11 +345,23 @@ QVariant CDeckTable::data(const QModelIndex &index, int role) const
                 return QVariant(comImg.scaledToHeight(20, Qt::SmoothTransformation));
             }
             case Qt::ToolTipRole:
-                return QVariant();
+            case Qt::DisplayRole:
+                return QVariant(mDecks[index.row()]->getCommander().getName());
             }
             break;
         }
         case 2:
+            switch (role)
+            {
+            case Qt::TextAlignmentRole:
+                return QVariant(Qt::AlignCenter);
+            case Qt::DisplayRole:
+                return QVariant(mDecks[index.row()]->getNumCards() - 1);
+            case Qt::ToolTipRole:
+                return QVariant();
+            }
+            break;
+        case 3:
             switch (role)
             {
             case Qt::DisplayRole:
@@ -382,6 +401,14 @@ QVariant CDeckTable::headerData(int section, Qt::Orientation orientation, int ro
             break;
         }
         case 2:
+        {
+            if (role == Qt::DisplayRole)
+            {
+                return "#";
+            }
+            break;
+        }
+        case 3:
             if (role == Qt::DisplayRole)
             {
                 return "Deck Name";
@@ -425,7 +452,7 @@ QMimeData *CDeckTable::mimeData(const QModelIndexList &indexes) const
      QStringList deckStr;
      foreach (QModelIndex index, indexes)
      {
-         if (index.isValid() && index.column() == 2)
+         if (index.isValid() && index.column() == 3)
          {
              deckStr << data(index, Qt::DisplayRole).toString();
          }

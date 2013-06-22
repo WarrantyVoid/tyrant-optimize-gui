@@ -5,11 +5,14 @@
 CDeckManagementWidget::CDeckManagementWidget(QWidget *parent)
 : QWidget(parent)
 , mUi(new Ui::DeckManagementWidget)
-, mDeckIconDelegate()
 , mDecks(CDeckTable::getDeckTable())
+, mDeckIconDelegate()
+, mDeckSortProxy()
 {
     mUi->setupUi(this);
-    mUi->deckTableView->setModel(&mDecks);
+    mDeckSortProxy.setSourceModel(&mDecks);
+    mUi->deckTableView->setModel(&mDeckSortProxy);
+    mUi->deckTableView->setSortingEnabled(true);
     mUi->deckTableView->horizontalHeader()->setDefaultAlignment(Qt::AlignLeft);
     mUi->deckTableView->horizontalHeader()->setDefaultSectionSize(21);
     mUi->deckTableView->verticalHeader()->setDefaultSectionSize(18);
@@ -20,6 +23,9 @@ CDeckManagementWidget::CDeckManagementWidget(QWidget *parent)
     connect(
         mUi->deckTableView, SIGNAL(doubleClicked(const QModelIndex &)),
         this, SLOT(setSelectedDeck()));
+    connect(
+        mUi->deckTableView->horizontalHeader(), SIGNAL(sectionClicked(int)),
+        this, SLOT(sortDeckTableRows(int)));
 
     connect(
         mUi->deleteDeckButton, SIGNAL(clicked()),
@@ -30,6 +36,25 @@ CDeckManagementWidget::CDeckManagementWidget(QWidget *parent)
     connect(
         mUi->setBaseDeckButton, SIGNAL(clicked()),
         this, SLOT(setSelectedBaseDeck()));
+
+    connect(
+        mUi->nameBox, SIGNAL(editTextChanged(const QString&)),
+        this, SLOT(updateView()));
+    connect(
+        mUi->commanderBox, SIGNAL(editTextChanged(const QString&)),
+        this, SLOT(updateView()));
+    connect(
+        mUi->customBox, SIGNAL(clicked(bool)),
+        this, SLOT(updateView()));
+    connect(
+        mUi->missionBox, SIGNAL(clicked(bool)),
+        this, SLOT(updateView()));
+    connect(
+        mUi->questBox, SIGNAL(clicked(bool)),
+        this, SLOT(updateView()));
+    connect(
+        mUi->raidBox, SIGNAL(clicked(bool)),
+        this, SLOT(updateView()));
 }
 
 CDeckManagementWidget::~CDeckManagementWidget()
@@ -53,7 +78,7 @@ void CDeckManagementWidget::updateButtonAvailability()
         int deckSelectCount = 0;
         for (QModelIndexList::const_iterator i = indexes.begin(); i!= indexes.end(); ++i)
         {
-            const CDeck &deck = mDecks.getDeckForIndex(*i);
+            const CDeck &deck = mDecks.getDeckForIndex(mDeckSortProxy.mapToSource(*i));
             ++deckSelectCount;
             if (deleteAllowed && deck.getType() != ECustomDeckType)
             {
@@ -74,6 +99,31 @@ void CDeckManagementWidget::updateButtonAvailability()
     mUi->setEnemyDeckButton->setEnabled(setEnemyDeckAllowed);
 }
 
+void CDeckManagementWidget::updateView()
+{
+    QStringList deckTypes;
+    if (mUi->customBox->isChecked())
+    {
+        deckTypes << "C";
+    }
+    if (mUi->missionBox->isChecked())
+    {
+        deckTypes << "M";
+    }
+    if (mUi->questBox->isChecked())
+    {
+        deckTypes << "Q";
+    }
+    if (mUi->raidBox->isChecked())
+    {
+        deckTypes << "R";
+    }
+    mDeckSortProxy.setFilterPattern(0, deckTypes.join("|"));
+    mDeckSortProxy.setFilterPattern(1, mUi->commanderBox->currentText());
+    mDeckSortProxy.setFilterPattern(3, mUi->nameBox->currentText());
+    mDeckSortProxy.invalidate();
+}
+
 void CDeckManagementWidget::deleteSelectedDeck()
 {
     QModelIndexList indexes = mUi->deckTableView->selectionModel()->selectedRows();
@@ -82,7 +132,7 @@ void CDeckManagementWidget::deleteSelectedDeck()
     {
         for (QModelIndexList::const_iterator i = indexes.begin(); i!= indexes.end(); ++i)
         {
-            const CDeck &deck = mDecks.getDeckForIndex(*i);
+            const CDeck &deck = mDecks.getDeckForIndex(mDeckSortProxy.mapToSource(*i));
             selectedDecks.push_back(deck.getName());
         }
         mDecks.deleteCustomDecks(selectedDecks);
@@ -97,7 +147,7 @@ void CDeckManagementWidget::setSelectedBaseDeck()
     {
         for (QModelIndexList::const_iterator i = indexes.begin(); i!= indexes.end(); ++i)
         {
-            const CDeck &deck = mDecks.getDeckForIndex(*i);
+            const CDeck &deck = mDecks.getDeckForIndex(mDeckSortProxy.mapToSource(*i));
             selectedDecks.push_back(deck.getName());
         }
         emit setDeck(selectedDecks.join(";"), BaseDeckInputTarget);
@@ -112,7 +162,7 @@ void CDeckManagementWidget::setSelectedEnemyDeck()
     {
         for (QModelIndexList::const_iterator i = indexes.begin(); i!= indexes.end(); ++i)
         {
-            const CDeck &deck = mDecks.getDeckForIndex(*i);
+            const CDeck &deck = mDecks.getDeckForIndex(mDeckSortProxy.mapToSource(*i));
             selectedDecks.push_back(deck.getName());
         }
         emit setDeck(selectedDecks.join(";"), EnemyDeckInputTarget);
@@ -127,7 +177,7 @@ void CDeckManagementWidget::setSelectedDeck()
     {
         for (QModelIndexList::const_iterator i = indexes.begin(); i!= indexes.end(); ++i)
         {
-            const CDeck &deck = mDecks.getDeckForIndex(*i);
+            const CDeck &deck = mDecks.getDeckForIndex(mDeckSortProxy.mapToSource(*i));
             selectedDecks.push_back(deck.getName());
         }
         if (mUi->setBaseDeckButton->isEnabled())
@@ -146,4 +196,9 @@ void CDeckManagementWidget::setSelectedDeck()
             emit setDeck(selectedDecks.join(";"), EnemyDeckInputTarget);
         }
     }
+}
+
+void CDeckManagementWidget::sortDeckTableRows(int column)
+{
+    mUi->deckTableView->sortByColumn(column);
 }

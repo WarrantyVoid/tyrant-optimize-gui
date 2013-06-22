@@ -76,6 +76,18 @@ const CCard& CDeck::getCommander() const
     return mCards.first();
 }
 
+const CCard& CDeck::getLegendary() const
+{
+    for (QList<CCard>::const_iterator i = mCards.begin(); i != mCards.end(); ++i)
+    {
+        if ((*i).getRarity() == ELegendaryRarity)
+        {
+            return *i;
+        }
+    }
+    return CCard::INVALID_CARD;
+}
+
 const QList<CCard>& CDeck::getCards() const
 {
     return mCards;
