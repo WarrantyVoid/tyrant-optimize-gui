@@ -128,22 +128,33 @@ void CCardSearchWidget::updateView()
     {
         CCardTable &cards = CCardTable::getCardTable();
         QList<CCard*> foundCards;
+        QList<CCard*> ownedCards;
         mSearchParameters.fetchFromUi(*mUi);
-        cards.searchCards(mSearchParameters, foundCards, NUM_RESULT_WIDGETS);
+        cards.searchCards(mSearchParameters, foundCards);
 
-        for (int i = qMin(foundCards.size() - 1, NUM_RESULT_WIDGETS); i > -1; --i)
+        for (int i = foundCards.size() - 1; i > -1; --i)
         {
-            if (!cards.isCardOwned(foundCards[i]))
+            if (cards.isCardOwned(foundCards[i]))
             {
-                foundCards.move(i, foundCards.size() - 1);
+                ownedCards.push_back(foundCards[i]);
+                foundCards.removeAt(i);
             }
         }
 
         for (int i = 0; i < NUM_RESULT_WIDGETS; ++i)
         {
-            if (i < foundCards.size())
+            if (i < ownedCards.size())
             {
-                static_cast<CCardLabel*>(mResultWidgets[i]->widget())->setCard(*foundCards[i]);
+                static_cast<CCardLabel*>(mResultWidgets[i]->widget())->setCard(*ownedCards[i]);
+                mResultWidgets[i]->widget()->setVisible(true);
+                if (i == 0)
+                {
+                    mUi->finderView->ensureVisible(mResultWidgets[i]);
+                }
+            }
+            else if (i - ownedCards.size() < foundCards.size())
+            {
+                static_cast<CCardLabel*>(mResultWidgets[i]->widget())->setCard(*foundCards[i - ownedCards.size()]);
                 mResultWidgets[i]->widget()->setVisible(true);
                 if (i == 0)
                 {
