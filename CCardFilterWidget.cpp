@@ -125,6 +125,12 @@ void CCardFilterWidget::setOwnedCardsFile(const QString &fileName)
     executeFilter();
 }
 
+void CCardFilterWidget::setCardsBlackListed(const QStringList &cards, bool toBlack)
+{
+    mParameters.setCardsBlackListed(cards, toBlack);
+    mParameters.updateUi(*mUi);
+}
+
 void CCardFilterWidget::declineFilter()
 {
     mParameters.updateUi(*mUi);

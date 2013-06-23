@@ -5,6 +5,7 @@
 #include <QItemSelection>
 #include <QStyledItemDelegate>
 #include <QSortFilterProxyModel>
+#include <QSettings>
 #include <QPainter>
 #include "model/CDeckTable.h"
 
@@ -94,19 +95,28 @@ public:
     explicit CDeckManagementWidget(QWidget *parent = 0);
     ~CDeckManagementWidget();
 
+public:
+    void loadParameterSettings(QSettings &settings);
+    void saveParameterSettings(QSettings &settings);
+
 signals:
     void setDeck(const QString &deckStr, EInputDeckTarget target);
+    void blackListCards(const QStringList &cards, bool toBlack);
 
 public slots:
+    bool addCustomDeck(CDeck &customDeck);
     void updateButtonAvailability();
     void updateView();
 
 private slots:
     void deleteSelectedDeck();
+    void blacklistSelectedDeck();
     void setSelectedBaseDeck();
     void setSelectedEnemyDeck();
     void setSelectedDeck();
-    void sortDeckTableRows(int column);
+
+private:
+    void addDeckToBlackList(const CDeck& deck, QStringList &blackList);
     
 private:
     Ui::DeckManagementWidget *mUi;

@@ -13,7 +13,7 @@
 #include <QHelpEvent>
 #include <QClipboard>
 
-const QString CMainWindow::VERSION = "1.2.2";
+const QString CMainWindow::VERSION = "1.2.3";
 
 CMainWindow::CMainWindow(QWidget *parent)
 : QMainWindow(parent)
@@ -262,6 +262,9 @@ CMainWindow::CMainWindow(QWidget *parent)
     connect(
         mUi->deckManagementWidget, SIGNAL(setDeck(const QString &,EInputDeckTarget)),
         this, SLOT(setDeckInput(const QString &,EInputDeckTarget)));
+    connect(
+        mUi->deckManagementWidget, SIGNAL(blackListCards(const QStringList&, bool)),
+        mFilterWidget, SLOT(setCardsBlackListed(const QStringList&, bool)));
 
     // Process wrapper connections
     connect(
@@ -441,6 +444,7 @@ void CMainWindow::loadDefaultSettings()
     mUi->shadeOwnedCardsAction->setChecked(CGlobalConfig::getCfg().isCardShadingEnabled());
     mFilterWidget->loadParameterSettings(settings);
     mUi->cardSearchWidget->loadParameterSettings(settings);
+    mUi->deckManagementWidget->loadParameterSettings(settings);
 }
 
 void CMainWindow::closeEvent(QCloseEvent *e)
@@ -455,6 +459,7 @@ void CMainWindow::closeEvent(QCloseEvent *e)
     CGlobalConfig::getCfg().save(settings);
     mFilterWidget->saveParameterSettings(settings);
     mUi->cardSearchWidget->saveParameterSettings(settings);
+    mUi->deckManagementWidget->saveParameterSettings(settings);
     QMainWindow::closeEvent(e);
 }
 
@@ -697,7 +702,7 @@ void CMainWindow::saveCustomDeck()
         customDeck.setName(saveWidget->deckName());
         if (customDeck.isValid())
         {
-            mDecks.addCustomDeck(customDeck);
+            mUi->deckManagementWidget->addCustomDeck(customDeck);
         }
    }
 }

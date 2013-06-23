@@ -2,6 +2,7 @@
     <qresource prefix="/img">
         <file>MainWindow.ico</file>
         <file>add.png</file>
+        <file>blacklist.png</file>
         <file>delete.png</file>
         <file>common.png</file>
         <file>hash.png</file>

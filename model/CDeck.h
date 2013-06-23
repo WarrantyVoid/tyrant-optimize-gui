@@ -26,7 +26,7 @@ public:
     void setBattleground(unsigned int battlegroundId);
     void addCard(const CCard& card);
     void replaceCard(int index, const CCard& card);
-    void clearCards();    
+    void clearCards();
 
     const QString& getName() const;
     EDeckType getType() const;

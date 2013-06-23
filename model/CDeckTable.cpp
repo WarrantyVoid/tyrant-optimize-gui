@@ -16,6 +16,7 @@ CDeckTable::CDeckTable(QObject *parent)
 : QAbstractTableModel(parent)
 , mDecks()
 , mDeckNameMap()
+, mDeckBlackListMap()
 {
     initData();
 }
@@ -289,7 +290,25 @@ void CDeckTable::clearDecks()
     beginResetModel();
     mDecks.clear();
     mDeckNameMap.clear();
+    mDeckBlackListMap.clear();
     endResetModel();
+}
+
+bool CDeckTable::isDeckBlackListed(const QString &deckStr) const
+{
+    return mDeckBlackListMap.contains(deckStr);
+}
+
+void CDeckTable::setDeckBlackListed(const QString &deckStr, bool blackListed)
+{
+    if (blackListed)
+    {
+        mDeckBlackListMap.insert(deckStr);
+    }
+    else
+    {
+        mDeckBlackListMap.remove(deckStr);
+    }
 }
 
 int CDeckTable::rowCount(const QModelIndex &/*parent*/) const
@@ -365,6 +384,10 @@ QVariant CDeckTable::data(const QModelIndex &index, int role) const
             switch (role)
             {
             case Qt::DisplayRole:
+                if (isDeckBlackListed(deckData->getName()))
+                {
+                    return mDecks[index.row()]->getName() + "   (Blacklisted)";
+                }
                 return QVariant(mDecks[index.row()]->getName());
             case Qt::ToolTipRole:
                 return QVariant();

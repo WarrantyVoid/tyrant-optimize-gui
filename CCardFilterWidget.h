@@ -31,6 +31,7 @@ signals:
 public slots:
     void updateOwnedCardsFile(const QString &fileName);
     void setOwnedCardsFile(const QString &fileName);
+    void setCardsBlackListed(const QStringList &cards, bool toBlack);
 
 protected slots:
     void declineFilter();

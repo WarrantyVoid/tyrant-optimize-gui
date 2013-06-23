@@ -196,6 +196,20 @@
          </widget>
         </item>
         <item>
+         <widget class="QPushButton" name="blacklistDeckButton">
+          <property name="enabled">
+           <bool>false</bool>
+          </property>
+          <property name="text">
+           <string>Blacklist</string>
+          </property>
+          <property name="icon">
+           <iconset resource="main.qrc">
+            <normaloff>:/img/blacklist.png</normaloff>:/img/blacklist.png</iconset>
+          </property>
+         </widget>
+        </item>
+        <item>
          <widget class="QPushButton" name="setBaseDeckButton">
           <property name="enabled">
            <bool>false</bool>
