@@ -126,20 +126,11 @@ void CCardFilterParameters::fetchFromUi(const Ui::CardFilterWidget &ui)
     QStringList whiteList = ui.whiteListEdit->toPlainText().split("\n", QString::SkipEmptyParts);
     for(QStringList::iterator i = whiteList.begin(); i != whiteList.end(); ++i)
     {
-        QStringList curCardTokens = (*i).split(QRegExp("\\(|\\)"), QString::SkipEmptyParts);
-        if (curCardTokens.size() > 0)
+        TListedCard curCard = strToListedCard(*i);
+        const CCard &card = mCards.getCardForName(curCard.first);
+        if (card.isValid())
         {
-            int num(-1);
-            if (curCardTokens.size() > 1)
-            {
-                bool ok(true);
-                num = curCardTokens.at(1).toInt(&ok);
-            }
-            const CCard &card = mCards.getCardForName(curCardTokens.at(0).trimmed());
-            if (card.isValid())
-            {
-                mWhiteList.insert(card.getName(), num);
-            }
+            mWhiteList.insert(card.getName(), curCard.second);
         }
     }
 
@@ -147,20 +138,11 @@ void CCardFilterParameters::fetchFromUi(const Ui::CardFilterWidget &ui)
     QStringList blackList = ui.blackListEdit->toPlainText().split("\n", QString::SkipEmptyParts);
     for(QStringList::iterator i = blackList.begin(); i != blackList.end(); ++i)
     {
-        QStringList curCardTokens = (*i).split(QRegExp("\\(|\\)"), QString::SkipEmptyParts);
-        if (curCardTokens.size() > 0)
+        TListedCard curCard = strToListedCard(*i);
+        const CCard &card = mCards.getCardForName(curCard.first);
+        if (card.isValid())
         {
-            int num(-1);
-            if (curCardTokens.size() > 1)
-            {
-                bool ok(true);
-                num = curCardTokens.at(1).toInt(&ok);
-            }
-            const CCard &card = mCards.getCardForName(curCardTokens.at(0).trimmed());
-            if (card.isValid())
-            {
-                mBlackList.insert(card.getName(), num);
-            }
+            mBlackList.insert(card.getName(), curCard.second);
         }
     }
 
@@ -219,7 +201,11 @@ void CCardFilterParameters::updateUi(Ui::CardFilterWidget &ui) const
     QStringList whiteList;
     for(QHash<QString, int>::const_iterator i = mWhiteList.begin(); i != mWhiteList.end(); ++i)
     {
-        whiteList.push_back(i.key());
+        QString curCard = listedCardToStr(TListedCard(i.key(), i.value()));
+        if (!curCard.isEmpty())
+        {
+            whiteList.push_back(curCard);
+        }
     }
     whiteList.sort();
     ui.whiteListEdit->setPlainText(whiteList.join("\n"));
@@ -227,7 +213,11 @@ void CCardFilterParameters::updateUi(Ui::CardFilterWidget &ui) const
     QStringList blackList;
     for(QHash<QString, int>::const_iterator i = mBlackList.begin(); i != mBlackList.end(); ++i)
     {
-        blackList.push_back(i.key());
+        QString curCard = listedCardToStr(TListedCard(i.key(), i.value()));
+        if (!curCard.isEmpty())
+        {
+            blackList.push_back(curCard);
+        }
     }
     blackList.sort();
     ui.blackListEdit->setPlainText(blackList.join("\n"));
@@ -318,14 +308,11 @@ void CCardFilterParameters::fetchFromSettings(QSettings &settings)
     QStringList whiteList = settings.value("whiteList", defaultList).toStringList();
     for(QStringList::iterator i = whiteList.begin(); i != whiteList.end(); ++i)
     {
-        QStringList curCardTokens = (*i).split(QRegExp("\\(|\\)"), QString::SkipEmptyParts);
-        if (curCardTokens.size() > 0)
+        TListedCard curCard = strToListedCard(*i);
+        const CCard &card = mCards.getCardForName(curCard.first);
+        if (card.isValid())
         {
-            const CCard &card = mCards.getCardForName(curCardTokens.at(0).trimmed());
-            if (card.isValid())
-            {
-                mWhiteList.insert(card.getName(), 0);
-            }
+            mWhiteList.insert(card.getName(), curCard.second);
         }
     }
 
@@ -333,14 +320,11 @@ void CCardFilterParameters::fetchFromSettings(QSettings &settings)
     QStringList blackList = settings.value("blackList").toStringList();
     for(QStringList::iterator i = blackList.begin(); i != blackList.end(); ++i)
     {
-        QStringList curCardTokens = (*i).split(QRegExp("\\(|\\)"), QString::SkipEmptyParts);
-        if (curCardTokens.size() > 0)
+        TListedCard curCard = strToListedCard(*i);
+        const CCard &card = mCards.getCardForName(curCard.first);
+        if (card.isValid())
         {
-            const CCard &card = mCards.getCardForName(curCardTokens.at(0).trimmed());
-            if (card.isValid())
-            {
-                mBlackList.insert(card.getName(), 0);
-            }
+            mBlackList.insert(card.getName(), curCard.second);
         }
     }
 
@@ -422,14 +406,22 @@ void CCardFilterParameters::updateSettings(QSettings &settings) const
     QStringList whiteList;
     for(QHash<QString, int>::const_iterator i = mWhiteList.begin(); i != mWhiteList.end(); ++i)
     {
-        whiteList.push_back(i.key());
+        QString curCard = listedCardToStr(TListedCard(i.key(), i.value()));
+        if (!curCard.isEmpty())
+        {
+            whiteList.push_back(curCard);
+        }
     }
     settings.setValue("whiteList", whiteList);
 
     QStringList blackList;
     for(QHash<QString, int>::const_iterator i = mBlackList.begin(); i != mBlackList.end(); ++i)
     {
-        blackList.push_back(i.key());
+        QString curCard = listedCardToStr(TListedCard(i.key(), i.value()));
+        if (!curCard.isEmpty())
+        {
+            blackList.push_back(curCard);
+        }
     }
     settings.setValue("blackList", blackList);
 
@@ -456,6 +448,42 @@ void CCardFilterParameters::updateSettings(QSettings &settings) const
     settings.setValue("isCompletionEnabled", mIsCompletionEnabled);
 
     settings.endGroup();
+}
+
+void CCardFilterParameters::setCardsBlackListed(const QStringList &cards, bool toBlack)
+{
+    for (QStringList::const_iterator iCards = cards.begin(); iCards != cards.end(); ++iCards)
+    {
+        QHash<QString, int>::iterator iBlack = mBlackList.find(*iCards);
+        if (toBlack)
+        {
+            if (iBlack != mBlackList.end())
+            {
+                if (iBlack.value() > 0)
+                {
+                    ++iBlack.value();
+                }
+            }
+            else
+            {
+                mBlackList.insert(*iCards, 1);
+            }
+        }
+        else
+        {
+            if (iBlack != mBlackList.end())
+            {
+                if (iBlack.value() > 0)
+                {
+                    --iBlack.value();
+                    if (iBlack.value() <= 0)
+                    {
+                        mBlackList.remove(*iCards);
+                    }
+                }
+            }
+        }
+    }
 }
 
 bool CCardFilterParameters::checkCard(const CCard &card, int &num) const
@@ -614,3 +642,34 @@ bool CCardFilterParameters::checkCard(const CCard &card, int &num) const
     }
     return true;
 }
+
+TListedCard CCardFilterParameters::strToListedCard(const QString &str) const
+{
+    TListedCard card("", -1);
+    QStringList curCardTokens = str.split(QRegExp("\\(|\\)"), QString::SkipEmptyParts);
+    if (curCardTokens.size() > 0)
+    {
+        int num(-1);
+        if (curCardTokens.size() > 1)
+        {
+            bool ok(true);
+            num = curCardTokens.at(1).toInt(&ok);
+        }
+        card.first = curCardTokens.at(0).trimmed();
+        card.second = num;
+    }
+    return card;
+}
+
+QString CCardFilterParameters::listedCardToStr(const TListedCard &card) const
+{
+    if (card.second > 0)
+    {
+        return QString("%1 (%2)").arg(card.first).arg(card.second);
+    }
+    else
+    {
+        return card.first;
+    }
+}
+

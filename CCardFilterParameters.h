@@ -11,6 +11,7 @@ class CardFilterWidget;
 }
 class CCardTable;
 class CCard;
+typedef QPair<QString, int> TListedCard;
 
 class CCardFilterParameters : public ICardCheck
 {
@@ -24,7 +25,13 @@ public:
     void fetchFromSettings(QSettings &settings);
     void updateSettings(QSettings &settings) const;
 
+    void setCardsBlackListed(const QStringList &cards, bool toBlack);
+
     bool checkCard(const CCard &card, int &num) const;
+
+protected:
+    TListedCard strToListedCard(const QString &str) const;
+    QString listedCardToStr(const TListedCard &card) const;
 
 private:
     static const int NUM_RARITY = 4;
