@@ -193,7 +193,7 @@ CMainWindow::CMainWindow(QWidget *parent)
         mUi->enemyDeckEdit->lineEdit(), SIGNAL(textChanged(const QString &)),
         mUi->enemyDeckWidget, SLOT(setDeck(const QString &)));
     connect(
-        mUi->enemyDeckEdit->lineEdit(), SIGNAL(textChanged(const QString &)),
+        mUi->enemyDeckEdit, SIGNAL(deckDropped(const QString &)),
         this, SLOT(updateParameterBoxValues(const QString &)));
     connect(
         mUi->enemyDeckWidget, SIGNAL(deckChanged(const QString &)),
@@ -985,6 +985,7 @@ void CMainWindow::setDeckInput(const QString &deckStr, EInputDeckTarget target)
     if (deckInput)
     {
         deckInput->setDeckId(deckStr);
+        updateParameterBoxValues(deckStr);
     }
 }
 

@@ -15,6 +15,9 @@ public:
     void setAllowMultiDecks(bool allow);
     QStringList history() const;
 
+signals:
+    void deckDropped(const QString &deckStr);
+
 public slots:
     void setDeckId(const QString &deckStr);
     void updateHistory(const QStringList &history);

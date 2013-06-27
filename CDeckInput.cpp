@@ -61,6 +61,7 @@ bool CDeckInput::eventFilter(QObject *obj, QEvent *e)
                 {
                     lineEdit()->setText(data);
                     lineEdit()->setFocus();
+                    emit deckDropped(data);
                 }
             }
             event->accept();
