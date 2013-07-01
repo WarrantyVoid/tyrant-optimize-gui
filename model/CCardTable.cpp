@@ -124,7 +124,7 @@ void CCardTable::setOwnedCards(const QList<TOwnedCard> &ownedCards)
     emit ownedCardsUpdated();
 }
 
-void  CCardTable::updateData()
+void CCardTable::updateData()
 {
     if (mDataDownloads.isEmpty())
     {

@@ -8,6 +8,7 @@ CQuestsXmlParser::CQuestsXmlParser()
 , mIsDeckTagActive(false)
 , mIsCardTagActive(false)
 , mCurQuestName("")
+, mCurQuestId(0u)
 , mCurQuestBattleGroundId(0u)
 , mCurQuestDeck()
 , mIsBattlegroundTagActive(false)
@@ -29,6 +30,7 @@ bool CQuestsXmlParser::startDocument()
     mIsDeckTagActive = false;
     mIsCardTagActive = false;
     mCurQuestName = "";
+    mCurQuestId = 0u;
     mCurQuestBattleGroundId = 0u;
     mCurQuestDeck.clear();
 
@@ -102,9 +104,10 @@ bool CQuestsXmlParser::endElement(const QString & /*namespaceURI*/, const QStrin
     {
         if (qName.compare("step") == 0)
         {
-            emit questParsed(mCurQuestName, EQuestDeckType, mCurQuestBattleGroundId, mCurQuestDeck);
+            emit questParsed(mCurQuestId, mCurQuestName, EQuestDeckType, mCurQuestBattleGroundId, mCurQuestDeck);
             mIsStepTagActive = false;
             mCurQuestName = "";
+            mCurQuestId = 0u;
             mCurQuestBattleGroundId = 0u;
             mCurQuestDeck.clear();
         }
@@ -163,7 +166,9 @@ bool CQuestsXmlParser::characters(const QString & ch)
     {
         if (mIsIdTagActive)
         {
+            bool ok(true);
             mCurQuestName = QString("Step %1").arg(ch);
+            mCurQuestId = ch.toUInt(&ok);
         }
         else if (mIsBattlegroundIdTagActive)
         {

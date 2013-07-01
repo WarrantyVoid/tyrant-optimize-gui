@@ -17,7 +17,7 @@ CDeckManagementWidget::CDeckManagementWidget(QWidget *parent)
     mUi->deckTableView->horizontalHeader()->setDefaultAlignment(Qt::AlignLeft);
     mUi->deckTableView->horizontalHeader()->setDefaultSectionSize(21);
     mUi->deckTableView->verticalHeader()->setDefaultSectionSize(18);
-    mUi->deckTableView->setItemDelegateForColumn(1, &mDeckIconDelegate);
+    mUi->deckTableView->setItemDelegateForColumn(2, &mDeckIconDelegate);
     connect(
         mUi->deckTableView->selectionModel(), SIGNAL(selectionChanged(const QItemSelection&, const QItemSelection&)),
         this, SLOT(updateButtonAvailability()));
@@ -73,6 +73,7 @@ void CDeckManagementWidget::loadParameterSettings(QSettings &settings)
     mUi->missionBox->setChecked(settings.value("missionDeckFilter", false).toBool());
     mUi->questBox->setChecked(settings.value("questDeckFilter", false).toBool());
     mUi->raidBox->setChecked(settings.value("raidDeckFilter", false).toBool());
+    mUi->deckTableView->horizontalHeader()->restoreState(settings.value("tableHeader").toByteArray());
 
     QStringList blackList = settings.value("blackListedDecks").toStringList();
     for (QStringList::const_iterator i = blackList.begin(); i != blackList.end(); ++i)
@@ -81,7 +82,6 @@ void CDeckManagementWidget::loadParameterSettings(QSettings &settings)
     }
     settings.endGroup();
 
-    mDeckSortProxy.sort(0, Qt::AscendingOrder);
     updateView();
 }
 
@@ -94,6 +94,9 @@ void CDeckManagementWidget::saveParameterSettings(QSettings &settings)
     settings.setValue("missionDeckFilter", mUi->missionBox->isChecked());
     settings.setValue("questDeckFilter", mUi->questBox->isChecked());
     settings.setValue("raidDeckFilter", mUi->raidBox->isChecked());
+    settings.setValue("tableHeader", mUi->deckTableView->horizontalHeader()->saveState());
+    settings.setValue("sortColumn", "0");
+    settings.setValue("sortOrder", "0");
 
     QStringList blackList;
     QStringList deckList;
@@ -198,9 +201,9 @@ void CDeckManagementWidget::updateView()
     {
         deckTypes << "R";
     }
-    mDeckSortProxy.setFilterPattern(0, deckTypes.join("|"));
-    mDeckSortProxy.setFilterPattern(1, mUi->commanderBox->currentText());
-    mDeckSortProxy.setFilterPattern(3, mUi->nameBox->currentText());
+    mDeckSortProxy.setFilterPattern(1, deckTypes.join("|"));
+    mDeckSortProxy.setFilterPattern(2, mUi->commanderBox->currentText());
+    mDeckSortProxy.setFilterPattern(4, mUi->nameBox->currentText());
     mDeckSortProxy.invalidate();
 }
 

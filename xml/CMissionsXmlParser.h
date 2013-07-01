@@ -13,7 +13,7 @@ public:
     CMissionsXmlParser();
 
 signals:
-    void missionParsed(const QString &missionName, EDeckType type, unsigned int battlegroundId, const QList<unsigned int> &missionDeck);
+    void missionParsed(unsigned int id, const QString &missionName, EDeckType type, unsigned int battlegroundId, const QList<unsigned int> &missionDeck);
 
 protected:
     virtual bool startDocument();
@@ -25,10 +25,12 @@ protected:
 private:
     bool mIsMissionTagActive;
     bool mIsNameTagActive;
+    bool mIdTagActive;
     bool mIsCommanderTagActive;
     bool mIsDeckTagActive;
     bool mIsCardTagActive;
     QString mCurMissionName;
+    unsigned int mCurMissionId;
     QList<unsigned int> mCurMissionDeck;
 };
 

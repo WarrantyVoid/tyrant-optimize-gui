@@ -32,7 +32,7 @@ public:
     void setDeckBlackListed(const QString &deckStr, bool blackListed);
 
 protected slots:
-    void processDeck(const QString &deckName, EDeckType type, unsigned int battlegroundId, const QList<unsigned int> &deckCards);
+    void processDeck(unsigned int id, const QString &deckName, EDeckType type, unsigned int battlegroundId, const QList<unsigned int> &deckCards);
 
 protected:
     void initData();

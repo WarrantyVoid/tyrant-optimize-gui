@@ -318,7 +318,7 @@ int CDeckTable::rowCount(const QModelIndex &/*parent*/) const
 
 int CDeckTable::columnCount(const QModelIndex &/*parent*/) const
 {
-    return 4;
+    return 5;
 }
 
 QVariant CDeckTable::data(const QModelIndex &index, int role) const
@@ -329,6 +329,13 @@ QVariant CDeckTable::data(const QModelIndex &index, int role) const
         switch (index.column())
         {
         case 0:
+            switch (role)
+            {
+            case Qt::DisplayRole:
+                return QString("%1").arg(deckData->getId(), 3, 10, QChar('0'));
+            }
+            break;
+        case 1:
             switch (role)
             {
             case Qt::DisplayRole:
@@ -353,42 +360,43 @@ QVariant CDeckTable::data(const QModelIndex &index, int role) const
                 }
             }
             break;
-        case 1:
+        case 2:
         {
             switch (role)
             {
             case Qt::DecorationRole:
             {
                 QPixmap comImg;
-                comImg.load(CGlobalConfig::getCfg().getPicturePath() + mDecks[index.row()]->getCommander().getPicture());
+                comImg.load(CGlobalConfig::getCfg().getPicturePath() + deckData->getCommander().getPicture());
                 return QVariant(comImg.scaledToHeight(20, Qt::SmoothTransformation));
             }
             case Qt::ToolTipRole:
             case Qt::DisplayRole:
-                return QVariant(mDecks[index.row()]->getCommander().getName());
+                return QVariant(deckData->getCommander().getName());
             }
             break;
         }
-        case 2:
+        case 3:
             switch (role)
             {
             case Qt::TextAlignmentRole:
                 return QVariant(Qt::AlignCenter);
+            case Qt::UserRole:
             case Qt::DisplayRole:
-                return QVariant(mDecks[index.row()]->getNumCards() - 1);
+                return QVariant(deckData->getNumCards() - 1);
             case Qt::ToolTipRole:
                 return QVariant();
             }
             break;
-        case 3:
+        case 4:
             switch (role)
             {
             case Qt::DisplayRole:
                 if (isDeckBlackListed(deckData->getName()))
                 {
-                    return mDecks[index.row()]->getName() + "   (Blacklisted)";
+                    return deckData->getName() + "   (Blacklisted)";
                 }
-                return QVariant(mDecks[index.row()]->getName());
+                return QVariant(deckData->getName());
             case Qt::ToolTipRole:
                 return QVariant();
             }
@@ -405,6 +413,12 @@ QVariant CDeckTable::headerData(int section, Qt::Orientation orientation, int ro
         switch (section)
         {
         case 0:
+            if (role == Qt::DisplayRole)
+            {
+                return "ID";
+            }
+            break;
+        case 1:
             if (role == Qt::DecorationRole)
             {
                 QPixmap comImg;
@@ -413,7 +427,7 @@ QVariant CDeckTable::headerData(int section, Qt::Orientation orientation, int ro
                 return QVariant(comImg.scaledToHeight(20));
             }
             break;
-        case 1:
+        case 2:
         {
             if (role == Qt::DecorationRole)
             {
@@ -423,7 +437,7 @@ QVariant CDeckTable::headerData(int section, Qt::Orientation orientation, int ro
             }
             break;
         }
-        case 2:
+        case 3:
         {
             if (role == Qt::DisplayRole)
             {
@@ -431,7 +445,7 @@ QVariant CDeckTable::headerData(int section, Qt::Orientation orientation, int ro
             }
             break;
         }
-        case 3:
+        case 4:
             if (role == Qt::DisplayRole)
             {
                 return "Deck Name";
@@ -453,11 +467,6 @@ Qt::ItemFlags CDeckTable::flags( const QModelIndex &index) const
     if (index.isValid())
     {
         flags |= Qt::ItemIsDragEnabled;
-        //CDeck *deckData = mDecks[index.row()];
-        //if (deckData->getType() == ECustomDeckType)
-        //{
-        //    flags |= Qt::ItemIsEditable;
-        //}
     }
     return flags;
 }
@@ -475,7 +484,7 @@ QMimeData *CDeckTable::mimeData(const QModelIndexList &indexes) const
      QStringList deckStr;
      foreach (QModelIndex index, indexes)
      {
-         if (index.isValid() && index.column() == 3)
+         if (index.isValid() && index.column() == 4)
          {
              deckStr << data(index, Qt::DisplayRole).toString();
          }
@@ -484,12 +493,12 @@ QMimeData *CDeckTable::mimeData(const QModelIndexList &indexes) const
      return mimeData;
  }
 
-void CDeckTable::processDeck(const QString &deckName, EDeckType type, unsigned int battlegroundId, const QList<unsigned int> &deckCards)
+void CDeckTable::processDeck(unsigned int id, const QString &deckName, EDeckType type, unsigned int battlegroundId, const QList<unsigned int> &deckCards)
 {
     if (!deckName.isEmpty() && !deckCards.isEmpty())
     {
         CCardTable &cards = CCardTable::getCardTable();
-        CDeck* deck = new CDeck(deckName, type, battlegroundId);
+        CDeck* deck = new CDeck(id, deckName, type, battlegroundId);
         for (QList<unsigned int>::const_iterator i = deckCards.begin(); i != deckCards.end(); ++i)
         {
             const CCard &curCard = cards.getCardForId(*i);
@@ -547,8 +556,8 @@ void CDeckTable::initData()
     {
         CQuestsXmlParser questXmlParser;
         connect(
-            &questXmlParser, SIGNAL(questParsed(const QString&, EDeckType, unsigned int, const QList<unsigned int>&)),
-            this, SLOT(processDeck(const QString&, EDeckType, unsigned int, const QList<unsigned int>&)));
+            &questXmlParser, SIGNAL(questParsed(unsigned int, const QString&, EDeckType, unsigned int, const QList<unsigned int>&)),
+            this, SLOT(processDeck(unsigned int, const QString&, EDeckType, unsigned int, const QList<unsigned int>&)));
 
         QXmlInputSource questXml(&questFile);
         QXmlSimpleReader questReader;
@@ -563,8 +572,8 @@ void CDeckTable::initData()
     {
         CRaidsXmlParser raidXmlParser;
         connect(
-            &raidXmlParser, SIGNAL(raidParsed(const QString&, EDeckType, unsigned int, const QList<unsigned int>&)),
-            this, SLOT(processDeck(const QString&, EDeckType, unsigned int, const QList<unsigned int>&)));
+            &raidXmlParser, SIGNAL(raidParsed(unsigned int, const QString&, EDeckType, unsigned int, const QList<unsigned int>&)),
+            this, SLOT(processDeck(unsigned int, const QString&, EDeckType, unsigned int, const QList<unsigned int>&)));
 
         QXmlInputSource raidXml(&raidFile);
         QXmlSimpleReader raidReader;
@@ -579,8 +588,8 @@ void CDeckTable::initData()
     {
         CMissionsXmlParser missionXmlParser;
         connect(
-            &missionXmlParser, SIGNAL(missionParsed(const QString&, EDeckType, unsigned int, const QList<unsigned int>&)),
-            this, SLOT(processDeck(const QString&, EDeckType, unsigned int, const QList<unsigned int>&)));
+            &missionXmlParser, SIGNAL(missionParsed(unsigned int, const QString&, EDeckType, unsigned int, const QList<unsigned int>&)),
+            this, SLOT(processDeck(unsigned int, const QString&, EDeckType, unsigned int, const QList<unsigned int>&)));
 
         QXmlInputSource missionXml(&missionFile);
         QXmlSimpleReader missionReader;

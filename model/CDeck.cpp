@@ -3,20 +3,27 @@
 const CDeck CDeck::INVALID_DECK;
 
 CDeck::CDeck()
-: mName("")
+: mId(0u)
+, mName("")
 , mType(EUnknownDeckType)
 , mBattlegroundId(0u)
 , mCards()
 {
 }
 
-CDeck::CDeck(const QString& name, EDeckType type, unsigned int battlegroundId)
-: mName(name)
+CDeck::CDeck(unsigned int id, const QString& name, EDeckType type, unsigned int battlegroundId)
+: mId(id)
+, mName(name)
 , mType(type)
 , mBattlegroundId(battlegroundId)
 , mCards()
 {
 
+}
+
+void CDeck::setId(unsigned int id)
+{
+    mId = id;
 }
 
 void CDeck::setName(const QString& name)
@@ -50,6 +57,11 @@ void CDeck::replaceCard(int index, const CCard& card)
 void CDeck::clearCards()
 {
     mCards.clear();
+}
+
+unsigned int CDeck::getId() const
+{
+    return mId;
 }
 
 const QString& CDeck::getName() const

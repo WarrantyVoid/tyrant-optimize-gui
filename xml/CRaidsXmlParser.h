@@ -13,7 +13,7 @@ public:
     CRaidsXmlParser();
 
 signals:
-    void raidParsed(const QString raidName, EDeckType type, unsigned int battlegroundId, const QList<unsigned int> &raidDeck);
+    void raidParsed(unsigned int id, const QString raidName, EDeckType type, unsigned int battlegroundId, const QList<unsigned int> &raidDeck);
 
 protected:
     virtual bool startDocument();
@@ -25,10 +25,12 @@ protected:
 private:
     bool mIsRaidTagActive;
     bool mIsNameTagActive;
+    bool mIsIdTagActive;
     bool mIsCommanderTagActive;
     bool mIsDeckTagActive;
     bool mIsCardTagActive;
     QString mCurRaidName;
+    unsigned int mCurRaidId;
     QList<unsigned int> mCurRaidDeck;
 };
 

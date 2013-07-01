@@ -38,9 +38,9 @@ public:
     {
         switch(column)
         {
-        case 0: mTypePattern = QRegExp(pattern); break;
-        case 1: mCommanderPattern = pattern.toLower(); break;
-        case 3: mNamePattern = pattern.toLower(); break;
+        case 1: mTypePattern = QRegExp(pattern); break;
+        case 2: mCommanderPattern = pattern.toLower(); break;
+        case 4: mNamePattern = pattern.toLower(); break;
         default:  break;
         }
     }
@@ -49,7 +49,7 @@ public:
     {
         if (!mTypePattern.isEmpty())
         {
-            QModelIndex index = sourceModel()->index(sourceRow, 0, sourceParent);
+            QModelIndex index = sourceModel()->index(sourceRow, 1, sourceParent);
             if (!mTypePattern.exactMatch(index.data().toString()))
             {
                 return false;
@@ -57,7 +57,7 @@ public:
         }
         if (!mCommanderPattern.isEmpty())
         {
-            QModelIndex index = sourceModel()->index(sourceRow, 1, sourceParent);
+            QModelIndex index = sourceModel()->index(sourceRow, 2, sourceParent);
             if (!index.data().toString().toLower().contains(mCommanderPattern))
             {
                 return false;
@@ -65,7 +65,7 @@ public:
         }
         if (!mNamePattern.isEmpty())
         {
-            QModelIndex index = sourceModel()->index(sourceRow, 3, sourceParent);
+            QModelIndex index = sourceModel()->index(sourceRow, 4, sourceParent);
             if (!index.data().toString().toLower().contains(mNamePattern))
             {
                 return false;

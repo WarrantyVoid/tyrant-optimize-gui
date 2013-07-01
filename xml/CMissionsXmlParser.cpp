@@ -3,10 +3,12 @@
 CMissionsXmlParser::CMissionsXmlParser()
 : mIsMissionTagActive(false)
 , mIsNameTagActive(false)
+, mIdTagActive(false)
 , mIsCommanderTagActive(false)
 , mIsDeckTagActive(false)
 , mIsCardTagActive(false)
 , mCurMissionName("")
+, mCurMissionId(0u)
 , mCurMissionDeck()
 {
 
@@ -16,10 +18,12 @@ bool CMissionsXmlParser::startDocument()
 {
     mIsMissionTagActive = false;
     mIsNameTagActive = false;
+    mIdTagActive = false;
     mIsCommanderTagActive = false;
     mIsDeckTagActive = false;
     mIsCardTagActive = false;
     mCurMissionName = "";
+    mCurMissionId = 0u;
     mCurMissionDeck.clear();
     return true;
 }
@@ -35,6 +39,10 @@ bool CMissionsXmlParser::startElement(const QString & /*namespaceURI*/, const QS
         if (qName.compare("name") == 0)
         {
             mIsNameTagActive = true;
+        }
+        else if (qName.compare("id") == 0)
+        {
+            mIdTagActive = true;
         }
         else if (qName.compare("commander") == 0)
         {
@@ -61,10 +69,19 @@ bool CMissionsXmlParser::endElement(const QString & /*namespaceURI*/, const QStr
     {
         if (qName.compare("mission") == 0)
         {
-            emit missionParsed(mCurMissionName, EMissionDeckType, 0u,  mCurMissionDeck);
+            emit missionParsed(mCurMissionId, mCurMissionName, EMissionDeckType, 0u,  mCurMissionDeck);
             mIsMissionTagActive = false;
             mCurMissionName = "";
+            mCurMissionId = 0u;
             mCurMissionDeck.clear();
+        }
+        else if (qName.compare("name") == 0)
+        {
+            mIsNameTagActive = false;
+        }
+        else if (qName.compare("id") == 0)
+        {
+            mIdTagActive = false;
         }
         else if (qName.compare("name") == 0)
         {
@@ -96,6 +113,11 @@ bool CMissionsXmlParser::characters(const QString & ch)
         if (mIsNameTagActive)
         {
             mCurMissionName = ch;
+        }
+        else if (mIdTagActive)
+        {
+            bool ok(true);
+            mCurMissionId = ch.toUInt(&ok);
         }
         else if (mIsCommanderTagActive)
         {

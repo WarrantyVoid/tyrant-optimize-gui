@@ -3,10 +3,12 @@
 CRaidsXmlParser::CRaidsXmlParser()
 : mIsRaidTagActive(false)
 , mIsNameTagActive(false)
+, mIsIdTagActive(false)
 , mIsCommanderTagActive(false)
 , mIsDeckTagActive(false)
 , mIsCardTagActive(false)
 , mCurRaidName("")
+, mCurRaidId(0u)
 , mCurRaidDeck()
 {
 
@@ -16,10 +18,12 @@ bool CRaidsXmlParser::startDocument()
 {
     mIsRaidTagActive = false;
     mIsNameTagActive = false;
+    mIsIdTagActive = false;
     mIsCommanderTagActive = false;
     mIsDeckTagActive = false;
     mIsCardTagActive = false;
     mCurRaidName = "";
+    mCurRaidId = 0u;
     mCurRaidDeck.clear();
     return true;
 }
@@ -35,6 +39,10 @@ bool CRaidsXmlParser::startElement(const QString & /*namespaceURI*/, const QStri
         if (qName.compare("name") == 0)
         {
             mIsNameTagActive = true;
+        }
+        else if (qName.compare("id") == 0)
+        {
+            mIsIdTagActive = true;
         }
         else if (qName.compare("commander") == 0)
         {
@@ -61,14 +69,19 @@ bool CRaidsXmlParser::endElement(const QString & /*namespaceURI*/, const QString
     {
         if (qName.compare("raid") == 0)
         {
-            emit raidParsed(mCurRaidName, ERaidDeckType, 0u, mCurRaidDeck);
+            emit raidParsed(mCurRaidId, mCurRaidName, ERaidDeckType, 0u, mCurRaidDeck);
             mIsRaidTagActive = false;
             mCurRaidName = "";
+            mCurRaidId = 0u;
             mCurRaidDeck.clear();
         }
         else if (qName.compare("name") == 0)
         {
             mIsNameTagActive = false;
+        }
+        else if (qName.compare("id") == 0)
+        {
+            mIsIdTagActive = false;
         }
         else if (qName.compare("commander") == 0)
         {
@@ -96,6 +109,11 @@ bool CRaidsXmlParser::characters(const QString & ch)
         if (mIsNameTagActive)
         {
             mCurRaidName = ch;
+        }
+        else if (mIsIdTagActive)
+        {
+            bool ok(true);
+            mCurRaidId = ch.toUInt(&ok);
         }
         else if (mIsCommanderTagActive)
         {
