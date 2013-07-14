@@ -2,10 +2,10 @@
 #include "model/CCardTable.h"
 #include "ui_CardFilterWidget.h"
 
+QStringList CCardFilterParameters::sDefaultList;
 
 CCardFilterParameters::CCardFilterParameters()
-: mCards(CCardTable::getCardTable())
-, mIsAssaultAllowed()
+: mIsAssaultAllowed()
 , mIsStructureAllowed()
 , mIsCommanderAllowed()
 , mIsActionAllowed()
@@ -22,17 +22,44 @@ CCardFilterParameters::CCardFilterParameters()
 , mIsBlackListEnabled(true)
 , mIsCompletionEnabled(false)
 {
+    if (sDefaultList.isEmpty())
+    {
+        sDefaultList
+        << "Acid Athenor" << "Asylum" << "Atelier" << "Battle Mount" << "Blitz Precursor"
+        << "Blood Rider" << "Blood Wall" << "Boot Camp" << "Clipper" << "Daizon"
+        << "Egg Infector" << "Enclave Warp Gate" << "Exoskeleton" << "Fortified Cannons"
+        << "Fury Walker" << "Gene Reader" << "Groteske" << "Gruesome Crawler"
+        << "Heli-Duster" << "Holy Beacon <<" "Hunter" << "Hydraulis" << "Impulse Walker"
+        << "Irradiated Infantry" << "Meteor" << "Mirror Wall" << "Mizar VIII"
+        << "Nephilim Knight" << "Neverender" << "Offshore Platform" << "Outfitted Scow"
+        << "Partisan" << "Pathrazer" << "Patriarch" << "Patrol Cruiser" << "Phantasm"
+        << "Phaseid" << "Photon Dish" << "Predator" << "Prism" << "Quadrishot"
+        << "Reclamax" << "Ryoko" << "Quilled Blaster" << "Serak"  << "Shaded Hollow"
+        << "Shrapnel Engine" << "Shrine of Hope" << "Speculus" << "Stealthy Niaq"
+        << "Subterfuge" << "Sundering Ogre" << "Tiamat" << "Toxic Cannon"
+        << "Withersnap" << "Valentina";
+    }
+    reset();
+}
+
+void CCardFilterParameters::reset()
+{
+    mIsFilterOptionEnabled = true;
+    mIsAssaultOptionEnabled = true;
+    mIsWhiteListEnabled = true;
+    mIsBlackListEnabled = true;
+    mIsCompletionEnabled = false;
+
     for (int i = 0; i < NUM_RARITY; ++i)
     {
-        mIsAssaultAllowed[i] = true;
-        mIsStructureAllowed[i] = true;
-        mIsCommanderAllowed[i] = true;
-        mIsActionAllowed[i] = true;
-        mIsHealthAllowed[i] = true;
+        mIsAssaultAllowed[i] = (i < 2);
+        mIsStructureAllowed[i] = (i < 2);
+        mIsCommanderAllowed[i] = (i < 2);
+        mIsActionAllowed[i] = (i < 2);
     }
     for (int i = 0; i < NUM_HEALTH; ++i)
     {
-        mIsHealthAllowed[i] = true;
+        mIsHealthAllowed[i] = (i > 2);
     }
     for (int i = 0; i < NUM_ATTACK; ++i)
     {
@@ -58,6 +85,20 @@ CCardFilterParameters::CCardFilterParameters()
     mComplement[13] = 3;
     mComplement[14] = 3;
     mComplement[15] = 3;
+
+    mWhiteList.clear();
+    CCardTable &cardTable = CCardTable::getCardTable();
+    for(QStringList::iterator i = sDefaultList.begin(); i != sDefaultList.end(); ++i)
+    {
+        TListedCard curCard = strToListedCard(*i);
+        const CCard &card = cardTable.getCardForName(curCard.first);
+        if (card.isValid())
+        {
+            mWhiteList.insert(card.getName(), curCard.second);
+        }
+    }
+
+    mBlackList.clear();
 }
 
 void CCardFilterParameters::fetchFromUi(const Ui::CardFilterWidget &ui)
@@ -123,12 +164,13 @@ void CCardFilterParameters::fetchFromUi(const Ui::CardFilterWidget &ui)
     mComplement[14] = ui.promotionalSpinBox->value();
     mComplement[15] = ui.upgradedSpinBox->value();
 
+    CCardTable &cardTable = CCardTable::getCardTable();
     mWhiteList.clear();
     QStringList whiteList = ui.whiteListEdit->toPlainText().split("\n", QString::SkipEmptyParts);
     for(QStringList::iterator i = whiteList.begin(); i != whiteList.end(); ++i)
     {
         TListedCard curCard = strToListedCard(*i);
-        const CCard &card = mCards.getCardForName(curCard.first);
+        const CCard &card = cardTable.getCardForName(curCard.first);
         if (card.isValid())
         {
             mWhiteList.insert(card.getName(), curCard.second);
@@ -140,7 +182,7 @@ void CCardFilterParameters::fetchFromUi(const Ui::CardFilterWidget &ui)
     for(QStringList::iterator i = blackList.begin(); i != blackList.end(); ++i)
     {
         TListedCard curCard = strToListedCard(*i);
-        const CCard &card = mCards.getCardForName(curCard.first);
+        const CCard &card = cardTable.getCardForName(curCard.first);
         if (card.isValid())
         {
             mBlackList.insert(card.getName(), curCard.second);
@@ -296,23 +338,12 @@ void CCardFilterParameters::fetchFromSettings(QSettings &settings)
     mIsFactionAllowed[4] = settings.value("allowFactionXeno", mIsFactionAllowed[4]).toBool();
 
     mWhiteList.clear();
-    QStringList defaultList;
-    defaultList
-            << "Acid Athenor" << "Asylum" << "Atelier" << "Blood Wall" << "Boot Camp"
-            << "Daizon" << "Egg Infector" << "Enclave Warp Gate" << "Fortified Cannons"
-            << "Gene Reader" << "Gruesome Crawler" << "Heli-Duster" << "Hunter" << "Hydraulis"
-            << "Irradiated Infantry" << "Meteor" << "Mirror Wall" << "Mizar VIII"
-            << "Nephilim Knight" << "Neverender" << "Offshore Platform" << "Outfitted Scow"
-            << "Pathrazer" << "Patriarch" << "Patrol Cruiser" << "Phantasm" << "Phaseid"
-            << "Predator" << "Prism" << "Reclamax" << "Ryoko" << "Shaded Hollow"
-            << "Shrapnel Engine" << "Shrine of Hope" << "Speculus" << "Stealthy Niaq"
-            << "Subterfuge" << "Sundering Ogre" << "Tiamat" << "Toxic Cannon" << "Withersnap"
-            << "Valentina";
-    QStringList whiteList = settings.value("whiteList", defaultList).toStringList();
+    CCardTable &cardTable = CCardTable::getCardTable();
+    QStringList whiteList = settings.value("whiteList", sDefaultList).toStringList();
     for(QStringList::iterator i = whiteList.begin(); i != whiteList.end(); ++i)
     {
         TListedCard curCard = strToListedCard(*i);
-        const CCard &card = mCards.getCardForName(curCard.first);
+        const CCard &card = cardTable.getCardForName(curCard.first);
         if (card.isValid())
         {
             mWhiteList.insert(card.getName(), curCard.second);
@@ -324,7 +355,7 @@ void CCardFilterParameters::fetchFromSettings(QSettings &settings)
     for(QStringList::iterator i = blackList.begin(); i != blackList.end(); ++i)
     {
         TListedCard curCard = strToListedCard(*i);
-        const CCard &card = mCards.getCardForName(curCard.first);
+        const CCard &card = cardTable.getCardForName(curCard.first);
         if (card.isValid())
         {
             mBlackList.insert(card.getName(), curCard.second);

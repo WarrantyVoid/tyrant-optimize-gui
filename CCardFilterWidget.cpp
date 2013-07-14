@@ -21,6 +21,9 @@ CCardFilterWidget::CCardFilterWidget(QWidget *parent)
     connect(
         mUi->okButton, SIGNAL(clicked()),
         this, SLOT(acceptFilter()));
+    connect(
+        mUi->resetButton, SIGNAL(clicked()),
+        this, SLOT(resetFilter()));
 }
 
 CCardFilterWidget::~CCardFilterWidget()
@@ -142,6 +145,14 @@ void CCardFilterWidget::acceptFilter()
     mParameters.fetchFromUi(*mUi);
     mOwnedCardsTime = QDateTime();
     emit filterUpdated(true);
+}
+
+void CCardFilterWidget::resetFilter()
+{
+    mParameters.reset();
+    mParameters.updateUi(*mUi);
+    mOwnedCardsTime = QDateTime();
+    //emit filterUpdated(true);
 }
 
 void CCardFilterWidget::executeFilter()

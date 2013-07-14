@@ -9,7 +9,6 @@ namespace Ui
 {
 class CardFilterWidget;
 }
-class CCardTable;
 class CCard;
 typedef QPair<QString, int> TListedCard;
 
@@ -17,6 +16,7 @@ class CCardFilterParameters : public ICardCheck
 {
 public:
     CCardFilterParameters();
+    void reset();
 
 public:
     void fetchFromUi(const Ui::CardFilterWidget &ui);
@@ -42,7 +42,6 @@ private:
     static const int NUM_SET = 16;
 
 private:
-    CCardTable &mCards;
     bool mIsAssaultAllowed[NUM_RARITY];
     bool mIsStructureAllowed[NUM_RARITY];
     bool mIsCommanderAllowed[NUM_RARITY];
@@ -59,6 +58,7 @@ private:
     bool mIsWhiteListEnabled;
     bool mIsBlackListEnabled;
     bool mIsCompletionEnabled;
+    static QStringList sDefaultList;
 };
 
 #endif // CCARDFILTERPARAMETERS_H

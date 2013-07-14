@@ -36,6 +36,7 @@ public slots:
 protected slots:
     void declineFilter();
     void acceptFilter();
+    void resetFilter();
 
  protected:
     void executeFilter();
