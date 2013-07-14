@@ -95,7 +95,7 @@ void CCardFilterWidget::updateOwnedCardsFile(const QString &fileName)
 
         // Updated owned status
         CCardTable &cards = CCardTable::getCardTable();
-        cards.setOwnedCards(ownedCards);
+        cards.setOwnedCards(ownedCards, ownedCards);
     }
 
     QStringList updateResult;
@@ -158,5 +158,5 @@ void CCardFilterWidget::executeFilter()
 
     // Updated owned status
     CCardTable &cards = CCardTable::getCardTable();
-    cards.setOwnedCards(originalCards);
+    cards.setOwnedCards(originalCards, filteredCards);
 }

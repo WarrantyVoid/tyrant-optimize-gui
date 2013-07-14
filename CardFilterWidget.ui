@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>413</width>
-    <height>567</height>
+    <width>350</width>
+    <height>591</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -18,610 +18,6 @@
     <number>0</number>
    </property>
    <item row="3" column="0" colspan="2">
-    <layout class="QHBoxLayout" name="horizontalLayout">
-     <property name="leftMargin">
-      <number>0</number>
-     </property>
-     <item>
-      <widget class="QWidget" name="widget" native="true">
-       <property name="minimumSize">
-        <size>
-         <width>0</width>
-         <height>10</height>
-        </size>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QPushButton" name="okButton">
-       <property name="text">
-        <string>Ok</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QPushButton" name="cancelButton">
-       <property name="text">
-        <string>Cancel</string>
-       </property>
-      </widget>
-     </item>
-    </layout>
-   </item>
-   <item row="0" column="0" colspan="2">
-    <widget class="QGroupBox" name="filterOptionsBox">
-     <property name="enabled">
-      <bool>true</bool>
-     </property>
-     <property name="title">
-      <string>Filter Options</string>
-     </property>
-     <property name="checkable">
-      <bool>true</bool>
-     </property>
-     <layout class="QGridLayout" name="gridLayout">
-      <item row="7" column="5">
-       <widget class="QCheckBox" name="delay4Box">
-        <property name="text">
-         <string/>
-        </property>
-        <property name="icon">
-         <iconset resource="main.qrc">
-          <normaloff>:/img/tyrant/ClockIcon4.png</normaloff>:/img/tyrant/ClockIcon4.png</iconset>
-        </property>
-       </widget>
-      </item>
-      <item row="2" column="4">
-       <widget class="QCheckBox" name="commanderCommonBox">
-        <property name="text">
-         <string/>
-        </property>
-        <property name="icon">
-         <iconset resource="main.qrc">
-          <normaloff>:/img/tyrant/CommanderRegIcon.png</normaloff>:/img/tyrant/CommanderRegIcon.png</iconset>
-        </property>
-        <property name="checked">
-         <bool>false</bool>
-        </property>
-       </widget>
-      </item>
-      <item row="7" column="1">
-       <widget class="QCheckBox" name="delay0Box">
-        <property name="text">
-         <string/>
-        </property>
-        <property name="icon">
-         <iconset resource="main.qrc">
-          <normaloff>:/img/tyrant/ClockIcon0.png</normaloff>:/img/tyrant/ClockIcon0.png</iconset>
-        </property>
-       </widget>
-      </item>
-      <item row="6" column="2">
-       <widget class="QCheckBox" name="attack1Box">
-        <property name="text">
-         <string>1</string>
-        </property>
-        <property name="icon">
-         <iconset resource="main.qrc">
-          <normaloff>:/img/tyrant/AttackIcon.png</normaloff>:/img/tyrant/AttackIcon.png</iconset>
-        </property>
-        <property name="checked">
-         <bool>false</bool>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="0">
-       <widget class="QLabel" name="label_2">
-        <property name="text">
-         <string>Structures:</string>
-        </property>
-       </widget>
-      </item>
-      <item row="7" column="3">
-       <widget class="QCheckBox" name="delay2Box">
-        <property name="text">
-         <string/>
-        </property>
-        <property name="icon">
-         <iconset resource="main.qrc">
-          <normaloff>:/img/tyrant/ClockIcon2.png</normaloff>:/img/tyrant/ClockIcon2.png</iconset>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="3">
-       <widget class="QCheckBox" name="structureUncommonBox">
-        <property name="text">
-         <string/>
-        </property>
-        <property name="icon">
-         <iconset resource="main.qrc">
-          <normaloff>:/img/tyrant/StructureSilverIcon.png</normaloff>:/img/tyrant/StructureSilverIcon.png</iconset>
-        </property>
-       </widget>
-      </item>
-      <item row="8" column="5">
-       <widget class="QCheckBox" name="factionXenoBox">
-        <property name="text">
-         <string/>
-        </property>
-        <property name="icon">
-         <iconset resource="main.qrc">
-          <normaloff>:/img/tyrant/XenoSortButton.png</normaloff>:/img/tyrant/XenoSortButton.png</iconset>
-        </property>
-       </widget>
-      </item>
-      <item row="3" column="1">
-       <widget class="QCheckBox" name="actionLegendaryBox">
-        <property name="enabled">
-         <bool>false</bool>
-        </property>
-        <property name="text">
-         <string/>
-        </property>
-        <property name="icon">
-         <iconset resource="main.qrc">
-          <normaloff>:/img/tyrant/ActionLegendaryIcon.png</normaloff>:/img/tyrant/ActionLegendaryIcon.png</iconset>
-        </property>
-        <property name="checked">
-         <bool>true</bool>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="4">
-       <widget class="QCheckBox" name="structureCommonBox">
-        <property name="text">
-         <string/>
-        </property>
-        <property name="icon">
-         <iconset resource="main.qrc">
-          <normaloff>:/img/tyrant/StructureRegIcon.png</normaloff>:/img/tyrant/StructureRegIcon.png</iconset>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="4">
-       <widget class="QCheckBox" name="assaultCommonBox">
-        <property name="minimumSize">
-         <size>
-          <width>60</width>
-          <height>0</height>
-         </size>
-        </property>
-        <property name="text">
-         <string/>
-        </property>
-        <property name="icon">
-         <iconset resource="main.qrc">
-          <normaloff>:/img/tyrant/AssaultRegIcon.png</normaloff>:/img/tyrant/AssaultRegIcon.png</iconset>
-        </property>
-       </widget>
-      </item>
-      <item row="3" column="0">
-       <widget class="QLabel" name="label_4">
-        <property name="text">
-         <string>Actions:</string>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="3">
-       <widget class="QCheckBox" name="assaultUncommonBox">
-        <property name="minimumSize">
-         <size>
-          <width>60</width>
-          <height>0</height>
-         </size>
-        </property>
-        <property name="text">
-         <string/>
-        </property>
-        <property name="icon">
-         <iconset resource="main.qrc">
-          <normaloff>:/img/tyrant/AssaultSilverIcon.png</normaloff>:/img/tyrant/AssaultSilverIcon.png</iconset>
-        </property>
-       </widget>
-      </item>
-      <item row="2" column="3">
-       <widget class="QCheckBox" name="commanderUncommonBox">
-        <property name="text">
-         <string/>
-        </property>
-        <property name="icon">
-         <iconset resource="main.qrc">
-          <normaloff>:/img/tyrant/CommanderSilverIcon.png</normaloff>:/img/tyrant/CommanderSilverIcon.png</iconset>
-        </property>
-        <property name="checked">
-         <bool>true</bool>
-        </property>
-       </widget>
-      </item>
-      <item row="7" column="4">
-       <widget class="QCheckBox" name="delay3Box">
-        <property name="text">
-         <string/>
-        </property>
-        <property name="icon">
-         <iconset resource="main.qrc">
-          <normaloff>:/img/tyrant/ClockIcon3.png</normaloff>:/img/tyrant/ClockIcon3.png</iconset>
-        </property>
-       </widget>
-      </item>
-      <item row="2" column="0">
-       <widget class="QLabel" name="label_3">
-        <property name="text">
-         <string>Commanders:</string>
-        </property>
-       </widget>
-      </item>
-      <item row="6" column="0">
-       <widget class="QLabel" name="label_23">
-        <property name="text">
-         <string>Attack:</string>
-        </property>
-       </widget>
-      </item>
-      <item row="8" column="0">
-       <widget class="QLabel" name="label_24">
-        <property name="text">
-         <string>Faction:</string>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="2">
-       <widget class="QCheckBox" name="structureRareBox">
-        <property name="text">
-         <string/>
-        </property>
-        <property name="icon">
-         <iconset resource="main.qrc">
-          <normaloff>:/img/tyrant/StructureGoldIcon.png</normaloff>:/img/tyrant/StructureGoldIcon.png</iconset>
-        </property>
-        <property name="checked">
-         <bool>true</bool>
-        </property>
-       </widget>
-      </item>
-      <item row="6" column="4">
-       <widget class="QCheckBox" name="attack3Box">
-        <property name="text">
-         <string>3</string>
-        </property>
-        <property name="icon">
-         <iconset resource="main.qrc">
-          <normaloff>:/img/tyrant/AttackIcon.png</normaloff>:/img/tyrant/AttackIcon.png</iconset>
-        </property>
-        <property name="checked">
-         <bool>false</bool>
-        </property>
-       </widget>
-      </item>
-      <item row="5" column="2">
-       <widget class="QCheckBox" name="health2Box">
-        <property name="text">
-         <string>2</string>
-        </property>
-        <property name="icon">
-         <iconset resource="main.qrc">
-          <normaloff>:/img/tyrant/HealthIcon.png</normaloff>:/img/tyrant/HealthIcon.png</iconset>
-        </property>
-        <property name="checked">
-         <bool>false</bool>
-        </property>
-       </widget>
-      </item>
-      <item row="8" column="1">
-       <widget class="QCheckBox" name="factionBloodthirstyBox">
-        <property name="text">
-         <string/>
-        </property>
-        <property name="icon">
-         <iconset resource="main.qrc">
-          <normaloff>:/img/tyrant/BloodthirstySortButton.png</normaloff>:/img/tyrant/BloodthirstySortButton.png</iconset>
-        </property>
-       </widget>
-      </item>
-      <item row="2" column="1">
-       <widget class="QCheckBox" name="commanderLegendaryBox">
-        <property name="enabled">
-         <bool>false</bool>
-        </property>
-        <property name="text">
-         <string/>
-        </property>
-        <property name="icon">
-         <iconset resource="main.qrc">
-          <normaloff>:/img/tyrant/CommanderGoldIcon.png</normaloff>:/img/tyrant/CommanderGoldIcon.png</iconset>
-        </property>
-        <property name="checked">
-         <bool>true</bool>
-        </property>
-       </widget>
-      </item>
-      <item row="3" column="2">
-       <widget class="QCheckBox" name="actionRareBox">
-        <property name="text">
-         <string/>
-        </property>
-        <property name="icon">
-         <iconset resource="main.qrc">
-          <normaloff>:/img/tyrant/ActionGoldIcon.png</normaloff>:/img/tyrant/ActionGoldIcon.png</iconset>
-        </property>
-        <property name="checked">
-         <bool>true</bool>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="2">
-       <widget class="QCheckBox" name="assaultRareBox">
-        <property name="minimumSize">
-         <size>
-          <width>60</width>
-          <height>0</height>
-         </size>
-        </property>
-        <property name="text">
-         <string/>
-        </property>
-        <property name="icon">
-         <iconset resource="main.qrc">
-          <normaloff>:/img/tyrant/AssaultGoldIcon.png</normaloff>:/img/tyrant/AssaultGoldIcon.png</iconset>
-        </property>
-        <property name="checked">
-         <bool>true</bool>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="1">
-       <widget class="QCheckBox" name="structureLegendaryBox">
-        <property name="text">
-         <string/>
-        </property>
-        <property name="icon">
-         <iconset resource="main.qrc">
-          <normaloff>:/img/tyrant/StructureLegendaryIcon.png</normaloff>:/img/tyrant/StructureLegendaryIcon.png</iconset>
-        </property>
-        <property name="checked">
-         <bool>true</bool>
-        </property>
-       </widget>
-      </item>
-      <item row="5" column="4">
-       <widget class="QCheckBox" name="health4Box">
-        <property name="text">
-         <string>4</string>
-        </property>
-        <property name="icon">
-         <iconset resource="main.qrc">
-          <normaloff>:/img/tyrant/HealthIcon.png</normaloff>:/img/tyrant/HealthIcon.png</iconset>
-        </property>
-        <property name="checked">
-         <bool>true</bool>
-        </property>
-       </widget>
-      </item>
-      <item row="5" column="1">
-       <widget class="QCheckBox" name="health1Box">
-        <property name="text">
-         <string>1</string>
-        </property>
-        <property name="icon">
-         <iconset resource="main.qrc">
-          <normaloff>:/img/tyrant/HealthIcon.png</normaloff>:/img/tyrant/HealthIcon.png</iconset>
-        </property>
-        <property name="checked">
-         <bool>false</bool>
-        </property>
-       </widget>
-      </item>
-      <item row="8" column="2">
-       <widget class="QCheckBox" name="factionImperialBox">
-        <property name="text">
-         <string/>
-        </property>
-        <property name="icon">
-         <iconset resource="main.qrc">
-          <normaloff>:/img/tyrant/ImperialSortButton.png</normaloff>:/img/tyrant/ImperialSortButton.png</iconset>
-        </property>
-       </widget>
-      </item>
-      <item row="5" column="5">
-       <widget class="QCheckBox" name="health5Box">
-        <property name="text">
-         <string>5+</string>
-        </property>
-        <property name="icon">
-         <iconset resource="main.qrc">
-          <normaloff>:/img/tyrant/HealthIcon.png</normaloff>:/img/tyrant/HealthIcon.png</iconset>
-        </property>
-        <property name="checked">
-         <bool>true</bool>
-        </property>
-       </widget>
-      </item>
-      <item row="4" column="0" colspan="6">
-       <widget class="Line" name="line">
-        <property name="orientation">
-         <enum>Qt::Horizontal</enum>
-        </property>
-       </widget>
-      </item>
-      <item row="7" column="2">
-       <widget class="QCheckBox" name="delay1Box">
-        <property name="text">
-         <string/>
-        </property>
-        <property name="icon">
-         <iconset resource="main.qrc">
-          <normaloff>:/img/tyrant/ClockIcon1.png</normaloff>:/img/tyrant/ClockIcon1.png</iconset>
-        </property>
-       </widget>
-      </item>
-      <item row="7" column="0">
-       <widget class="QLabel" name="label_22">
-        <property name="text">
-         <string>Delay:</string>
-        </property>
-       </widget>
-      </item>
-      <item row="3" column="3">
-       <widget class="QCheckBox" name="actionUncommonBox">
-        <property name="text">
-         <string/>
-        </property>
-        <property name="icon">
-         <iconset resource="main.qrc">
-          <normaloff>:/img/tyrant/ActionSilverIcon.png</normaloff>:/img/tyrant/ActionSilverIcon.png</iconset>
-        </property>
-        <property name="checked">
-         <bool>true</bool>
-        </property>
-       </widget>
-      </item>
-      <item row="2" column="2">
-       <widget class="QCheckBox" name="commanderRareBox">
-        <property name="text">
-         <string/>
-        </property>
-        <property name="icon">
-         <iconset resource="main.qrc">
-          <normaloff>:/img/tyrant/CommanderGoldIcon.png</normaloff>:/img/tyrant/CommanderGoldIcon.png</iconset>
-        </property>
-        <property name="checked">
-         <bool>true</bool>
-        </property>
-       </widget>
-      </item>
-      <item row="5" column="0">
-       <widget class="QLabel" name="label_5">
-        <property name="text">
-         <string>Health:</string>
-        </property>
-       </widget>
-      </item>
-      <item row="3" column="4">
-       <widget class="QCheckBox" name="actionCommonBox">
-        <property name="enabled">
-         <bool>false</bool>
-        </property>
-        <property name="text">
-         <string/>
-        </property>
-        <property name="icon">
-         <iconset resource="main.qrc">
-          <normaloff>:/img/tyrant/ActionRegIcon.png</normaloff>:/img/tyrant/ActionRegIcon.png</iconset>
-        </property>
-        <property name="checked">
-         <bool>true</bool>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="0">
-       <widget class="QLabel" name="label_1">
-        <property name="text">
-         <string>Assaults:</string>
-        </property>
-       </widget>
-      </item>
-      <item row="6" column="5">
-       <widget class="QCheckBox" name="attack4Box">
-        <property name="text">
-         <string>4+</string>
-        </property>
-        <property name="icon">
-         <iconset resource="main.qrc">
-          <normaloff>:/img/tyrant/AttackIcon.png</normaloff>:/img/tyrant/AttackIcon.png</iconset>
-        </property>
-        <property name="checked">
-         <bool>false</bool>
-        </property>
-       </widget>
-      </item>
-      <item row="5" column="3">
-       <widget class="QCheckBox" name="health3Box">
-        <property name="text">
-         <string>3</string>
-        </property>
-        <property name="icon">
-         <iconset resource="main.qrc">
-          <normaloff>:/img/tyrant/HealthIcon.png</normaloff>:/img/tyrant/HealthIcon.png</iconset>
-        </property>
-        <property name="checked">
-         <bool>false</bool>
-        </property>
-       </widget>
-      </item>
-      <item row="6" column="3">
-       <widget class="QCheckBox" name="attack2Box">
-        <property name="text">
-         <string>2</string>
-        </property>
-        <property name="icon">
-         <iconset resource="main.qrc">
-          <normaloff>:/img/tyrant/AttackIcon.png</normaloff>:/img/tyrant/AttackIcon.png</iconset>
-        </property>
-        <property name="checked">
-         <bool>false</bool>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="1">
-       <widget class="QCheckBox" name="assaultLegendaryBox">
-        <property name="minimumSize">
-         <size>
-          <width>60</width>
-          <height>0</height>
-         </size>
-        </property>
-        <property name="text">
-         <string/>
-        </property>
-        <property name="icon">
-         <iconset resource="main.qrc">
-          <normaloff>:/img/tyrant/AssaultLegendaryIcon.png</normaloff>:/img/tyrant/AssaultLegendaryIcon.png</iconset>
-        </property>
-        <property name="checked">
-         <bool>true</bool>
-        </property>
-       </widget>
-      </item>
-      <item row="8" column="4">
-       <widget class="QCheckBox" name="factionRighteousBox">
-        <property name="text">
-         <string/>
-        </property>
-        <property name="icon">
-         <iconset resource="main.qrc">
-          <normaloff>:/img/tyrant/RighteousSortButton.png</normaloff>:/img/tyrant/RighteousSortButton.png</iconset>
-        </property>
-       </widget>
-      </item>
-      <item row="8" column="3">
-       <widget class="QCheckBox" name="factionRaiderBox">
-        <property name="text">
-         <string/>
-        </property>
-        <property name="icon">
-         <iconset resource="main.qrc">
-          <normaloff>:/img/tyrant/RaiderSortButton.png</normaloff>:/img/tyrant/RaiderSortButton.png</iconset>
-        </property>
-       </widget>
-      </item>
-      <item row="6" column="1">
-       <widget class="QCheckBox" name="attack0Box">
-        <property name="text">
-         <string>0</string>
-        </property>
-        <property name="icon">
-         <iconset resource="main.qrc">
-          <normaloff>:/img/tyrant/AttackIcon.png</normaloff>:/img/tyrant/AttackIcon.png</iconset>
-        </property>
-        <property name="checked">
-         <bool>false</bool>
-        </property>
-       </widget>
-      </item>
-     </layout>
-    </widget>
-   </item>
-   <item row="2" column="0" colspan="2">
     <widget class="QGroupBox" name="complementsBox">
      <property name="title">
       <string>Complement duplicates of owned cards</string>
@@ -1049,7 +445,7 @@
      </layout>
     </widget>
    </item>
-   <item row="1" column="0">
+   <item row="2" column="0">
     <widget class="QGroupBox" name="whiteListBox">
      <property name="title">
       <string>White List</string>
@@ -1080,7 +476,38 @@
      </layout>
     </widget>
    </item>
-   <item row="1" column="1">
+   <item row="4" column="0" colspan="2">
+    <layout class="QHBoxLayout" name="horizontalLayout">
+     <property name="leftMargin">
+      <number>0</number>
+     </property>
+     <item>
+      <widget class="QWidget" name="widget" native="true">
+       <property name="minimumSize">
+        <size>
+         <width>0</width>
+         <height>10</height>
+        </size>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="okButton">
+       <property name="text">
+        <string>Ok</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="cancelButton">
+       <property name="text">
+        <string>Cancel</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item row="2" column="1">
     <widget class="QGroupBox" name="blackListBox">
      <property name="title">
       <string>Black List</string>
@@ -1102,6 +529,584 @@
           <width>100</width>
           <height>100</height>
          </size>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item row="1" column="0" colspan="2">
+    <widget class="QGroupBox" name="assaultOptionsBox">
+     <property name="title">
+      <string>Assault Options</string>
+     </property>
+     <property name="checkable">
+      <bool>true</bool>
+     </property>
+     <layout class="QGridLayout" name="gridLayout_4">
+      <item row="0" column="0">
+       <widget class="QLabel" name="label_5">
+        <property name="text">
+         <string>Health:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1">
+       <widget class="QCheckBox" name="health1Box">
+        <property name="text">
+         <string>1</string>
+        </property>
+        <property name="icon">
+         <iconset resource="main.qrc">
+          <normaloff>:/img/tyrant/HealthIcon.png</normaloff>:/img/tyrant/HealthIcon.png</iconset>
+        </property>
+        <property name="checked">
+         <bool>false</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="4">
+       <widget class="QCheckBox" name="health4Box">
+        <property name="text">
+         <string>4</string>
+        </property>
+        <property name="icon">
+         <iconset resource="main.qrc">
+          <normaloff>:/img/tyrant/HealthIcon.png</normaloff>:/img/tyrant/HealthIcon.png</iconset>
+        </property>
+        <property name="checked">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="0">
+       <widget class="QLabel" name="label_24">
+        <property name="text">
+         <string>Faction:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="2">
+       <widget class="QCheckBox" name="health2Box">
+        <property name="text">
+         <string>2</string>
+        </property>
+        <property name="icon">
+         <iconset resource="main.qrc">
+          <normaloff>:/img/tyrant/HealthIcon.png</normaloff>:/img/tyrant/HealthIcon.png</iconset>
+        </property>
+        <property name="checked">
+         <bool>false</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="0">
+       <widget class="QLabel" name="label_22">
+        <property name="text">
+         <string>Delay:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0">
+       <widget class="QLabel" name="label_23">
+        <property name="text">
+         <string>Attack:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="3">
+       <widget class="QCheckBox" name="health3Box">
+        <property name="text">
+         <string>3</string>
+        </property>
+        <property name="icon">
+         <iconset resource="main.qrc">
+          <normaloff>:/img/tyrant/HealthIcon.png</normaloff>:/img/tyrant/HealthIcon.png</iconset>
+        </property>
+        <property name="checked">
+         <bool>false</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="5">
+       <widget class="QCheckBox" name="health5Box">
+        <property name="text">
+         <string>5+</string>
+        </property>
+        <property name="icon">
+         <iconset resource="main.qrc">
+          <normaloff>:/img/tyrant/HealthIcon.png</normaloff>:/img/tyrant/HealthIcon.png</iconset>
+        </property>
+        <property name="checked">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1">
+       <widget class="QCheckBox" name="attack0Box">
+        <property name="text">
+         <string>0</string>
+        </property>
+        <property name="icon">
+         <iconset resource="main.qrc">
+          <normaloff>:/img/tyrant/AttackIcon.png</normaloff>:/img/tyrant/AttackIcon.png</iconset>
+        </property>
+        <property name="checked">
+         <bool>false</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="1">
+       <widget class="QCheckBox" name="delay0Box">
+        <property name="text">
+         <string/>
+        </property>
+        <property name="icon">
+         <iconset resource="main.qrc">
+          <normaloff>:/img/tyrant/ClockIcon0.png</normaloff>:/img/tyrant/ClockIcon0.png</iconset>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="1">
+       <widget class="QCheckBox" name="factionBloodthirstyBox">
+        <property name="text">
+         <string/>
+        </property>
+        <property name="icon">
+         <iconset resource="main.qrc">
+          <normaloff>:/img/tyrant/BloodthirstySortButton.png</normaloff>:/img/tyrant/BloodthirstySortButton.png</iconset>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="2">
+       <widget class="QCheckBox" name="attack1Box">
+        <property name="text">
+         <string>1</string>
+        </property>
+        <property name="icon">
+         <iconset resource="main.qrc">
+          <normaloff>:/img/tyrant/AttackIcon.png</normaloff>:/img/tyrant/AttackIcon.png</iconset>
+        </property>
+        <property name="checked">
+         <bool>false</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="2">
+       <widget class="QCheckBox" name="delay1Box">
+        <property name="text">
+         <string/>
+        </property>
+        <property name="icon">
+         <iconset resource="main.qrc">
+          <normaloff>:/img/tyrant/ClockIcon1.png</normaloff>:/img/tyrant/ClockIcon1.png</iconset>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="2">
+       <widget class="QCheckBox" name="factionImperialBox">
+        <property name="text">
+         <string/>
+        </property>
+        <property name="icon">
+         <iconset resource="main.qrc">
+          <normaloff>:/img/tyrant/ImperialSortButton.png</normaloff>:/img/tyrant/ImperialSortButton.png</iconset>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="3">
+       <widget class="QCheckBox" name="factionRaiderBox">
+        <property name="text">
+         <string/>
+        </property>
+        <property name="icon">
+         <iconset resource="main.qrc">
+          <normaloff>:/img/tyrant/RaiderSortButton.png</normaloff>:/img/tyrant/RaiderSortButton.png</iconset>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="4">
+       <widget class="QCheckBox" name="factionRighteousBox">
+        <property name="text">
+         <string/>
+        </property>
+        <property name="icon">
+         <iconset resource="main.qrc">
+          <normaloff>:/img/tyrant/RighteousSortButton.png</normaloff>:/img/tyrant/RighteousSortButton.png</iconset>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="5">
+       <widget class="QCheckBox" name="factionXenoBox">
+        <property name="text">
+         <string/>
+        </property>
+        <property name="icon">
+         <iconset resource="main.qrc">
+          <normaloff>:/img/tyrant/XenoSortButton.png</normaloff>:/img/tyrant/XenoSortButton.png</iconset>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="3">
+       <widget class="QCheckBox" name="delay2Box">
+        <property name="text">
+         <string/>
+        </property>
+        <property name="icon">
+         <iconset resource="main.qrc">
+          <normaloff>:/img/tyrant/ClockIcon2.png</normaloff>:/img/tyrant/ClockIcon2.png</iconset>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="4">
+       <widget class="QCheckBox" name="delay3Box">
+        <property name="text">
+         <string/>
+        </property>
+        <property name="icon">
+         <iconset resource="main.qrc">
+          <normaloff>:/img/tyrant/ClockIcon3.png</normaloff>:/img/tyrant/ClockIcon3.png</iconset>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="5">
+       <widget class="QCheckBox" name="delay4Box">
+        <property name="text">
+         <string/>
+        </property>
+        <property name="icon">
+         <iconset resource="main.qrc">
+          <normaloff>:/img/tyrant/ClockIcon4.png</normaloff>:/img/tyrant/ClockIcon4.png</iconset>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="3">
+       <widget class="QCheckBox" name="attack2Box">
+        <property name="text">
+         <string>2</string>
+        </property>
+        <property name="icon">
+         <iconset resource="main.qrc">
+          <normaloff>:/img/tyrant/AttackIcon.png</normaloff>:/img/tyrant/AttackIcon.png</iconset>
+        </property>
+        <property name="checked">
+         <bool>false</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="4">
+       <widget class="QCheckBox" name="attack3Box">
+        <property name="text">
+         <string>3</string>
+        </property>
+        <property name="icon">
+         <iconset resource="main.qrc">
+          <normaloff>:/img/tyrant/AttackIcon.png</normaloff>:/img/tyrant/AttackIcon.png</iconset>
+        </property>
+        <property name="checked">
+         <bool>false</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="5">
+       <widget class="QCheckBox" name="attack4Box">
+        <property name="text">
+         <string>4+</string>
+        </property>
+        <property name="icon">
+         <iconset resource="main.qrc">
+          <normaloff>:/img/tyrant/AttackIcon.png</normaloff>:/img/tyrant/AttackIcon.png</iconset>
+        </property>
+        <property name="checked">
+         <bool>false</bool>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item row="0" column="0" colspan="2">
+    <widget class="QGroupBox" name="filterOptionsBox">
+     <property name="enabled">
+      <bool>true</bool>
+     </property>
+     <property name="title">
+      <string>Filter Options</string>
+     </property>
+     <property name="checkable">
+      <bool>true</bool>
+     </property>
+     <layout class="QGridLayout" name="gridLayout">
+      <item row="1" column="4">
+       <widget class="QCheckBox" name="structureCommonBox">
+        <property name="text">
+         <string/>
+        </property>
+        <property name="icon">
+         <iconset resource="main.qrc">
+          <normaloff>:/img/tyrant/StructureRegIcon.png</normaloff>:/img/tyrant/StructureRegIcon.png</iconset>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="3">
+       <widget class="QCheckBox" name="commanderUncommonBox">
+        <property name="text">
+         <string/>
+        </property>
+        <property name="icon">
+         <iconset resource="main.qrc">
+          <normaloff>:/img/tyrant/CommanderSilverIcon.png</normaloff>:/img/tyrant/CommanderSilverIcon.png</iconset>
+        </property>
+        <property name="checked">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="4">
+       <widget class="QCheckBox" name="commanderCommonBox">
+        <property name="text">
+         <string/>
+        </property>
+        <property name="icon">
+         <iconset resource="main.qrc">
+          <normaloff>:/img/tyrant/CommanderRegIcon.png</normaloff>:/img/tyrant/CommanderRegIcon.png</iconset>
+        </property>
+        <property name="checked">
+         <bool>false</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0">
+       <widget class="QLabel" name="label_2">
+        <property name="text">
+         <string>Structures:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="3">
+       <widget class="QCheckBox" name="structureUncommonBox">
+        <property name="text">
+         <string/>
+        </property>
+        <property name="icon">
+         <iconset resource="main.qrc">
+          <normaloff>:/img/tyrant/StructureSilverIcon.png</normaloff>:/img/tyrant/StructureSilverIcon.png</iconset>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="1">
+       <widget class="QCheckBox" name="actionLegendaryBox">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+        <property name="icon">
+         <iconset resource="main.qrc">
+          <normaloff>:/img/tyrant/ActionLegendaryIcon.png</normaloff>:/img/tyrant/ActionLegendaryIcon.png</iconset>
+        </property>
+        <property name="checked">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="4">
+       <widget class="QCheckBox" name="assaultCommonBox">
+        <property name="minimumSize">
+         <size>
+          <width>60</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+        <property name="icon">
+         <iconset resource="main.qrc">
+          <normaloff>:/img/tyrant/AssaultRegIcon.png</normaloff>:/img/tyrant/AssaultRegIcon.png</iconset>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="0">
+       <widget class="QLabel" name="label_4">
+        <property name="text">
+         <string>Actions:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="3">
+       <widget class="QCheckBox" name="assaultUncommonBox">
+        <property name="minimumSize">
+         <size>
+          <width>60</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+        <property name="icon">
+         <iconset resource="main.qrc">
+          <normaloff>:/img/tyrant/AssaultSilverIcon.png</normaloff>:/img/tyrant/AssaultSilverIcon.png</iconset>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="0">
+       <widget class="QLabel" name="label_3">
+        <property name="text">
+         <string>Commanders:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="2">
+       <widget class="QCheckBox" name="structureRareBox">
+        <property name="text">
+         <string/>
+        </property>
+        <property name="icon">
+         <iconset resource="main.qrc">
+          <normaloff>:/img/tyrant/StructureGoldIcon.png</normaloff>:/img/tyrant/StructureGoldIcon.png</iconset>
+        </property>
+        <property name="checked">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="1">
+       <widget class="QCheckBox" name="commanderLegendaryBox">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+        <property name="icon">
+         <iconset resource="main.qrc">
+          <normaloff>:/img/tyrant/CommanderGoldIcon.png</normaloff>:/img/tyrant/CommanderGoldIcon.png</iconset>
+        </property>
+        <property name="checked">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="2">
+       <widget class="QCheckBox" name="actionRareBox">
+        <property name="text">
+         <string/>
+        </property>
+        <property name="icon">
+         <iconset resource="main.qrc">
+          <normaloff>:/img/tyrant/ActionGoldIcon.png</normaloff>:/img/tyrant/ActionGoldIcon.png</iconset>
+        </property>
+        <property name="checked">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="2">
+       <widget class="QCheckBox" name="assaultRareBox">
+        <property name="minimumSize">
+         <size>
+          <width>60</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+        <property name="icon">
+         <iconset resource="main.qrc">
+          <normaloff>:/img/tyrant/AssaultGoldIcon.png</normaloff>:/img/tyrant/AssaultGoldIcon.png</iconset>
+        </property>
+        <property name="checked">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1">
+       <widget class="QCheckBox" name="structureLegendaryBox">
+        <property name="text">
+         <string/>
+        </property>
+        <property name="icon">
+         <iconset resource="main.qrc">
+          <normaloff>:/img/tyrant/StructureLegendaryIcon.png</normaloff>:/img/tyrant/StructureLegendaryIcon.png</iconset>
+        </property>
+        <property name="checked">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="3">
+       <widget class="QCheckBox" name="actionUncommonBox">
+        <property name="text">
+         <string/>
+        </property>
+        <property name="icon">
+         <iconset resource="main.qrc">
+          <normaloff>:/img/tyrant/ActionSilverIcon.png</normaloff>:/img/tyrant/ActionSilverIcon.png</iconset>
+        </property>
+        <property name="checked">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="2">
+       <widget class="QCheckBox" name="commanderRareBox">
+        <property name="text">
+         <string/>
+        </property>
+        <property name="icon">
+         <iconset resource="main.qrc">
+          <normaloff>:/img/tyrant/CommanderGoldIcon.png</normaloff>:/img/tyrant/CommanderGoldIcon.png</iconset>
+        </property>
+        <property name="checked">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="4">
+       <widget class="QCheckBox" name="actionCommonBox">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+        <property name="icon">
+         <iconset resource="main.qrc">
+          <normaloff>:/img/tyrant/ActionRegIcon.png</normaloff>:/img/tyrant/ActionRegIcon.png</iconset>
+        </property>
+        <property name="checked">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="0">
+       <widget class="QLabel" name="label_1">
+        <property name="text">
+         <string>Assaults:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1">
+       <widget class="QCheckBox" name="assaultLegendaryBox">
+        <property name="minimumSize">
+         <size>
+          <width>60</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+        <property name="icon">
+         <iconset resource="main.qrc">
+          <normaloff>:/img/tyrant/AssaultLegendaryIcon.png</normaloff>:/img/tyrant/AssaultLegendaryIcon.png</iconset>
+        </property>
+        <property name="checked">
+         <bool>true</bool>
         </property>
        </widget>
       </item>

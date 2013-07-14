@@ -337,12 +337,13 @@ void CMainWindow::startToolProcess(bool isOptimizationEnabled)
 
             // Fetch parameters from gui
             mParameters.setOptimizationEnabled(isOptimizationEnabled);
-			mParameters.fetchFromUi(*mUi);
+            mParameters.fetchFromUi(*mUi);
             if (mParameters.ownedCardsOnly())
             {
                 if (mFilterWidget->hasOwnedCardsChanged(mParameters.ownedCardsFile()))
                 {
                     mFilterWidget->setOwnedCardsFile(mParameters.ownedCardsFile());
+                    mParameters.fetchFromUi(*mUi);
                 }
             }
 
@@ -439,10 +440,12 @@ void CMainWindow::loadDefaultSettings()
     mUi->displayBaseButton->setChecked(baseDisplayed);
     mUi->displayEnemyButton->setChecked(enemyDisplayed);
 
-    loadDefaultParameterSettings();
     CGlobalConfig::getCfg().load(settings);
     mUi->shadeOwnedCardsAction->setChecked(CGlobalConfig::getCfg().isCardShadingEnabled());
     mFilterWidget->loadParameterSettings(settings);
+
+    loadDefaultParameterSettings();
+
     mUi->cardSearchWidget->loadParameterSettings(settings);
     mUi->deckManagementWidget->loadParameterSettings(settings);
 }

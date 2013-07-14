@@ -2,7 +2,6 @@
 #define CARDTABLE_H
 
 #include <QHash>
-#include <QSet>
 #include <QQueue>
 #include <QStringList>
 #include <QNetworkAccessManager>
@@ -14,6 +13,14 @@
 class CDownload;
 class CPictureDownload;
 typedef QPair<CCard, int> TOwnedCard;
+
+struct SCardStatus
+{
+    SCardStatus(int o, int f) : numOwned(o), numOwnedFiltered(f) { }
+    SCardStatus() : numOwned(0), numOwnedFiltered(0) { }
+    int numOwned;
+    int numOwnedFiltered;
+};
 
 class CCardTable : public QObject
 {
@@ -30,9 +37,11 @@ public:
     const CCard& getCardForId(unsigned int id) const;
     const CCard& getCardForName(const QString &name) const;
     void searchCards(const ICardCheck &search, QList<CCard*> &cards, int maxHits = -1) const;
-    bool isCardOwned(CCard *card);
 
-    void setOwnedCards(const QList<TOwnedCard> &ownedCards);
+    SCardStatus getCardStatus(const CCard *card) const;
+    bool isCardOwned(const CCard *card) const;
+
+    void setOwnedCards(const QList<TOwnedCard> &ownedCards, const QList<TOwnedCard> &filteredCards);
     void updateData();
     const CBattleground& getBattlegroundForId(unsigned int id) const;
     const QList<CBattleground>& getBattlegrounds() const;
@@ -60,7 +69,7 @@ private:
     QHash<ECardSet, QString> mCardSetIdMap;
     QHash<unsigned int, CCard*> mCardIdMap;
     QHash<QString, CCard*> mCardNameMap;
-    QSet<unsigned int> mOwnedCardMap;
+    QHash<unsigned int, SCardStatus> mOwnedCardMap;
     QNetworkAccessManager* mNetManager;
     QQueue<CPictureDownload*> mPictureDownloads;
     QQueue<CDownload*> mDataDownloads;

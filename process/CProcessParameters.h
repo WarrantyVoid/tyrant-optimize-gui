@@ -16,7 +16,7 @@ public:
 	CProcessParameters();
 
 public:
-	void fetchFromUi(const Ui::MainWindow &ui);
+    void fetchFromUi(const Ui::MainWindow &ui);
 	void updateUi(Ui::MainWindow &ui) const;
 
 	void fetchFromSettings(QSettings &settings);

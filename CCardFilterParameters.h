@@ -55,6 +55,7 @@ private:
     QHash<QString, int> mWhiteList;
     QHash<QString, int> mBlackList;
     bool mIsFilterOptionEnabled;
+    bool mIsAssaultOptionEnabled;
     bool mIsWhiteListEnabled;
     bool mIsBlackListEnabled;
     bool mIsCompletionEnabled;

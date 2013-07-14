@@ -17,6 +17,7 @@ CCardFilterParameters::CCardFilterParameters()
 , mWhiteList()
 , mBlackList()
 , mIsFilterOptionEnabled(true)
+, mIsAssaultOptionEnabled(true)
 , mIsWhiteListEnabled(true)
 , mIsBlackListEnabled(true)
 , mIsCompletionEnabled(false)
@@ -147,6 +148,7 @@ void CCardFilterParameters::fetchFromUi(const Ui::CardFilterWidget &ui)
     }
 
     mIsFilterOptionEnabled = ui.filterOptionsBox->isChecked();
+    mIsAssaultOptionEnabled = ui.assaultOptionsBox->isChecked();
     mIsWhiteListEnabled = ui.whiteListBox->isChecked();
     mIsBlackListEnabled = ui.blackListBox->isChecked();
     mIsCompletionEnabled = ui.complementsBox->isChecked();
@@ -240,6 +242,7 @@ void CCardFilterParameters::updateUi(Ui::CardFilterWidget &ui) const
     ui.upgradedSpinBox->setValue(mComplement[15]);
 
     ui.filterOptionsBox->setChecked(mIsFilterOptionEnabled);
+    ui.assaultOptionsBox->setChecked(mIsAssaultOptionEnabled);
     ui.whiteListBox->setChecked(mIsWhiteListEnabled);
     ui.blackListBox->setChecked(mIsBlackListEnabled);
     ui.complementsBox->setChecked(mIsCompletionEnabled);
@@ -347,6 +350,7 @@ void CCardFilterParameters::fetchFromSettings(QSettings &settings)
 
 
     mIsFilterOptionEnabled = settings.value("isFilterOptionEnabled", mIsFilterOptionEnabled).toBool();
+    mIsAssaultOptionEnabled = settings.value("isAssaultOptionEnabled", mIsAssaultOptionEnabled).toBool();
     mIsWhiteListEnabled = settings.value("isWhiteListEnabled", mIsWhiteListEnabled).toBool();
     mIsBlackListEnabled = settings.value("isBlackListEnabled", mIsBlackListEnabled).toBool();
     mIsCompletionEnabled = settings.value("isCompletionEnabled", mIsCompletionEnabled).toBool();
@@ -443,6 +447,7 @@ void CCardFilterParameters::updateSettings(QSettings &settings) const
     settings.setValue("upgradedSetComplement", mComplement[15]);
 
     settings.setValue("isFilterOptionEnabled", mIsFilterOptionEnabled);
+    settings.setValue("isAssaultOptionEnabled", mIsAssaultOptionEnabled);
     settings.setValue("isWhiteListEnabled", mIsWhiteListEnabled);
     settings.setValue("isBlackListEnabled", mIsBlackListEnabled);
     settings.setValue("isCompletionEnabled", mIsCompletionEnabled);
@@ -595,21 +600,20 @@ bool CCardFilterParameters::checkCard(const CCard &card, int &num) const
         }
 
         bool passFaction(true);
-        switch(card.getFaction())
-        {
-        case EBloodthirstyFaction: passFaction = mIsFactionAllowed[0]; break;
-        case EImperialFaction: passFaction = mIsFactionAllowed[1]; break;
-        case ERaiderFaction: passFaction = mIsFactionAllowed[2]; break;
-        case ERighteousFaction: passFaction = mIsFactionAllowed[3]; break;
-        case EXenoFaction: passFaction = mIsFactionAllowed[4]; break;
-        default: break;
-        }
-
         bool passHealth(true);
         bool passAttack(true);
         bool passDelay(true);
-        if (card.getType() == EAssaultType)
+        if (mIsAssaultOptionEnabled && card.getType() == EAssaultType)
         {
+            switch(card.getFaction())
+            {
+            case EBloodthirstyFaction: passFaction = mIsFactionAllowed[0]; break;
+            case EImperialFaction: passFaction = mIsFactionAllowed[1]; break;
+            case ERaiderFaction: passFaction = mIsFactionAllowed[2]; break;
+            case ERighteousFaction: passFaction = mIsFactionAllowed[3]; break;
+            case EXenoFaction: passFaction = mIsFactionAllowed[4]; break;
+            default: break;
+            }
             switch (card.getHealth())
             {
             case 1: passHealth = mIsHealthAllowed[0]; break;

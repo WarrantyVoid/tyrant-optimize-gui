@@ -1,5 +1,6 @@
 #include "CProcessParameters.h"
 #include "ui_MainWindow.h"
+#include "model/CCardTable.h"
 #include <QLineEdit>
 
 CProcessParameters::CProcessParameters()
@@ -30,19 +31,41 @@ void CProcessParameters::fetchFromUi(const Ui::MainWindow &ui)
 {
     mBaseDeckOrig = ui.baseDeckEdit->currentText().trimmed();
     mBaseDeckOut.clear();
+    CCardTable &cardTable = CCardTable::getCardTable();
     const QList<CCard> &cards = ui.baseDeckWidget->getDeck().getCards();
+
+    // Preprocess provided deck
+    QMap<unsigned int, SCardStatus> deckStatus;
     for ( int i = 0; i < cards.size(); ++i)
     {
-        if (i > 0)
+        // Apply card filters
+        SCardStatus status;
+        QMap<unsigned int, SCardStatus>::iterator iEx = deckStatus.find(cards[i].getId());
+        if (iEx != deckStatus.end())
         {
-            mBaseDeckOut.append(",");
+            --iEx.value().numOwnedFiltered;
+            status = iEx.value();
         }
-        QString cardStr = QString("%1[%2] %3")
-            .arg(ui.baseDeckWidget->isLocked(i - 1) ? "!" : "")
-            .arg(cards[i].getId())
-            .arg(cards[i].getName());
-        mBaseDeckOut.append(cardStr);
+        else
+        {
+            status = cardTable.getCardStatus(&cards[i]);
+            deckStatus.insert(cards[i].getId(), status);
+        }
+        if (status.numOwnedFiltered > 0)
+        {
+            // Apply card locks
+            if (i > 0)
+            {
+                mBaseDeckOut.append(",");
+            }
+            QString cardStr = QString("%1[%2] %3")
+                .arg(ui.baseDeckWidget->isLocked(i - 1) ? "!" : "")
+                .arg(cards[i].getId())
+                .arg(cards[i].getName());
+            mBaseDeckOut.append(cardStr);
+        }
     }
+
     mEnemyDeck = ui.enemyDeckEdit->currentText().trimmed();
     mBattleGround = ui.battleGroundBox->currentText();
     mOwnedCardsFile = ui.ownedCardsFileBox->currentText();

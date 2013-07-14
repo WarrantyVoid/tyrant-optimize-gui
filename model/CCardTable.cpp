@@ -109,17 +109,46 @@ void CCardTable::searchCards(const ICardCheck &search, QList<CCard*> &cards, int
     }
 }
 
-bool CCardTable::isCardOwned(CCard *card)
+SCardStatus CCardTable::getCardStatus(const CCard *card) const
 {
-    return (card && mOwnedCardMap.contains(card->getId()));
+    if (card)
+    {
+        QHash<unsigned int, SCardStatus>::const_iterator status = mOwnedCardMap.find(card->getId());
+        if (status != mOwnedCardMap.end() && status.key() == card->getId())
+        {
+            return status.value();
+        }
+    }
+    return SCardStatus();
 }
 
-void CCardTable::setOwnedCards(const QList<TOwnedCard> &ownedCards)
+bool CCardTable::isCardOwned(const CCard *card) const
+{
+    if (card)
+    {
+        QHash<unsigned int, SCardStatus>::const_iterator status = mOwnedCardMap.find(card->getId());
+        if (status != mOwnedCardMap.end() && status.key() == card->getId())
+        {
+            return status.value().numOwned > 0;
+        }
+    }
+    return false;
+}
+
+void CCardTable::setOwnedCards(const QList<TOwnedCard> &ownedCards, const QList<TOwnedCard> &filteredCards)
 {
     mOwnedCardMap.clear();
-    for ( QList<TOwnedCard>::const_iterator i = ownedCards.begin(); i != ownedCards.end(); ++i)
+    for (QList<TOwnedCard>::const_iterator i = ownedCards.begin(); i != ownedCards.end(); ++i)
     {
-        mOwnedCardMap.insert((*i).first.getId());
+        mOwnedCardMap.insert((*i).first.getId(), SCardStatus((*i).second, -1));
+    }
+    for (QList<TOwnedCard>::const_iterator i = filteredCards.begin(); i != filteredCards.end(); ++i)
+    {
+        QHash<unsigned int, SCardStatus>::iterator status = mOwnedCardMap.find((*i).first.getId());
+        if (status != mOwnedCardMap.end())
+        {
+            status.value().numOwnedFiltered = (*i).second;
+        }
     }
     emit ownedCardsUpdated();
 }
