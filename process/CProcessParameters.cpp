@@ -35,34 +35,49 @@ void CProcessParameters::fetchFromUi(const Ui::MainWindow &ui)
     const QList<CCard> &cards = ui.baseDeckWidget->getDeck().getCards();
 
     // Preprocess provided deck
-    QMap<unsigned int, SCardStatus> deckStatus;
-    for ( int i = 0; i < cards.size(); ++i)
+    TCardStatusMap deckStatus;
+    for (int i = 0; i < cards.size(); ++i)
     {
         // Apply card filters
         SCardStatus status;
-        QMap<unsigned int, SCardStatus>::iterator iEx = deckStatus.find(cards[i].getId());
-        if (iEx != deckStatus.end())
+        const CCard *card = &cards[i];
+        if (ui.ownedCardsBox->isChecked())
         {
-            --iEx.value().numOwnedFiltered;
-            status = iEx.value();
+            for (int iTry = 0; iTry < 2 && status.numOwnedFiltered <= 0; ++iTry)
+            {
+                if (iTry > 0)
+                {
+                    card = &cardTable.getOwnedCardEquivalent(cards[i], deckStatus);
+                }
+
+                TCardStatusMap::iterator iEx = deckStatus.find(card->getId());
+                if (iEx != deckStatus.end())
+                {
+                    status = iEx.value();
+                    --iEx.value().numOwnedFiltered;
+                }
+                else
+                {
+                    status = cardTable.getCardStatus(*card);
+                    SCardStatus newStatus = status;
+                    --newStatus.numOwnedFiltered;
+                    deckStatus.insert(card->getId(), newStatus);
+                }
+            }
         }
         else
         {
-            status = cardTable.getCardStatus(&cards[i]);
-            deckStatus.insert(cards[i].getId(), status);
+            status.numOwned = 10;
+            status.numOwnedFiltered = 10;
         }
-        if (status.numOwnedFiltered > 0)
+        if (card && card->isValid())
         {
             // Apply card locks
-            if (i > 0)
-            {
-                mBaseDeckOut.append(",");
-            }
-            QString cardStr = QString("%1[%2] %3")
-                .arg(ui.baseDeckWidget->isLocked(i - 1) ? "!" : "")
-                .arg(cards[i].getId())
-                .arg(cards[i].getName());
-            mBaseDeckOut.append(cardStr);
+            mBaseDeckOut.append(QString("%1%2[%3]%4")
+                .arg((i > 0) ? "," : "")
+                .arg(card == &cards[i] && ui.baseDeckWidget->isLocked(i - 1) ? "!" : "")
+                .arg(card->getId())
+                .arg(card->getName()));
         }
     }
 

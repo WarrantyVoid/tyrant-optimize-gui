@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1111</width>
-    <height>364</height>
+    <width>1086</width>
+    <height>393</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -511,7 +511,7 @@
             <string>Account for enemy card order during optimization</string>
            </property>
            <property name="text">
-            <string>Ordered enemy deck</string>
+            <string>Ordered enemy</string>
            </property>
           </widget>
          </item>
@@ -555,7 +555,7 @@
             <string>Account for base card order during optimization</string>
            </property>
            <property name="text">
-            <string>Ordered base deck</string>
+            <string>Ordered base</string>
            </property>
           </widget>
          </item>
@@ -814,7 +814,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1111</width>
+     <width>1086</width>
      <height>21</height>
     </rect>
    </property>

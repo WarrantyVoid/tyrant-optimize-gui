@@ -134,7 +134,7 @@ void CCardSearchWidget::updateView()
 
         for (int i = foundCards.size() - 1; i > -1; --i)
         {
-            if (cards.isCardOwned(foundCards[i]))
+            if (cards.isCardOwned(*foundCards[i]))
             {
                 ownedCards.push_back(foundCards[i]);
                 foundCards.removeAt(i);

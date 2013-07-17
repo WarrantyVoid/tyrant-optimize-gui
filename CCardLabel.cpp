@@ -253,7 +253,7 @@ void CCardLabel::paintEvent(QPaintEvent *ev)
             painter.drawText(w + dx - 3 * stat - 2, h - stat - 1, 2 * stat, stat - 1, Qt::AlignRight | Qt::AlignVCenter, QString("%1").arg(mCard.getHealth()));
         }
 
-        if (cfg.isCardShadingEnabled() && !mCards.isCardOwned(&mCard))
+        if (cfg.isCardShadingEnabled() && !mCards.isCardOwned(mCard))
         {
             QBrush darkBrush(Qt::black);
             painter.setBrush(darkBrush);

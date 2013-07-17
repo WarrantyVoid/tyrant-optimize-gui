@@ -109,28 +109,61 @@ void CCardTable::searchCards(const ICardCheck &search, QList<CCard*> &cards, int
     }
 }
 
-SCardStatus CCardTable::getCardStatus(const CCard *card) const
+const CCard& CCardTable::getOwnedCardEquivalent(const CCard &card, const TCardStatusMap &used) const
 {
-    if (card)
+    int maxScore = 0;
+    const CCard* result = 0;
+    for (QHash<unsigned int, SCardStatus>::const_iterator i = mOwnedCardMap.begin(); i != mOwnedCardMap.end(); ++i)
     {
-        QHash<unsigned int, SCardStatus>::const_iterator status = mOwnedCardMap.find(card->getId());
-        if (status != mOwnedCardMap.end() && status.key() == card->getId())
+        if (i.value().numOwnedFiltered > 0)
         {
-            return status.value();
+            TCardStatusMap::const_iterator iUsed = used.find(i.key());
+            if (iUsed == used.end() || iUsed.value().numOwnedFiltered > 0)
+            {
+                const CCard &curCard = getCardForId(i.key());
+                int score = 0;
+                if (curCard.getType() == card.getType()) score +=4;
+                if (curCard.getRarity() == card.getRarity()) score += 1;
+                if (curCard.getFaction() == card.getFaction()) score += 1;
+                if (curCard.getSet() == card.getSet()) score += 1;
+                if (score > maxScore)
+                {
+                    maxScore = score;
+                    result = &curCard;
+                    if (score == 7)
+                    {
+                        return curCard;
+                    }
+                }
+            }
         }
+    }
+    if (result)
+    {
+        return *result;
+    }
+    else
+    {
+        return CCard::INVALID_CARD;
+    }
+}
+
+SCardStatus CCardTable::getCardStatus(const CCard &card) const
+{
+    QHash<unsigned int, SCardStatus>::const_iterator status = mOwnedCardMap.find(card.getId());
+    if (status != mOwnedCardMap.end() && status.key() == card.getId())
+    {
+        return status.value();
     }
     return SCardStatus();
 }
 
-bool CCardTable::isCardOwned(const CCard *card) const
+bool CCardTable::isCardOwned(const CCard &card) const
 {
-    if (card)
+    QHash<unsigned int, SCardStatus>::const_iterator status = mOwnedCardMap.find(card.getId());
+    if (status != mOwnedCardMap.end() && status.key() == card.getId())
     {
-        QHash<unsigned int, SCardStatus>::const_iterator status = mOwnedCardMap.find(card->getId());
-        if (status != mOwnedCardMap.end() && status.key() == card->getId())
-        {
-            return status.value().numOwned > 0;
-        }
+        return status.value().numOwned > 0;
     }
     return false;
 }

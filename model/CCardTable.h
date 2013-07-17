@@ -12,7 +12,6 @@
 
 class CDownload;
 class CPictureDownload;
-typedef QPair<CCard, int> TOwnedCard;
 
 struct SCardStatus
 {
@@ -21,6 +20,10 @@ struct SCardStatus
     int numOwned;
     int numOwnedFiltered;
 };
+
+typedef QMap<unsigned int, SCardStatus> TCardStatusMap;
+typedef QPair<CCard, int> TOwnedCard;
+
 
 class CCardTable : public QObject
 {
@@ -38,8 +41,9 @@ public:
     const CCard& getCardForName(const QString &name) const;
     void searchCards(const ICardCheck &search, QList<CCard*> &cards, int maxHits = -1) const;
 
-    SCardStatus getCardStatus(const CCard *card) const;
-    bool isCardOwned(const CCard *card) const;
+    const CCard& getOwnedCardEquivalent(const CCard &card, const TCardStatusMap &used) const;
+    SCardStatus getCardStatus(const CCard &card) const;
+    bool isCardOwned(const CCard &card) const;
 
     void setOwnedCards(const QList<TOwnedCard> &ownedCards, const QList<TOwnedCard> &filteredCards);
     void updateData();
