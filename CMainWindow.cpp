@@ -14,7 +14,7 @@
 #include <QHelpEvent>
 #include <QClipboard>
 
-const QString CMainWindow::VERSION = "1.2.3";
+const QString CMainWindow::VERSION = "1.3.0";
 
 CMainWindow::CMainWindow(QWidget *parent)
 : QMainWindow(parent)
