@@ -49,6 +49,7 @@ protected slots:
 	void saveParameterSettings();
     void toggleAlwaysOnTop(bool checked);
     void toggleCardsShading(bool checked);
+    void toggleCardLabelling(bool checked);
     void updateXmlData();
     void updateOwnedCards();
     void displayAboutMessage();
@@ -60,10 +61,10 @@ protected slots:
     void copyDeckHash();
     void useOptimizedDeck();
     void switchDecks();
-    void updateView();
+    void updateView(ECardStatusUpdate status);
     void updateWindowHeight(bool grow);
     void updateParameterBoxToolTip(int boxIndex);
-    void updateParameterBoxValues(const QString &deckStr);
+    void updateBattleGround(const QString &deckStr);
 
     // Widget slots
     void processError(QProcess::ProcessError error);

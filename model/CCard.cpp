@@ -203,7 +203,7 @@ ECardSet CCard::getSet() const
     return mSet;
 }
 
-const TCardSkills& CCard::getSkills() const
+const TSkillList& CCard::getSkills() const
 {
     return mSkills;
 }

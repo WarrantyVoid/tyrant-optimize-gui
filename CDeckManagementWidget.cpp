@@ -2,35 +2,36 @@
 #include "ui_DeckManagementWidget.h"
 #include <QStandardItemModel>
 #include <QLineEdit>
+#include <QMouseEvent>
 
 CDeckManagementWidget::CDeckManagementWidget(QWidget *parent)
 : QWidget(parent)
 , mUi(new Ui::DeckManagementWidget)
 , mDecks(CDeckTable::getDeckTable())
-, mDeckIconDelegate()
+, mDeckItemDelegate()
 , mDeckSortProxy()
 {
     mUi->setupUi(this);
+    toggleDeckUsageButton(false);
     mDeckSortProxy.setSourceModel(&mDecks);
     mUi->deckTableView->setModel(&mDeckSortProxy);
     mUi->deckTableView->setSortingEnabled(true);
     mUi->deckTableView->horizontalHeader()->setDefaultAlignment(Qt::AlignLeft);
     mUi->deckTableView->horizontalHeader()->setDefaultSectionSize(21);
     mUi->deckTableView->verticalHeader()->setDefaultSectionSize(18);
-    mUi->deckTableView->setItemDelegateForColumn(2, &mDeckIconDelegate);
+    mUi->deckTableView->setItemDelegate(&mDeckItemDelegate);
+    mUi->deckTableView->setContextMenuPolicy(Qt::CustomContextMenu);
+    mUi->deckTableView->viewport()->installEventFilter(this);
+
     connect(
         mUi->deckTableView->selectionModel(), SIGNAL(selectionChanged(const QItemSelection&, const QItemSelection&)),
         this, SLOT(updateButtonAvailability()));
     connect(
-        mUi->deckTableView, SIGNAL(doubleClicked(const QModelIndex &)),
-        this, SLOT(setSelectedDeck()));
-
-    connect(
         mUi->deleteDeckButton, SIGNAL(clicked()),
         this, SLOT(deleteSelectedDeck()));
     connect(
-        mUi->blacklistDeckButton, SIGNAL(clicked()),
-        this, SLOT(blacklistSelectedDeck()));
+        mUi->blockDeckButton, SIGNAL(clicked()),
+        this, SLOT(blockSelectedDeck()));
     connect(
         mUi->setEnemyDeckButton, SIGNAL(clicked()),
         this, SLOT(setSelectedEnemyDeck()));
@@ -75,10 +76,15 @@ void CDeckManagementWidget::loadParameterSettings(QSettings &settings)
     mUi->raidBox->setChecked(settings.value("raidDeckFilter", false).toBool());
     mUi->deckTableView->horizontalHeader()->restoreState(settings.value("tableHeader").toByteArray());
 
-    QStringList blackList = settings.value("blackListedDecks").toStringList();
-    for (QStringList::const_iterator i = blackList.begin(); i != blackList.end(); ++i)
+    QStringList blockList = settings.value("blackListedDecks").toStringList();
+    for (QStringList::const_iterator i = blockList.begin(); i != blockList.end(); ++i)
     {
-        mDecks.setDeckBlackListed(*i, true);
+        mDecks.setDeckBlockage(*i, true);
+        const CDeck& deck = mDecks.getDeckForName(*i);
+        if (deck.isValid())
+        {
+            emit deckBlockageChanged(deck, true);
+        }
     }
     settings.endGroup();
 
@@ -98,39 +104,35 @@ void CDeckManagementWidget::saveParameterSettings(QSettings &settings)
     settings.setValue("sortColumn", "0");
     settings.setValue("sortOrder", "0");
 
-    QStringList blackList;
+    QStringList blockList;
     QStringList deckList;
     mDecks.getCustomDecks(deckList);
     for (QStringList::const_iterator i = deckList.begin(); i != deckList.end(); ++i)
     {
-        if (mDecks.isDeckBlackListed(*i))
+        if (mDecks.isDeckBlocked(*i))
         {
-            blackList.push_back(*i);
+            blockList.push_back(*i);
         }
     }
-    settings.setValue("blackListedDecks", blackList);
+    settings.setValue("blackListedDecks", blockList);
     settings.endGroup();
 }
 
 bool CDeckManagementWidget::addCustomDeck(CDeck &customDeck)
 {
-    bool isBlack = mDecks.isDeckBlackListed(customDeck.getName());
-    if (isBlack)
+    bool isBlocked = mDecks.isDeckBlocked(customDeck.getName());
+    if (isBlocked)
     {
         const CDeck& exDeck = mDecks.getDeckForName(customDeck.getName());
         if (exDeck.isValid())
         {
-            QStringList blackList;
-            addDeckToBlackList(exDeck, blackList);
-            emit blackListCards(blackList, false);
+            emit deckBlockageChanged(exDeck, false);
         }
     }
     bool result = mDecks.addCustomDeck(customDeck);
-    if (isBlack)
+    if (isBlocked)
     {
-        QStringList blackList;
-        addDeckToBlackList(customDeck, blackList);
-        emit blackListCards(blackList, true);
+        emit deckBlockageChanged(customDeck, true);
     }
     return result;
 }
@@ -138,15 +140,14 @@ bool CDeckManagementWidget::addCustomDeck(CDeck &customDeck)
 void CDeckManagementWidget::updateButtonAvailability()
 {
     bool deleteAllowed(false);
-    bool blackListAllowed(false);
+    bool blockAllowed(false);
     bool setBaseDeckAllowed(false);
     bool setEnemyDeckAllowed(false);
-
     QModelIndexList indexes = mUi->deckTableView->selectionModel()->selectedRows();
     if (!indexes.isEmpty())
     {
         deleteAllowed = true;
-        blackListAllowed = true;
+        blockAllowed = true;
         setBaseDeckAllowed = true;
         setEnemyDeckAllowed = true;
         int deckSelectCount = 0;
@@ -158,26 +159,28 @@ void CDeckManagementWidget::updateButtonAvailability()
             {
                 deleteAllowed = false;
             }
-            if (blackListAllowed && deck.getType() != ECustomDeckType)
+            if (blockAllowed && deck.getType() != ECustomDeckType)
             {
-                blackListAllowed = false;
+                blockAllowed = false;
             }
             if (setBaseDeckAllowed && deck.getType() != ECustomDeckType)
             {
                 setBaseDeckAllowed = false;
             }
         }
-        if (blackListAllowed && deckSelectCount > 1)
+        if (blockAllowed && deckSelectCount > 1)
         {
-            blackListAllowed = false;
+            blockAllowed = false;
         }
         if (setBaseDeckAllowed && deckSelectCount > 1)
         {
             setBaseDeckAllowed = false;
         }
+        const CDeck &deck = mDecks.getDeckForIndex(mDeckSortProxy.mapToSource(indexes.first()));
+        toggleDeckUsageButton(mDecks.isDeckBlocked(deck.getName()));
     }
     mUi->deleteDeckButton->setEnabled(deleteAllowed);
-    mUi->blacklistDeckButton->setEnabled(blackListAllowed);
+    mUi->blockDeckButton->setEnabled(blockAllowed);
     mUi->setBaseDeckButton->setEnabled(setBaseDeckAllowed);
     mUi->setEnemyDeckButton->setEnabled(setEnemyDeckAllowed);
 }
@@ -213,34 +216,31 @@ void CDeckManagementWidget::deleteSelectedDeck()
     QStringList selectedDecks;
     if (!indexes.isEmpty())
     {
-        QStringList blackList;
         for (QModelIndexList::const_iterator i = indexes.begin(); i!= indexes.end(); ++i)
         {
             const CDeck &deck = mDecks.getDeckForIndex(mDeckSortProxy.mapToSource(*i));
             selectedDecks.push_back(deck.getName());
-            if (mDecks.isDeckBlackListed(deck.getName()))
+            if (mDecks.isDeckBlocked(deck.getName()))
             {
-                addDeckToBlackList(deck, blackList);
+                // unblock deleted decks automatically
+                emit deckBlockageChanged(deck, false);
             }
         }
-        // un-blacklist deleted decks automatically
-        emit blackListCards(blackList, false);
         mDecks.deleteCustomDecks(selectedDecks);
     }
 }
 
-void CDeckManagementWidget::blacklistSelectedDeck()
+void CDeckManagementWidget::blockSelectedDeck()
 {
     QModelIndexList indexes = mUi->deckTableView->selectionModel()->selectedRows();
     if (!indexes.isEmpty())
     {
-        QStringList blackList;
         const CDeck &deck = mDecks.getDeckForIndex(mDeckSortProxy.mapToSource(indexes.first()));
-        bool isBlack = !mDecks.isDeckBlackListed(deck.getName());
-        mDecks.setDeckBlackListed(deck.getName(), isBlack);
-        addDeckToBlackList(deck, blackList);
-        emit blackListCards(blackList, isBlack);
+        bool isBlocked = !mDecks.isDeckBlocked(deck.getName());
+        mDecks.setDeckBlockage(deck.getName(), isBlocked);
+        emit deckBlockageChanged(deck, isBlocked);
         mDeckSortProxy.invalidate();
+        toggleDeckUsageButton(isBlocked);
     }
 }
 
@@ -303,11 +303,48 @@ void CDeckManagementWidget::setSelectedDeck()
     }
 }
 
-void CDeckManagementWidget::addDeckToBlackList(const CDeck& deck, QStringList &blackList)
+bool CDeckManagementWidget::eventFilter(QObject *obj, QEvent *e)
 {
-    const QList<CCard> &cards = deck.getCards();
-    for (int i = 0; i < cards.size(); ++i)
+    switch(e->type())
     {
-        blackList << cards[i].getName();
+        case QEvent::MouseButtonDblClick:
+        {
+            QMouseEvent *mouseEvent = static_cast<QMouseEvent*>(e);
+            if (mouseEvent->button() == Qt::LeftButton)
+            {
+                setSelectedDeck();
+                return true;
+            }
+            return QObject::eventFilter(obj, e);
+
+        }
+        case QEvent::MouseButtonRelease:
+        {
+            QMouseEvent *mouseEvent = static_cast<QMouseEvent*>(e);
+            if (mouseEvent->button() == Qt::RightButton
+                && mUi->blockDeckButton->isEnabled())
+            {
+                blockSelectedDeck();
+                return true;
+            }
+            return QObject::eventFilter(obj, e);
+        }
+        default:
+        {
+            // standard event processing
+            return QObject::eventFilter(obj, e);
+        }
+    }
+}
+
+void CDeckManagementWidget::toggleDeckUsageButton(bool curDeckUsed)
+{
+    if (curDeckUsed)
+    {
+        mUi->blockDeckButton->setText("Unblock");
+    }
+    else
+    {
+       mUi->blockDeckButton->setText("Block");
     }
 }

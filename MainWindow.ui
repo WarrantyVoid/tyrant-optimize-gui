@@ -854,6 +854,9 @@
      <string>View</string>
     </property>
     <addaction name="shadeOwnedCardsAction"/>
+    <addaction name="labelBlackCardsAction"/>
+    <addaction name="labelWhiteCardsAction"/>
+    <addaction name="separator"/>
    </widget>
    <addaction name="parameterMenu"/>
    <addaction name="menuSettings"/>
@@ -959,7 +962,23 @@
     <bool>true</bool>
    </property>
    <property name="text">
-    <string>Unavailable cards shading</string>
+    <string>Shade unavailable cards</string>
+   </property>
+  </action>
+  <action name="labelBlackCardsAction">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Label blacklisted cards</string>
+   </property>
+  </action>
+  <action name="labelWhiteCardsAction">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Label whitelisted cards</string>
    </property>
   </action>
  </widget>

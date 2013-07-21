@@ -199,8 +199,8 @@ bool CCardSearchParameters::checkCard(const CCard &card, int &/*num*/) const
     if (pass)
     {
         int skillPass(0);
-        const TCardSkills& skills = card.getSkills();
-        for (TCardSkills::const_iterator i = skills.begin(); skillPass < mSkill.size() && i != skills.end(); ++i)
+        const TSkillList& skills = card.getSkills();
+        for (TSkillList::const_iterator i = skills.begin(); skillPass < mSkill.size() && i != skills.end(); ++i)
         {
             const CSkill& curSkill = mCards.getSkillForId(i->getId());
             const QString &curSkillSig = curSkill.makeSignature(*i).toLower();

@@ -100,7 +100,7 @@ const CCard& CDeck::getLegendary() const
     return CCard::INVALID_CARD;
 }
 
-const QList<CCard>& CDeck::getCards() const
+const TCardList& CDeck::getCards() const
 {
     return mCards;
 }

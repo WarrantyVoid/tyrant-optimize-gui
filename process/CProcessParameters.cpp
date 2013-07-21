@@ -70,7 +70,8 @@ void CProcessParameters::fetchFromUi(const Ui::MainWindow &ui)
             status.numOwned = 10;
             status.numOwnedFiltered = 10;
         }
-        if (card && card->isValid())
+        bool countLockCheck = (!ui.cardCountLockBox->isChecked() ||  i <= ui.maxCardCountLockBox->value());
+        if (card && card->isValid() && countLockCheck)
         {
             // Apply card locks
             mBaseDeckOut.append(QString("%1%2[%3]%4")

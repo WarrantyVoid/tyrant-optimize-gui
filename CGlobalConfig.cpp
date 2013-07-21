@@ -13,6 +13,8 @@ CGlobalConfig::CGlobalConfig()
 , mResourcePicturePath(":/img/tyrant/")
 , mLastDir(QApplication::applicationDirPath())
 , mIsCardShadingEnabled(true)
+, mIsBlackLabellingEnabled(true)
+, mIsWhiteLabellingEnabled(true)
 {
 }
 
@@ -29,12 +31,17 @@ void CGlobalConfig::load(QSettings &settings)
 {
     mLastDir = settings.value("paths/lastDir", mLastDir).toString();
     mIsCardShadingEnabled = settings.value("view/shadingEnabled", mIsCardShadingEnabled).toBool();
+    mIsBlackLabellingEnabled = settings.value("view/blackLabellingEnabled", mIsBlackLabellingEnabled).toBool();
+    mIsWhiteLabellingEnabled = settings.value("view/whiteLabellingEnabled", mIsWhiteLabellingEnabled).toBool();
 }
 
 void CGlobalConfig::save(QSettings &settings)
 {
     settings.setValue("paths/lastDir", mLastDir);
     settings.setValue("view/shadingEnabled", mIsCardShadingEnabled);
+    settings.setValue("view/blackLabellingEnabled", mIsBlackLabellingEnabled);
+    settings.setValue("view/whiteLabellingEnabled", mIsWhiteLabellingEnabled);
+
 }
 
 const QString& CGlobalConfig::getAppPath() const
@@ -72,6 +79,16 @@ void CGlobalConfig::setCardShadingEnabled(bool enabled)
     mIsCardShadingEnabled = enabled;
 }
 
+void CGlobalConfig::setBlackLabellingEnabled(bool enabled)
+{
+    mIsBlackLabellingEnabled = enabled;
+}
+
+void CGlobalConfig::setWhiteLabellingEnabled(bool enabled)
+{
+    mIsWhiteLabellingEnabled = enabled;
+}
+
 const QString& CGlobalConfig::getLastDir() const
 {
     return mLastDir;
@@ -80,6 +97,16 @@ const QString& CGlobalConfig::getLastDir() const
 bool CGlobalConfig::isCardShadingEnabled() const
 {
     return mIsCardShadingEnabled;
+}
+
+bool CGlobalConfig::isBlackLabellingEnabled() const
+{
+    return mIsBlackLabellingEnabled;
+}
+
+bool CGlobalConfig::isWhiteLabellingEnabled() const
+{
+    return mIsWhiteLabellingEnabled;
 }
 
 

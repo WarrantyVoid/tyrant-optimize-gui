@@ -1,6 +1,7 @@
 #ifndef CCARDFILTERPARAMETERS_H
 #define CCARDFILTERPARAMETERS_H
 
+#include <QSet>
 #include <QHash>
 #include <QSettings>
 #include "ICardCheck.h"
@@ -10,6 +11,8 @@ namespace Ui
 class CardFilterWidget;
 }
 class CCard;
+class CDeck;
+
 typedef QPair<QString, int> TListedCard;
 
 class CCardFilterParameters : public ICardCheck
@@ -19,14 +22,19 @@ public:
     void reset();
 
 public:
-    void fetchFromUi(const Ui::CardFilterWidget &ui);
+    bool fetchFromUi(const Ui::CardFilterWidget &ui);
     void updateUi(Ui::CardFilterWidget &ui) const;
 
     void fetchFromSettings(QSettings &settings);
     void updateSettings(QSettings &settings) const;
 
-    void setCardsBlackListed(const QStringList &cards, bool toBlack);
+    void setDeckBlockage(const CDeck &deck, bool isBlocked);
+    void setCardBlackListStatus(const CCard &card, bool isBlack);
+    void setCardWhiteListStatus(const CCard &card, bool isWhite);
+    void getBlackList(QStringList &blackList) const;
+    void getWhiteList(QStringList &whiteList) const;
 
+public:
     bool checkCard(const CCard &card, int &num) const;
 
 protected:
@@ -51,12 +59,14 @@ private:
     bool mIsDelayAllowed[NUM_DELAY];
     bool mIsFactionAllowed[NUM_FACTION];
     int mComplement[NUM_SET];
-    QHash<QString, int> mWhiteList;
-    QHash<QString, int> mBlackList;
+    QSet<QString> mWhiteList;
+    QSet<QString> mBlackList;
+    QHash<QString, int> mBlockList;
     bool mIsFilterOptionEnabled;
     bool mIsAssaultOptionEnabled;
     bool mIsWhiteListEnabled;
     bool mIsBlackListEnabled;
+    bool mIsBlockListEnabled;
     bool mIsCompletionEnabled;
     static QStringList sDefaultList;
 };

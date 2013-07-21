@@ -28,8 +28,8 @@ public:
     void getCustomDecks(QStringList &customDecks) const;
     void clearDecks();
 
-    bool isDeckBlackListed(const QString &deckStr) const;
-    void setDeckBlackListed(const QString &deckStr, bool blackListed);
+    bool isDeckBlocked(const QString &deckStr) const;
+    void setDeckBlockage(const QString &deckStr, bool isBlocked);
 
 protected slots:
     void processDeck(unsigned int id, const QString &deckName, EDeckType type, unsigned int battlegroundId, const QList<unsigned int> &deckCards);
@@ -51,7 +51,7 @@ private:
 private:
     QList<CDeck*> mDecks;
     QHash<QString, CDeck*> mDeckNameMap;
-    QSet<QString> mDeckBlackListMap;
+    QSet<QString> mBlockedDecks;
     static CDeckTable *DECK_TABLE;
     static const QString BASE_64_CHARS;
     static const QChar BASE_64_CHAR_EXT;

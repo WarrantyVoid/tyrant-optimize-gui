@@ -31,7 +31,9 @@ signals:
 public slots:
     void updateOwnedCardsFile(const QString &fileName);
     void setOwnedCardsFile(const QString &fileName);
-    void setCardsBlackListed(const QStringList &cards, bool toBlack);
+    void setDeckBlockage(const CDeck &deck, bool isBlocked);
+    void setCardBlackListStatus(const CCard &card, bool isBlack);
+    void setCardWhiteListStatus(const CCard &card, bool isWhite);
 
 protected slots:
     void declineFilter();
@@ -40,6 +42,7 @@ protected slots:
 
  protected:
     void executeFilter();
+    void pushParametersToModel();
     
 private:
     Ui::CardFilterWidget *mUi;

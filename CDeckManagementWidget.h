@@ -15,15 +15,27 @@ class DeckManagementWidget;
 }
 
 /**
-* Workaround for avoiding annyoying left margin when paiting icons in table cells.
+* Painting delegate:
+* Hides focus box and places icons correctly in table cells
 */
-class CDeckIconDelegate : public QStyledItemDelegate
+class CDeckItemDelegate : public QStyledItemDelegate
 {
     void paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const
     {
-        QRect normRect = option.rect;
-        normRect.moveTo(0, 0);
-        painter->drawPixmap(option.rect, index.data(Qt::DecorationRole).value<QPixmap>(), normRect);
+        QStyleOptionViewItem opt = option;
+        opt.decorationPosition = QStyleOptionViewItem::Right;
+        opt.state &= ~QStyle::State_HasFocus;
+        if (index.column() == 2)
+        {
+            QRect normRect = option.rect;
+            normRect.moveTo(0, 0);
+            painter->drawPixmap(option.rect, index.data(Qt::DecorationRole).value<QPixmap>(), normRect);
+
+        }
+        else
+        {
+            QStyledItemDelegate::paint(painter, opt, index);
+        }
     }
 };
 
@@ -101,7 +113,7 @@ public:
 
 signals:
     void setDeck(const QString &deckStr, EInputDeckTarget target);
-    void blackListCards(const QStringList &cards, bool toBlack);
+    void deckBlockageChanged(const CDeck&deck, bool isBlocked);
 
 public slots:
     bool addCustomDeck(CDeck &customDeck);
@@ -110,18 +122,21 @@ public slots:
 
 private slots:
     void deleteSelectedDeck();
-    void blacklistSelectedDeck();
+    void blockSelectedDeck();
     void setSelectedBaseDeck();
     void setSelectedEnemyDeck();
     void setSelectedDeck();
 
+protected:
+    virtual bool eventFilter(QObject *obj, QEvent *e);
+
 private:
-    void addDeckToBlackList(const CDeck& deck, QStringList &blackList);
+    void toggleDeckUsageButton(bool curDeckUsed);
     
 private:
     Ui::DeckManagementWidget *mUi;
     CDeckTable &mDecks;
-    CDeckIconDelegate mDeckIconDelegate;
+    CDeckItemDelegate mDeckItemDelegate;
     DeckSortFilterProxyModel mDeckSortProxy;
 };
 

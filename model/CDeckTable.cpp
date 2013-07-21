@@ -16,7 +16,7 @@ CDeckTable::CDeckTable(QObject *parent)
 : QAbstractTableModel(parent)
 , mDecks()
 , mDeckNameMap()
-, mDeckBlackListMap()
+, mBlockedDecks()
 {
     initData();
 }
@@ -156,30 +156,28 @@ bool CDeckTable::strToDeck(const QString &deckStr, CDeck &deck) const
         for (int iToken = 0;  iToken < customDeckTokens.size(); ++iToken)
         {
             int num = 1;
-            QString curCardStr = customDeckTokens.at(iToken).trimmed();
-            CCard curCard = cards.getCardForName(curCardStr);
-
-            if (iToken > 0 && !curCard.isValid())
+            QString curCardStr = customDeckTokens.at(iToken).trimmed(); 
+            CCard curCard;
+            if (iToken > 0)
             {
                 QStringList cardSplitNum = curCardStr.split(QRegExp("\\#"), QString::SkipEmptyParts);
                 if (cardSplitNum.size() > 1)
                 {
                     curCardStr = cardSplitNum.at(0).trimmed();
-                    curCard = cards.getCardForName(curCardStr);
                     bool ok(true);
                     num = cardSplitNum.at(1).toInt(&ok);
                 }
             }
-
-            if (!curCard.isValid())
+            QStringList cardSplitId = curCardStr.split(QRegExp("\\[|\\]"), QString::SkipEmptyParts);
+            if (cardSplitId.size() > 1)
             {
-                QStringList cardSplitId = curCardStr.split(QRegExp("\\[|\\]"), QString::SkipEmptyParts);
-                if (cardSplitId.size() > 1)
-                {
-                    bool ok(true);
-                    unsigned int cardId = cardSplitId.at(1).toUInt(&ok);
-                    curCard = cards.getCardForId(cardId);
-                }
+                bool ok(true);
+                unsigned int cardId = cardSplitId.at(1).toUInt(&ok);
+                curCard = cards.getCardForId(cardId);
+            }
+            else
+            {
+                curCard = cards.getCardForName(curCardStr);
             }
 
             if (curCard.isValid() && num > 0)
@@ -290,24 +288,24 @@ void CDeckTable::clearDecks()
     beginResetModel();
     mDecks.clear();
     mDeckNameMap.clear();
-    mDeckBlackListMap.clear();
+    mBlockedDecks.clear();
     endResetModel();
 }
 
-bool CDeckTable::isDeckBlackListed(const QString &deckStr) const
+bool CDeckTable::isDeckBlocked(const QString &deckStr) const
 {
-    return mDeckBlackListMap.contains(deckStr);
+    return mBlockedDecks.contains(deckStr);
 }
 
-void CDeckTable::setDeckBlackListed(const QString &deckStr, bool blackListed)
+void CDeckTable::setDeckBlockage(const QString &deckStr, bool isBlocked)
 {
-    if (blackListed)
+    if (isBlocked)
     {
-        mDeckBlackListMap.insert(deckStr);
+        mBlockedDecks.insert(deckStr);
     }
     else
     {
-        mDeckBlackListMap.remove(deckStr);
+        mBlockedDecks.remove(deckStr);
     }
 }
 
@@ -391,11 +389,14 @@ QVariant CDeckTable::data(const QModelIndex &index, int role) const
         case 4:
             switch (role)
             {
-            case Qt::DisplayRole:
-                if (isDeckBlackListed(deckData->getName()))
+            case Qt::DecorationRole:
+                if (isDeckBlocked(deckData->getName()))
                 {
-                    return deckData->getName() + "   (Blacklisted)";
+                    QPixmap useImg(":img/block.png");
+                    return QVariant(useImg);
                 }
+                break;
+            case Qt::DisplayRole:
                 return QVariant(deckData->getName());
             case Qt::ToolTipRole:
                 return QVariant();
@@ -640,7 +641,7 @@ bool CDeckTable::writeCustomDecksFile()
                     }
                     else
                     {
-                        out << " " << curCard.getName();
+                        out << " " << curCard.getName() << " [" << curCard.getId() << "]";
                     }
                     if (num > 1)
                     {

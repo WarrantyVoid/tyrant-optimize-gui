@@ -2,6 +2,7 @@
 #include "ui_MainWindow.h"
 #include "CGlobalConfig.h"
 #include "CDeckSaveWidget.h"
+#include "CCardLabelNexus.h"
 #include "process/CTyrantOptimizeWrapper.h"
 #include <QSortFilterProxyModel>
 #include <QDesktopWidget>
@@ -80,13 +81,16 @@ CMainWindow::CMainWindow(QWidget *parent)
         mUi->achievementBox, SIGNAL(activated(int)),
         this, SLOT(updateParameterBoxToolTip(int)));
 
-    // Parameter setup
+    // Signal for syncing components while loading
     connect(
         mUi->ownedCardsBox, SIGNAL(toggled(bool)),
         this, SLOT(setOwnedCardsWatchingEnabled(bool)));
     connect(
         mUi->ownedCardsFileBox, SIGNAL(currentIndexChanged(const QString&)),
         mFilterWidget, SLOT(setOwnedCardsFile(const QString&)));
+    connect(
+        mUi->deckManagementWidget, SIGNAL(deckBlockageChanged(const CDeck&, bool)),
+        mFilterWidget, SLOT(setDeckBlockage(const CDeck&, bool)));
 
     mUi->baseDeckWidget->setLockEnabled(true);
     scanForOwnedCards();
@@ -162,6 +166,12 @@ CMainWindow::CMainWindow(QWidget *parent)
         mUi->shadeOwnedCardsAction, SIGNAL(triggered(bool)),
         this, SLOT(toggleCardsShading(bool)));
     connect(
+        mUi->labelBlackCardsAction, SIGNAL(triggered(bool)),
+        this, SLOT(toggleCardLabelling(bool)));
+    connect(
+        mUi->labelWhiteCardsAction, SIGNAL(triggered(bool)),
+        this, SLOT(toggleCardLabelling(bool)));
+    connect(
         mUi->cardFilterAction, SIGNAL(triggered()),
         mFilterDialog, SLOT(show()));
     connect(
@@ -194,7 +204,7 @@ CMainWindow::CMainWindow(QWidget *parent)
         mUi->enemyDeckWidget, SLOT(setDeck(const QString &)));
     connect(
         mUi->enemyDeckEdit, SIGNAL(deckDropped(const QString &)),
-        this, SLOT(updateParameterBoxValues(const QString &)));
+        this, SLOT(updateBattleGround(const QString &)));
     connect(
         mUi->enemyDeckWidget, SIGNAL(deckChanged(const QString &)),
         mUi->enemyDeckEdit, SLOT(setDeckId(const QString &)));
@@ -242,8 +252,8 @@ CMainWindow::CMainWindow(QWidget *parent)
         &mCards, SIGNAL(dataUpdated(const QStringList&)),
         this, SLOT(dataUpdated(const QStringList&)));
     connect(
-        &mCards, SIGNAL(ownedCardsUpdated()),
-        this, SLOT(updateView()));
+        &mCards, SIGNAL(cardStatusUpdated(ECardStatusUpdate)),
+        this, SLOT(updateView(ECardStatusUpdate)));
     connect(
         mFilterWidget, SIGNAL(ownedCardsUpdated(const QStringList &)),
         this, SLOT(ownedCardsUpdated(const QStringList &)));
@@ -263,8 +273,11 @@ CMainWindow::CMainWindow(QWidget *parent)
         mUi->deckManagementWidget, SIGNAL(setDeck(const QString &,EInputDeckTarget)),
         this, SLOT(setDeckInput(const QString &,EInputDeckTarget)));
     connect(
-        mUi->deckManagementWidget, SIGNAL(blackListCards(const QStringList&, bool)),
-        mFilterWidget, SLOT(setCardsBlackListed(const QStringList&, bool)));
+        &CCardLabelNexus::getCardLabelNexus(), SIGNAL(blackListStatusToggled(const CCard&, bool)),
+        mFilterWidget, SLOT(setCardBlackListStatus(const CCard&, bool)));
+    connect(
+        &CCardLabelNexus::getCardLabelNexus(), SIGNAL(whiteListStatusToggled(const CCard&, bool)),
+        mFilterWidget, SLOT(setCardWhiteListStatus(const CCard&, bool)));
 
     // Process wrapper connections
     connect(
@@ -442,6 +455,8 @@ void CMainWindow::loadDefaultSettings()
 
     CGlobalConfig::getCfg().load(settings);
     mUi->shadeOwnedCardsAction->setChecked(CGlobalConfig::getCfg().isCardShadingEnabled());
+    mUi->labelBlackCardsAction->setChecked(CGlobalConfig::getCfg().isBlackLabellingEnabled());
+    mUi->labelWhiteCardsAction->setChecked(CGlobalConfig::getCfg().isWhiteLabellingEnabled());
     mFilterWidget->loadParameterSettings(settings);
 
     loadDefaultParameterSettings();
@@ -591,7 +606,21 @@ void CMainWindow::toggleAlwaysOnTop(bool checked)
 void CMainWindow::toggleCardsShading(bool checked)
 {
     CGlobalConfig::getCfg().setCardShadingEnabled(checked);
-    updateView();
+    updateView(EOwnedStatusUpdate);
+}
+
+void CMainWindow::toggleCardLabelling(bool checked)
+{
+    if (QObject::sender() == mUi->labelBlackCardsAction)
+    {
+        CGlobalConfig::getCfg().setBlackLabellingEnabled(checked);
+
+    }
+    else if (QObject::sender() == mUi->labelWhiteCardsAction)
+    {
+        CGlobalConfig::getCfg().setWhiteLabellingEnabled(checked);
+    }
+    updateView(EListStatusUpdate);
 }
 
 void CMainWindow::updateXmlData()
@@ -763,11 +792,12 @@ void CMainWindow::switchDecks()
     mUi->orderedEnemyBox->setChecked(orderedBase);
 }
 
-void CMainWindow::updateView()
+void CMainWindow::updateView(ECardStatusUpdate status)
 {
     mUi->baseDeckWidget->updateView();
     mUi->enemyDeckWidget->updateView();
-    mUi->cardSearchWidget->updateView();
+    mUi->resultDeckWidget->updateView();
+    mUi->cardSearchWidget->updateView(status);
     mDeckToolTipContent->updateView();
 }
 
@@ -791,7 +821,7 @@ void CMainWindow::updateParameterBoxToolTip(int boxIndex)
     }
 }
 
-void CMainWindow::updateParameterBoxValues(const QString &deckStr)
+void CMainWindow::updateBattleGround(const QString &deckStr)
 {
     const CDeck& deck = mDecks.getDeckForName(deckStr);
     if (deck.isValid() && deck.getType() == EQuestDeckType)
@@ -988,7 +1018,10 @@ void CMainWindow::setDeckInput(const QString &deckStr, EInputDeckTarget target)
     if (deckInput)
     {
         deckInput->setDeckId(deckStr);
-        updateParameterBoxValues(deckStr);
+        if (deckInput == mUi->enemyDeckEdit)
+        {
+            updateBattleGround(deckStr);
+        }
     }
 }
 

@@ -1,4 +1,5 @@
 #include "CCardLabel.h"
+#include "CCardLabelNexus.h"
 #include "CGlobalConfig.h"
 #include "model/CCardTable.h"
 #include <QApplication>
@@ -12,11 +13,13 @@ CCardLabel::CCardLabel(QWidget *parent)
 , mLastLeftClickPos(0)
 , mLockButton(0)
 {
+    CCardLabelNexus::getCardLabelNexus().registerCardLabel(this);
     setScaledContents(true);   
 }
 
 CCardLabel::~CCardLabel()
 {
+    CCardLabelNexus::getCardLabelNexus().unregisterCardLabel(this);
     if (mLastLeftClickPos)
     {
         delete mLastLeftClickPos;
@@ -167,21 +170,24 @@ const CCard& CCardLabel::getCard() const
 
 void CCardLabel::paintEvent(QPaintEvent *ev)
 {
-    int dx = int(width() / 32.0 + 0.5);        // horizonal border
-    int dy = int(height() / 110.0 + 0.5);      // vertical border
-    int w = width() - dx * 2;                  // width (without border)
-    int h = height() - dy * 2;                 // height (without border)
-    int title = int(height() / 9.167 + 0.5);   // title height
-    int stat = int(height() / 11.0 + 0.5);     // stat size
-    int dySkill = int(height() / 1.447 + 0.5); // skill offset (y)
-    int skill = 16;                            // skill size
-    int delay = 20;
+    QRectF titleRect(translatePoint(5, 2), translatePoint(155, 25));
+    QRectF imgRect(translatePoint(5, 24), translatePoint(155, 144));
+    QRectF blackRect(translatePoint(6, 24 + 40), translatePoint(156, 24 + 80));
+    QRectF setRect(translatePoint(155 - 2 - 32, 144 + 8), translatePoint(155 - 2, 144 + 8 + 32));
+    QRectF delayRect(translatePoint(155 - 40, 24), translatePoint(155,  24 + 40));
+    QRectF attackRect(translatePoint(5 + 2, 215 - 20), translatePoint(5 + 2 + 20, 215));
+    QRectF healthRect(translatePoint(155 - 2 - 20, 215 - 20), translatePoint(155 - 2, 215));
+    QPointF upgradePos(translatePoint(50, 193));
+    QPointF uniquePos(translatePoint(5 + 2, 144 - 28 - 2));
+    QPointF skillPos(translatePoint(5 + 2, 144 + 8));
 
+    // Update lock button geo before parent paint
     if (mLockButton)
     {
-        mLockButton->setGeometry(QRect(dx + 2, title + 2, 24, 24));
+        mLockButton->setGeometry(QRect(imgRect.x() + 2, imgRect.y() + 2, 24, 24));
     }
 
+    // Regular label painting (background image)
     QLabel::paintEvent(ev);
 
     if (mCard.isValid())
@@ -189,9 +195,7 @@ void CCardLabel::paintEvent(QPaintEvent *ev)
         const CGlobalConfig &cfg = CGlobalConfig::getCfg();
         QPainter painter(this);
 
-        QPen inPen(Qt::white);
-        painter.setPen(inPen);
-
+        // Paint upgrade symbol
         QString cardName = mCard.getName();
         if (mCard.getUpgradeLevel() > 0)
         {
@@ -199,66 +203,95 @@ void CCardLabel::paintEvent(QPaintEvent *ev)
             {
                 cardName.replace("*", "");
             }
-            painter.drawPixmap((w - 20) / 2 , h - stat / 2 - 7, QPixmap(cfg.getResourcePicturePath() + "UpgradeIcon.png"));
+            painter.drawPixmap(upgradePos, QPixmap(cfg.getResourcePicturePath() + "UpgradeIcon.png"));
         }
-        painter.drawText(dx + title + 2, dy - 1, w - title - 2, title - 1, Qt::AlignLeft | Qt::AlignVCenter, cardName);
+
+        // Paint title
+        QPen inPen(Qt::white);
+        painter.setPen(inPen);
+        painter.drawText(titleRect.adjusted(titleRect.height() + 2, -1, 0, -1), Qt::AlignLeft | Qt::AlignVCenter, cardName);
         painter.setRenderHint(QPainter::SmoothPixmapTransform, true);
         if (!mTitleIcon.isNull())
         {
-            painter.drawPixmap(dx, dy, mTitleIcon.scaled(title, title, Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
+            painter.drawPixmap(titleRect.topLeft(), mTitleIcon.scaled(titleRect.height() + 1, titleRect.height() + 1, Qt::KeepAspectRatio, Qt::SmoothTransformation));
         }
 
+        // Paint unique symbol
         if (mCard.isUnique())
         {
-            painter.drawPixmap(dx, dySkill - 20, QPixmap(":/img/unique.png"));
+            painter.drawPixmap(uniquePos, QPixmap(":/img/unique.png"));
             //painter.drawText(dx + 2, dySkill - 15, 100, 12, Qt::AlignLeft | Qt::AlignVCenter, "Unique");
         }
 
-        const TCardSkills &skills = mCard.getSkills();
+        // Paint skill symbols
+        const TSkillList &skills = mCard.getSkills();
         int curIdx = 0;
-        for (TCardSkills::const_iterator i = skills.begin(); i != skills.end(); ++i, ++curIdx)
+        for (TSkillList::const_iterator i = skills.begin(); i != skills.end(); ++i, ++curIdx)
         {
             const CSkill& curSkill = mCards.getSkillForId(i->getId());
             if (curSkill.isValid())
             {
-                QPoint skillPos(dx + 2 + curIdx * (2 + skill), dySkill);
                 painter.drawPixmap(skillPos, QPixmap(cfg.getResourcePicturePath() + curSkill.getPicture() + ".png"));
+                skillPos += QPointF(16 + 2, 0);
                 //painter.drawText(dx, 80 + i*10, 100, 10, Qt::AlignLeft | Qt::AlignVCenter, curSkill.makeSignature(skills.at(i)));
             }
         }
 
+        // Paint set symbol
         if (mCard.getSet() != EUnknownSet)
         {
-            QRect cardSetBounds(dx + w - skill, dySkill, skill, skill);
-            painter.drawPixmap(cardSetBounds, QPixmap(cfg.getResourcePicturePath() + mCards.getPictureForCardSet(mCard.getSet())));
+            painter.drawPixmap(setRect, QPixmap(cfg.getResourcePicturePath() + mCards.getPictureForCardSet(mCard.getSet())), QRectF(0, 0, 24, 24));
         }
 
 
+        // Paint delay symbol
         if (mCard.getDelay() > -1)
         {
-            QRect delayBounds(w + dx - delay + 1, title - 1, delay, delay);
-            painter.drawPixmap(delayBounds, QPixmap(cfg.getResourcePicturePath() + "ClockIcon.png").scaled(delay, delay, Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
-            painter.drawText(delayBounds, Qt::AlignCenter, QString("%1").arg(mCard.getDelay()));
+            painter.drawPixmap(delayRect, QPixmap(cfg.getResourcePicturePath() + "ClockIcon.png"), QRectF(0, 0, 32, 32));
+            painter.drawText(delayRect, Qt::AlignCenter, QString("%1").arg(mCard.getDelay()));
         }
 
+        // Paint attack symbol
         if (mCard.hasAttack())
         {
-            painter.drawPixmap(dx, h - stat, QPixmap(cfg.getResourcePicturePath() + "AttackIcon.png").scaled(stat, stat, Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
-            painter.drawText(dx + stat + 2, h - stat - 1, 2 * stat, stat - 1, Qt::AlignLeft | Qt::AlignVCenter, QString("%1").arg(mCard.getAttack()));
+            painter.drawPixmap(attackRect, QPixmap(cfg.getResourcePicturePath() + "AttackIcon.png"), QRectF(0, 0, 20, 20));
+            painter.drawText(attackRect.translated(attackRect.width() + 1, 0), Qt::AlignLeft | Qt::AlignVCenter, QString("%1").arg(mCard.getAttack()));
         }
 
+        // Paint health symbol
         if (mCard.hasHealth())
         {
-            painter.drawPixmap(w + dx - stat, h - stat, QPixmap(cfg.getResourcePicturePath() + "HealthIcon.png").scaled(stat, stat, Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
-            painter.drawText(w + dx - 3 * stat - 2, h - stat - 1, 2 * stat, stat - 1, Qt::AlignRight | Qt::AlignVCenter, QString("%1").arg(mCard.getHealth()));
+            painter.drawPixmap(healthRect, QPixmap(cfg.getResourcePicturePath() + "HealthIcon.png"), QRectF(0, 0, 20, 20));
+            painter.drawText(healthRect.translated(-healthRect.width() - 1, 0), Qt::AlignRight | Qt::AlignVCenter, QString("%1").arg(mCard.getHealth()));
         }
 
+        // Display owned status
         if (cfg.isCardShadingEnabled() && !mCards.isCardOwned(mCard))
         {
             QBrush darkBrush(Qt::black);
             painter.setBrush(darkBrush);
             painter.setOpacity(0.6);
             painter.fillRect(rect(), Qt::SolidPattern);
+        }
+
+        SCardStatus status = mCards.getCardStatus(mCard);
+        if (cfg.isBlackLabellingEnabled() && status.isBlack)
+        {
+            // Display black list status
+            QBrush darkBrush(Qt::black);
+            painter.setOpacity(0.6);
+            painter.fillRect(blackRect, darkBrush);
+            painter.setOpacity(1.0);
+            painter.drawText(blackRect, Qt::AlignCenter, "Blacklisted");
+        }
+        else if (cfg.isWhiteLabellingEnabled() && status.isWhite)
+        {
+            // Display white list status
+            painter.setPen(QPen(Qt::black));
+            painter.setOpacity(0.6);
+            painter.fillRect(blackRect, QBrush(Qt::white));
+            painter.setOpacity(1.0);
+            painter.drawText(blackRect, Qt::AlignCenter, "Whitelisted");
         }
     }
 }
@@ -276,8 +309,20 @@ void CCardLabel::mousePressEvent(QMouseEvent *ev)
     }
 }
 
-void CCardLabel::mouseReleaseEvent(QMouseEvent * /*ev*/)
+void CCardLabel::mouseReleaseEvent(QMouseEvent * ev)
 {
+    if (ev->button() == Qt::RightButton)
+    {
+        SCardStatus status = mCards.getCardStatus(mCard);
+        if (ev->modifiers() == Qt::ControlModifier)
+        {
+            emit unitCtrlRightClicked(!status.isWhite);
+        }
+        else
+        {
+            emit unitRightClicked(!status.isBlack);
+        }
+    }
     if (mLastLeftClickPos)
     {
         delete mLastLeftClickPos;

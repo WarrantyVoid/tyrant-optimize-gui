@@ -83,7 +83,9 @@ private:
     unsigned int mFlags;
 };
 
-typedef QList<CCardSkill> TCardSkills;
+class CCard;
+typedef QList<CCardSkill> TSkillList;
+typedef QList<CCard> TCardList;
 
 class CCard
 {
@@ -113,7 +115,7 @@ public:
     ECardFaction getFaction() const;
     ECardType getType() const;
     ECardSet getSet() const;
-    const TCardSkills& getSkills() const;
+    const TSkillList& getSkills() const;
     int getUpgradeLevel() const;
     int getDelay() const;
     bool isUnique() const;

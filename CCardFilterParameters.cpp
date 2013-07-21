@@ -1,5 +1,6 @@
 #include "CCardFilterParameters.h"
 #include "model/CCardTable.h"
+#include "model/CDeck.h"
 #include "ui_CardFilterWidget.h"
 
 QStringList CCardFilterParameters::sDefaultList;
@@ -16,10 +17,12 @@ CCardFilterParameters::CCardFilterParameters()
 , mComplement()
 , mWhiteList()
 , mBlackList()
+, mBlockList()
 , mIsFilterOptionEnabled(true)
 , mIsAssaultOptionEnabled(true)
 , mIsWhiteListEnabled(true)
 , mIsBlackListEnabled(true)
+, mIsBlockListEnabled(true)
 , mIsCompletionEnabled(false)
 {
     if (sDefaultList.isEmpty())
@@ -48,13 +51,14 @@ void CCardFilterParameters::reset()
     mIsAssaultOptionEnabled = true;
     mIsWhiteListEnabled = true;
     mIsBlackListEnabled = true;
+    mIsBlockListEnabled = true;
     mIsCompletionEnabled = false;
 
     for (int i = 0; i < NUM_RARITY; ++i)
     {
         mIsAssaultAllowed[i] = (i < 2);
         mIsStructureAllowed[i] = (i < 2);
-        mIsCommanderAllowed[i] = (i < 2);
+        mIsCommanderAllowed[i] = (i < 3);
         mIsActionAllowed[i] = (i < 2);
     }
     for (int i = 0; i < NUM_HEALTH; ++i)
@@ -89,20 +93,21 @@ void CCardFilterParameters::reset()
     mWhiteList.clear();
     CCardTable &cardTable = CCardTable::getCardTable();
     for(QStringList::iterator i = sDefaultList.begin(); i != sDefaultList.end(); ++i)
-    {
-        TListedCard curCard = strToListedCard(*i);
-        const CCard &card = cardTable.getCardForName(curCard.first);
+    { 
+        const CCard &card = cardTable.getCardForName(*i);
         if (card.isValid())
         {
-            mWhiteList.insert(card.getName(), curCard.second);
+            mWhiteList.insert(card.getName());
         }
     }
 
     mBlackList.clear();
 }
 
-void CCardFilterParameters::fetchFromUi(const Ui::CardFilterWidget &ui)
+bool CCardFilterParameters::fetchFromUi(const Ui::CardFilterWidget &ui)
 {
+    bool result(true);
+
     mIsAssaultAllowed[0] = ui.assaultLegendaryBox->isChecked();
     mIsAssaultAllowed[1] = ui.assaultRareBox->isChecked();
     mIsAssaultAllowed[2] = ui.assaultUncommonBox->isChecked();
@@ -169,11 +174,14 @@ void CCardFilterParameters::fetchFromUi(const Ui::CardFilterWidget &ui)
     QStringList whiteList = ui.whiteListEdit->toPlainText().split("\n", QString::SkipEmptyParts);
     for(QStringList::iterator i = whiteList.begin(); i != whiteList.end(); ++i)
     {
-        TListedCard curCard = strToListedCard(*i);
-        const CCard &card = cardTable.getCardForName(curCard.first);
+        const CCard &card = cardTable.getCardForName(*i);
         if (card.isValid())
         {
-            mWhiteList.insert(card.getName(), curCard.second);
+            mWhiteList.insert(card.getName());
+        }
+        else
+        {
+            result = false;
         }
     }
 
@@ -181,11 +189,14 @@ void CCardFilterParameters::fetchFromUi(const Ui::CardFilterWidget &ui)
     QStringList blackList = ui.blackListEdit->toPlainText().split("\n", QString::SkipEmptyParts);
     for(QStringList::iterator i = blackList.begin(); i != blackList.end(); ++i)
     {
-        TListedCard curCard = strToListedCard(*i);
-        const CCard &card = cardTable.getCardForName(curCard.first);
+        const CCard &card = cardTable.getCardForName(*i);
         if (card.isValid())
         {
-            mBlackList.insert(card.getName(), curCard.second);
+            mBlackList.insert(card.getName());
+        }
+        else
+        {
+            result = false;
         }
     }
 
@@ -193,7 +204,10 @@ void CCardFilterParameters::fetchFromUi(const Ui::CardFilterWidget &ui)
     mIsAssaultOptionEnabled = ui.assaultOptionsBox->isChecked();
     mIsWhiteListEnabled = ui.whiteListBox->isChecked();
     mIsBlackListEnabled = ui.blackListBox->isChecked();
+    mIsBlockListEnabled = ui.blockListBox->isChecked();
     mIsCompletionEnabled = ui.complementsBox->isChecked();
+
+    return result;
 }
 
 void CCardFilterParameters::updateUi(Ui::CardFilterWidget &ui) const
@@ -243,28 +257,26 @@ void CCardFilterParameters::updateUi(Ui::CardFilterWidget &ui) const
     ui.factionXenoBox->setChecked(mIsFactionAllowed[4]);
 
     QStringList whiteList;
-    for(QHash<QString, int>::const_iterator i = mWhiteList.begin(); i != mWhiteList.end(); ++i)
-    {
-        QString curCard = listedCardToStr(TListedCard(i.key(), i.value()));
-        if (!curCard.isEmpty())
-        {
-            whiteList.push_back(curCard);
-        }
-    }
+    getWhiteList(whiteList);
     whiteList.sort();
     ui.whiteListEdit->setPlainText(whiteList.join("\n"));
 
     QStringList blackList;
-    for(QHash<QString, int>::const_iterator i = mBlackList.begin(); i != mBlackList.end(); ++i)
+    getBlackList(blackList);
+    blackList.sort();
+    ui.blackListEdit->setPlainText(blackList.join("\n"));
+
+    QStringList blockList;
+    for(QHash<QString, int>::const_iterator i = mBlockList.begin(); i != mBlockList.end(); ++i)
     {
         QString curCard = listedCardToStr(TListedCard(i.key(), i.value()));
         if (!curCard.isEmpty())
         {
-            blackList.push_back(curCard);
+            blockList.push_back(curCard);
         }
     }
-    blackList.sort();
-    ui.blackListEdit->setPlainText(blackList.join("\n"));
+    blockList.sort();
+    ui.blockListEdit->setPlainText(blockList.join("\n"));
 
     ui.standardSpinBox->setValue(mComplement[0]);
     ui.enclaveSpinBox->setValue(mComplement[1]);
@@ -287,6 +299,7 @@ void CCardFilterParameters::updateUi(Ui::CardFilterWidget &ui) const
     ui.assaultOptionsBox->setChecked(mIsAssaultOptionEnabled);
     ui.whiteListBox->setChecked(mIsWhiteListEnabled);
     ui.blackListBox->setChecked(mIsBlackListEnabled);
+    ui.blockListBox->setChecked(mIsBlockListEnabled);
     ui.complementsBox->setChecked(mIsCompletionEnabled);
 }
 
@@ -342,11 +355,10 @@ void CCardFilterParameters::fetchFromSettings(QSettings &settings)
     QStringList whiteList = settings.value("whiteList", sDefaultList).toStringList();
     for(QStringList::iterator i = whiteList.begin(); i != whiteList.end(); ++i)
     {
-        TListedCard curCard = strToListedCard(*i);
-        const CCard &card = cardTable.getCardForName(curCard.first);
+        const CCard &card = cardTable.getCardForName(*i);
         if (card.isValid())
         {
-            mWhiteList.insert(card.getName(), curCard.second);
+            mWhiteList.insert(card.getName());
         }
     }
 
@@ -354,11 +366,10 @@ void CCardFilterParameters::fetchFromSettings(QSettings &settings)
     QStringList blackList = settings.value("blackList").toStringList();
     for(QStringList::iterator i = blackList.begin(); i != blackList.end(); ++i)
     {
-        TListedCard curCard = strToListedCard(*i);
-        const CCard &card = cardTable.getCardForName(curCard.first);
+        const CCard &card = cardTable.getCardForName(*i);
         if (card.isValid())
         {
-            mBlackList.insert(card.getName(), curCard.second);
+            mBlackList.insert(card.getName());
         }
     }
 
@@ -384,6 +395,7 @@ void CCardFilterParameters::fetchFromSettings(QSettings &settings)
     mIsAssaultOptionEnabled = settings.value("isAssaultOptionEnabled", mIsAssaultOptionEnabled).toBool();
     mIsWhiteListEnabled = settings.value("isWhiteListEnabled", mIsWhiteListEnabled).toBool();
     mIsBlackListEnabled = settings.value("isBlackListEnabled", mIsBlackListEnabled).toBool();
+    mIsBlockListEnabled = settings.value("isBlockListEnabled", mIsBlockListEnabled).toBool();
     mIsCompletionEnabled = settings.value("isCompletionEnabled", mIsCompletionEnabled).toBool();
 
     settings.endGroup();
@@ -439,25 +451,11 @@ void CCardFilterParameters::updateSettings(QSettings &settings) const
 
 
     QStringList whiteList;
-    for(QHash<QString, int>::const_iterator i = mWhiteList.begin(); i != mWhiteList.end(); ++i)
-    {
-        QString curCard = listedCardToStr(TListedCard(i.key(), i.value()));
-        if (!curCard.isEmpty())
-        {
-            whiteList.push_back(curCard);
-        }
-    }
+    getWhiteList(whiteList);
     settings.setValue("whiteList", whiteList);
 
     QStringList blackList;
-    for(QHash<QString, int>::const_iterator i = mBlackList.begin(); i != mBlackList.end(); ++i)
-    {
-        QString curCard = listedCardToStr(TListedCard(i.key(), i.value()));
-        if (!curCard.isEmpty())
-        {
-            blackList.push_back(curCard);
-        }
-    }
+    getBlackList(blackList);
     settings.setValue("blackList", blackList);
 
     settings.setValue("standardSetComplement", mComplement[0]);
@@ -481,43 +479,95 @@ void CCardFilterParameters::updateSettings(QSettings &settings) const
     settings.setValue("isAssaultOptionEnabled", mIsAssaultOptionEnabled);
     settings.setValue("isWhiteListEnabled", mIsWhiteListEnabled);
     settings.setValue("isBlackListEnabled", mIsBlackListEnabled);
+    settings.setValue("isBlockListEnabled", mIsBlockListEnabled);
     settings.setValue("isCompletionEnabled", mIsCompletionEnabled);
 
     settings.endGroup();
 }
 
-void CCardFilterParameters::setCardsBlackListed(const QStringList &cards, bool toBlack)
+void CCardFilterParameters::setDeckBlockage(const CDeck &deck, bool isBlocked)
 {
-    for (QStringList::const_iterator iCards = cards.begin(); iCards != cards.end(); ++iCards)
+    const TCardList &cards = deck.getCards();
+    for (TCardList::const_iterator iCards = cards.begin(); iCards != cards.end(); ++iCards)
     {
-        QHash<QString, int>::iterator iBlack = mBlackList.find(*iCards);
-        if (toBlack)
+        QHash<QString, int>::iterator iBlock = mBlockList.find((*iCards).getName());
+        if (isBlocked)
         {
-            if (iBlack != mBlackList.end())
+            if (iBlock != mBlockList.end())
             {
-                if (iBlack.value() > 0)
+                if (iBlock.value() > 0)
                 {
-                    ++iBlack.value();
+                    ++iBlock.value();
                 }
             }
             else
             {
-                mBlackList.insert(*iCards, 1);
+                mBlockList.insert((*iCards).getName(), 1);
             }
         }
         else
         {
-            if (iBlack != mBlackList.end())
+            if (iBlock != mBlockList.end())
             {
-                if (iBlack.value() > 0)
+                if (iBlock.value() > 0)
                 {
-                    --iBlack.value();
-                    if (iBlack.value() <= 0)
+                    --iBlock.value();
+                    if (iBlock.value() <= 0)
                     {
-                        mBlackList.remove(*iCards);
+                        mBlockList.remove((*iCards).getName());
                     }
                 }
             }
+        }
+    }
+}
+
+void CCardFilterParameters::setCardBlackListStatus(const CCard &card, bool isBlack)
+{
+    QSet<QString>::iterator iBlack = mBlackList.find(card.getName());
+    if (iBlack == mBlackList.end() && isBlack)
+    {
+        setCardWhiteListStatus(card, false);
+        mBlackList.insert(card.getName());
+    }
+    else if (iBlack != mBlackList.end() && !isBlack)
+    {
+        mBlackList.erase(iBlack);
+    }
+}
+
+void CCardFilterParameters::setCardWhiteListStatus(const CCard &card, bool isWhite)
+{
+    QSet<QString>::iterator iWhite = mWhiteList.find(card.getName());
+    if (iWhite == mWhiteList.end() && isWhite)
+    {
+        setCardBlackListStatus(card, false);
+        mWhiteList.insert(card.getName());
+    }
+    else if (iWhite != mWhiteList.end() && !isWhite)
+    {
+        mWhiteList.erase(iWhite);
+    }
+}
+
+void CCardFilterParameters::getBlackList(QStringList &blackList) const
+{
+    for(QSet<QString>::const_iterator i = mBlackList.begin(); i != mBlackList.end(); ++i)
+    {
+        if (!(*i).isEmpty())
+        {
+            blackList.push_back((*i));
+        }
+    }
+}
+
+void CCardFilterParameters::getWhiteList(QStringList &whiteList) const
+{
+    for(QSet<QString>::const_iterator i = mWhiteList.begin(); i != mWhiteList.end(); ++i)
+    {
+        if (!(*i).isEmpty())
+        {
+            whiteList.push_back((*i));
         }
     }
 }
@@ -550,33 +600,29 @@ bool CCardFilterParameters::checkCard(const CCard &card, int &num) const
 
     if (mIsBlackListEnabled)
     {
-        QHash<QString, int>::const_iterator iBlack = mBlackList.find(card.getName());
-        if (iBlack != mBlackList.end() && iBlack.key() == card.getName())
+        if (mBlackList.contains(card.getName()))
         {
-            if (iBlack.value() > 0)
-            {
-                num -= iBlack.value();
-            }
-            else
-            {
-                num = 0;
-            }
-            if (num < 1)
-            {
-                return false;
-            }
+            return false;
+        }
+    }
+
+    if (mIsBlockListEnabled)
+    {
+        QHash<QString, int>::const_iterator iBlock = mBlockList.find(card.getName());
+        if (iBlock != mBlockList.end())
+        {
+            num = qMax(0, num - iBlock.value());
+        }
+        if (num < 1)
+        {
+            return false;
         }
     }
 
     if (mIsWhiteListEnabled)
     {
-        QHash<QString, int>::const_iterator iWhite = mWhiteList.find(card.getName());
-        if (iWhite != mWhiteList.end() && iWhite.key() == card.getName())
+        if (mWhiteList.contains(card.getName()))
         {
-            if (iWhite.value() > 0)
-            {
-                num = qMin(num, iWhite.value());
-            }
             return true;
         }
     }

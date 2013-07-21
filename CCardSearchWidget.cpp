@@ -122,48 +122,58 @@ void CCardSearchWidget::saveParameterSettings(QSettings &settings)
     mSearchParameters.updateSettings(settings);
 }
 
-void CCardSearchWidget::updateView()
+void CCardSearchWidget::updateView(ECardStatusUpdate status)
 {
     if (!mSupressUpdates)
     {
-        CCardTable &cards = CCardTable::getCardTable();
-        QList<CCard*> foundCards;
-        QList<CCard*> ownedCards;
-        mSearchParameters.fetchFromUi(*mUi);
-        cards.searchCards(mSearchParameters, foundCards);
-
-        for (int i = foundCards.size() - 1; i > -1; --i)
+        if (status == EOwnedStatusUpdate)
         {
-            if (cards.isCardOwned(*foundCards[i]))
+            CCardTable &cards = CCardTable::getCardTable();
+            QList<CCard*> foundCards;
+            QList<CCard*> ownedCards;
+            mSearchParameters.fetchFromUi(*mUi);
+            cards.searchCards(mSearchParameters, foundCards);
+
+            for (int i = foundCards.size() - 1; i > -1; --i)
             {
-                ownedCards.push_back(foundCards[i]);
-                foundCards.removeAt(i);
+                if (cards.isCardOwned(*foundCards[i]))
+                {
+                    ownedCards.push_back(foundCards[i]);
+                    foundCards.removeAt(i);
+                }
+            }
+
+            for (int i = 0; i < NUM_RESULT_WIDGETS; ++i)
+            {
+                if (i < ownedCards.size())
+                {
+                    static_cast<CCardLabel*>(mResultWidgets[i]->widget())->setCard(*ownedCards[i]);
+                    mResultWidgets[i]->widget()->setVisible(true);
+                    if (i == 0)
+                    {
+                        mUi->finderView->ensureVisible(mResultWidgets[i]);
+                    }
+                }
+                else if (i - ownedCards.size() < foundCards.size())
+                {
+                    static_cast<CCardLabel*>(mResultWidgets[i]->widget())->setCard(*foundCards[i - ownedCards.size()]);
+                    mResultWidgets[i]->widget()->setVisible(true);
+                    if (i == 0)
+                    {
+                        mUi->finderView->ensureVisible(mResultWidgets[i]);
+                    }
+                }
+                else
+                {
+                    mResultWidgets[i]->widget()->setVisible(false);
+                }
             }
         }
-
-        for (int i = 0; i < NUM_RESULT_WIDGETS; ++i)
+        else
         {
-            if (i < ownedCards.size())
+            for (int i = 0; i < NUM_RESULT_WIDGETS; ++i)
             {
-                static_cast<CCardLabel*>(mResultWidgets[i]->widget())->setCard(*ownedCards[i]);
-                mResultWidgets[i]->widget()->setVisible(true);
-                if (i == 0)
-                {
-                    mUi->finderView->ensureVisible(mResultWidgets[i]);
-                }
-            }
-            else if (i - ownedCards.size() < foundCards.size())
-            {
-                static_cast<CCardLabel*>(mResultWidgets[i]->widget())->setCard(*foundCards[i - ownedCards.size()]);
-                mResultWidgets[i]->widget()->setVisible(true);
-                if (i == 0)
-                {
-                    mUi->finderView->ensureVisible(mResultWidgets[i]);
-                }
-            }
-            else
-            {
-                mResultWidgets[i]->widget()->setVisible(false);
+                mResultWidgets[i]->update();
             }
         }
     }
@@ -208,21 +218,26 @@ bool CCardSearchWidget::eventFilter(QObject *obj, QEvent *e)
     {
         case QEvent::MouseButtonDblClick:
         {
-            CCardLabel *cardLabel = static_cast<CCardLabel*>(obj);
-            const CCard &card = cardLabel->getCard();
-            if (card.isValid())
+            QMouseEvent *mouseEvent = static_cast<QMouseEvent*>(e);
+            if (mouseEvent->button() == Qt::LeftButton)
             {
-                emit cardSelected(card.getId());
-                updateBoxHistory(mUi->nameBox);
-                updateBoxHistory(mUi->skillBox);
+                CCardLabel *cardLabel = static_cast<CCardLabel*>(obj);
+                const CCard &card = cardLabel->getCard();
+                if (card.isValid())
+                {
+                    emit cardSelected(card.getId());
+                    updateBoxHistory(mUi->nameBox);
+                    updateBoxHistory(mUi->skillBox);
+                }
+                return true;
             }
-            return true;
+            return QObject::eventFilter(obj, e);
         }
         case QEvent::DragEnter:
         {
             updateBoxHistory(mUi->nameBox);
             updateBoxHistory(mUi->skillBox);
-             return QObject::eventFilter(obj, e);
+            return QObject::eventFilter(obj, e);
         }
         default:
         {

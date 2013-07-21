@@ -35,11 +35,6 @@ void CCardFilterWidget::loadParameterSettings(QSettings &settings)
 {
     mParameters.fetchFromSettings(settings);
     mParameters.updateUi(*mUi);
-
-    const CGlobalConfig &cfg = CGlobalConfig::getCfg();
-    CCardFilter filter;
-    QList<TOwnedCard> ownedCards;
-    filter.readOwnedCardsFromFile(cfg.getToolPath() + mOwnedCardsFile, ownedCards);
 }
 
 void  CCardFilterWidget::saveParameterSettings(QSettings &settings)
@@ -128,10 +123,29 @@ void CCardFilterWidget::setOwnedCardsFile(const QString &fileName)
     executeFilter();
 }
 
-void CCardFilterWidget::setCardsBlackListed(const QStringList &cards, bool toBlack)
+void CCardFilterWidget::setDeckBlockage(const CDeck &deck, bool isBlocked)
 {
-    mParameters.setCardsBlackListed(cards, toBlack);
+    mParameters.setDeckBlockage(deck, isBlocked);
     mParameters.updateUi(*mUi);
+    mOwnedCardsTime = QDateTime();
+}
+
+void CCardFilterWidget::setCardBlackListStatus(const CCard &card, bool isBlack)
+{
+    mParameters.setCardBlackListStatus(card, isBlack);
+    mParameters.updateUi(*mUi);
+    mOwnedCardsTime = QDateTime();
+
+    pushParametersToModel();
+}
+
+void CCardFilterWidget::setCardWhiteListStatus(const CCard &card, bool isWhite)
+{
+    mParameters.setCardWhiteListStatus(card, isWhite);
+    mParameters.updateUi(*mUi);
+    mOwnedCardsTime = QDateTime();
+
+    pushParametersToModel();
 }
 
 void CCardFilterWidget::declineFilter()
@@ -142,9 +156,17 @@ void CCardFilterWidget::declineFilter()
 
 void CCardFilterWidget::acceptFilter()
 {
-    mParameters.fetchFromUi(*mUi);
     mOwnedCardsTime = QDateTime();
-    emit filterUpdated(true);
+    if (mParameters.fetchFromUi(*mUi))
+    {
+        emit filterUpdated(true);
+    }
+    else
+    {
+        mParameters.updateUi(*mUi);
+    }
+
+    pushParametersToModel();
 }
 
 void CCardFilterWidget::resetFilter()
@@ -152,7 +174,6 @@ void CCardFilterWidget::resetFilter()
     mParameters.reset();
     mParameters.updateUi(*mUi);
     mOwnedCardsTime = QDateTime();
-    //emit filterUpdated(true);
 }
 
 void CCardFilterWidget::executeFilter()
@@ -170,4 +191,17 @@ void CCardFilterWidget::executeFilter()
     // Updated owned status
     CCardTable &cards = CCardTable::getCardTable();
     cards.setOwnedCards(originalCards, filteredCards);
+
+    pushParametersToModel();
+}
+
+void CCardFilterWidget::pushParametersToModel()
+{
+    // Update black & white list status
+    CCardTable &cards = CCardTable::getCardTable();
+    QStringList blackList;
+    QStringList whiteList;
+    mParameters.getBlackList(blackList);
+    mParameters.getWhiteList(whiteList);
+    cards.setListedCards(blackList, whiteList);
 }

@@ -24,6 +24,8 @@ public:
 
 signals:
     void unitDropped();
+    void unitRightClicked(bool isBlack);
+    void unitCtrlRightClicked(bool isWhite);
 
 protected:
     virtual void paintEvent(QPaintEvent *ev);
@@ -34,6 +36,15 @@ protected:
     virtual void dropEvent(QDropEvent *ev);
     virtual void dragMoveEvent(QDragMoveEvent *ev);
     virtual void dragEnterEvent(QDragEnterEvent *ev);
+
+private:
+    QPointF translatePoint(int x, int y)
+    {
+        static const QSizeF baseSize(160.0f, 220.0f);
+        float wFac = width() / baseSize.width();
+        float hFac = height() / baseSize.height();
+        return QPoint(int(x * wFac), int(y * hFac));
+    }
     
 private:
     CCardTable &mCards;

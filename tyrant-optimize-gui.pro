@@ -46,9 +46,8 @@ HEADERS += \
     CCardLabel.h \
     CDeckInput.h \
     CDeckSaveWidget.h \
-    CGlobalConfig.h
-
-
+    CGlobalConfig.h \
+    CCardLabelNexus.h
 	   
 FORMS += \
     MainWindow.ui \
@@ -91,7 +90,8 @@ SOURCES += \
     CCardLabel.cpp \
     CDeckInput.cpp \
     CDeckSaveWidget.cpp \
-    CGlobalConfig.cpp
+    CGlobalConfig.cpp \
+    CCardLabelNexus.cpp
 
 RESOURCES += main.qrc
 RC_FILE    = main.rc

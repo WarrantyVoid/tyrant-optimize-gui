@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>342</width>
+    <width>340</width>
     <height>384</height>
    </rect>
   </property>
@@ -196,16 +196,16 @@
          </widget>
         </item>
         <item>
-         <widget class="QPushButton" name="blacklistDeckButton">
+         <widget class="QPushButton" name="blockDeckButton">
           <property name="enabled">
            <bool>false</bool>
           </property>
           <property name="text">
-           <string>Blacklist</string>
+           <string>Block</string>
           </property>
           <property name="icon">
            <iconset resource="main.qrc">
-            <normaloff>:/img/blacklist.png</normaloff>:/img/blacklist.png</iconset>
+            <normaloff>:/img/block-unblock.png</normaloff>:/img/block-unblock.png</iconset>
           </property>
          </widget>
         </item>

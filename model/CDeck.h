@@ -35,7 +35,7 @@ public:
     unsigned int getBattlegroundId() const;
     const CCard& getCommander() const;
     const CCard& getLegendary() const;
-    const QList<CCard>& getCards() const;
+    const TCardList& getCards() const;
     int getNumCards() const;
 
     bool isValid() const;
@@ -49,7 +49,7 @@ private:
     QString mName;
     EDeckType mType;
     unsigned int mBattlegroundId;
-    QList<CCard> mCards;
+    TCardList mCards;
 };
 
 #endif // CDECK_H

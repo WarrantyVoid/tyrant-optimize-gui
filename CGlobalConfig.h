@@ -22,8 +22,12 @@ public:
 
     void setLastDir(const QString& dir);
     void setCardShadingEnabled(bool enabled);
+    void setBlackLabellingEnabled(bool enabled);
+    void setWhiteLabellingEnabled(bool enabled);
     const QString& getLastDir() const;
     bool isCardShadingEnabled() const;
+    bool isBlackLabellingEnabled() const;
+    bool isWhiteLabellingEnabled() const;
 
 private:
     QString mSep;
@@ -35,6 +39,8 @@ private:
 
     QString mLastDir;
     bool mIsCardShadingEnabled;
+    bool mIsBlackLabellingEnabled;
+    bool mIsWhiteLabellingEnabled;
 
     static CGlobalConfig *GLOBAL_CONFIG;
 };
