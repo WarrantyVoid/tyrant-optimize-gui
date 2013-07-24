@@ -2,7 +2,7 @@
 #include "CGlobalConfig.h"
 #include <QStringList>
 
-const QString CTyrantOptimizeWrapper::PROCESS_NAME = "tyrant_optimize.exe";
+const QString CTyrantOptimizeWrapper::PROCESS_NAME = "tyrant_optimize";
 
 CTyrantOptimizeWrapper::CTyrantOptimizeWrapper()
 {

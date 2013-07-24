@@ -3,7 +3,7 @@
 
 #include <QMainWindow>
 #include <QLabel>
-#include <QProcess.h>
+#include <QProcess>
 #include <QComboBox>
 #include <QFileSystemWatcher>
 #include "process/IProcessWrapper.h"
