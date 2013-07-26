@@ -397,7 +397,18 @@ QVariant CDeckTable::data(const QModelIndex &index, int role) const
                 }
                 break;
             case Qt::DisplayRole:
-                return QVariant(deckData->getName());
+                if(deckData->getType() == EQuestDeckType)
+                {
+                    CCardTable &cardTable = CCardTable::getCardTable();
+                    const CBattleground& bg = cardTable.getBattlegroundForId(deckData->getBattlegroundId());
+                    if (bg.isValid())
+                    {
+                        return QString("%1 (%2)").arg(deckData->getName()).arg(bg.getName());
+                    }
+                }
+                return deckData->getName();
+            case Qt::UserRole:
+                return deckData->getName();
             case Qt::ToolTipRole:
                 return QVariant();
             }
@@ -487,7 +498,7 @@ QMimeData *CDeckTable::mimeData(const QModelIndexList &indexes) const
      {
          if (index.isValid() && index.column() == 4)
          {
-             deckStr << data(index, Qt::DisplayRole).toString();
+             deckStr << data(index, Qt::UserRole).toString();
          }
      }
      mimeData->setText(deckStr.join(";"));
