@@ -235,6 +235,15 @@ CMainWindow::CMainWindow(QWidget *parent)
         mUi->saveOptimizedButton, SIGNAL(clicked()),
         this, SLOT(saveCustomDeck()));
     connect(
+        mUi->nameBaseButton, SIGNAL(clicked()),
+        this, SLOT(copyDeckCards()));
+    connect(
+        mUi->nameEnemyButton, SIGNAL(clicked()),
+        this, SLOT(copyDeckCards()));
+    connect(
+        mUi->nameOptimizedButton, SIGNAL(clicked()),
+        this, SLOT(copyDeckCards()));
+    connect(
         mUi->hashBaseButton, SIGNAL(clicked()),
         this, SLOT(copyDeckHash()));
     connect(
@@ -243,6 +252,7 @@ CMainWindow::CMainWindow(QWidget *parent)
     connect(
         mUi->hashOptimizedButton, SIGNAL(clicked()),
         this, SLOT(copyDeckHash()));
+
 
     // Widgets connections
     connect(
@@ -768,8 +778,35 @@ void CMainWindow::copyDeckHash()
     if (deck.isValid())
     {
         QString hash;
-        mDecks.deckToHash(deck, hash);
-        QApplication::clipboard()->setText(hash);
+        if (mDecks.deckToHash(deck, hash))
+        {
+            QApplication::clipboard()->setText(hash);
+        }
+    }
+}
+
+void CMainWindow::copyDeckCards()
+{
+    CDeck deck;
+    if(QObject::sender() == mUi->nameBaseButton)
+    {
+        getInputDeck(mUi->baseDeckEdit, deck);
+    }
+    else if(QObject::sender() == mUi->nameEnemyButton)
+    {
+        getInputDeck(mUi->enemyDeckEdit, deck);
+    }
+    else if(QObject::sender() == mUi->nameOptimizedButton)
+    {
+        deck = mUi->resultDeckWidget->getDeck();
+    }
+    if (deck.isValid())
+    {
+        QString str;
+        if (mDecks.deckToStr(deck, str))
+        {
+            QApplication::clipboard()->setText(str);
+        }
     }
 }
 

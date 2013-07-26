@@ -144,6 +144,50 @@ bool CDeckTable::hashToDeck(const QString &hashStr, CDeck &deck) const
     return deck.isValid();
 }
 
+bool CDeckTable::deckToStr(const CDeck &deck, QString &deckStr, bool forceId) const
+{
+    deckStr.clear();
+    if (deck.isValid())
+    {
+        QTextStream out(&deckStr);
+        const QList<CCard> &cards = deck.getCards();
+        for (int iCard = 0; iCard < cards.size(); ++iCard)
+        {
+            if (iCard > 0)
+            {
+                out << ", ";
+            }
+
+            int num = 1;
+            const CCard &curCard = cards[iCard];
+            while (iCard < cards.size() - 1 && curCard.getId() == cards.at(iCard + 1).getId())
+            {
+                ++iCard;
+                ++num;
+            }
+            QStringList cardSplitComma = curCard.getName().split(QRegExp("\\,"), QString::SkipEmptyParts);
+            if (cardSplitComma.size() > 1)
+            {
+                out << cardSplitComma.at(0) << " [" << curCard.getId() << "]";
+            }
+            else
+            {
+                out << curCard.getName();
+                if (forceId)
+                {
+                    out << " [" << curCard.getId() << "]";
+                }
+            }
+            if (num > 1)
+            {
+                out << " #" << num;
+                num = 0;
+            }
+        }
+    }
+    return !deckStr.isEmpty();
+}
+
 bool CDeckTable::strToDeck(const QString &deckStr, CDeck &deck) const
 {
     QStringList customDeckTokens = deckStr.split(QRegExp("\\,"), QString::SkipEmptyParts);
@@ -634,37 +678,9 @@ bool CDeckTable::writeCustomDecksFile()
             if (deck.isValid())
             {
                 QString deckId = QString("%1").arg(deck.getName(), -deckNameWidth, QChar(' '));
-                const QList<CCard> &cards = deck.getCards();
-                out << deckId << ":";
-                for (int iCard = 0; iCard < cards.size(); ++iCard)
-                {
-                    int num = 1;
-                    const CCard &curCard = cards[iCard];
-                    while (iCard < cards.size() - 1 && curCard.getId() == cards.at(iCard + 1).getId())
-                    {
-                        ++iCard;
-                        ++num;
-                    }
-                    QStringList cardSplitComma = curCard.getName().split(QRegExp("\\,"), QString::SkipEmptyParts);
-                    if (cardSplitComma.size() > 1)
-                    {
-                        out << " " << cardSplitComma.at(0) << " [" << curCard.getId() << "]";
-                    }
-                    else
-                    {
-                        out << " " << curCard.getName() << " [" << curCard.getId() << "]";
-                    }
-                    if (num > 1)
-                    {
-                        out << " #" << num;
-                        num = 0;
-                    }
-                    if (iCard < deck.getCards().size() - 1)
-                    {
-                        out << ",";
-                    }
-                }
-                out << "\n";
+                QString deckStr;
+                deckToStr(deck, deckStr, true);
+                out << deckId << ": " << deckStr << "\n";
             }
         }
         return true;

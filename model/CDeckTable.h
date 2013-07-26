@@ -18,6 +18,7 @@ public:
 public:
     bool deckToHash(const CDeck &deck, QString &hashStr) const;
     bool hashToDeck(const QString &hashStr, CDeck &deck) const;
+    bool deckToStr(const CDeck &deck, QString &deckStr, bool forceId = false) const;
     bool strToDeck(const QString &deckStr, CDeck &deck) const;
     const CDeck& getDeckForIndex(const QModelIndex &index) const;
     const CDeck& getDeckForName(const QString &deckName) const;

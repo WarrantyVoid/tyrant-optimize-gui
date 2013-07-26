@@ -59,6 +59,7 @@ protected slots:
     void checkBaseDeck();
     void saveCustomDeck();
     void copyDeckHash();
+    void copyDeckCards();
     void useOptimizedDeck();
     void switchDecks();
     void updateView(ECardStatusUpdate status);
