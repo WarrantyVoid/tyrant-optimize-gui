@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>1086</width>
-    <height>393</height>
+    <height>416</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -703,16 +703,41 @@
          </item>
         </layout>
        </item>
+      </layout>
+     </widget>
+    </item>
+    <item>
+     <widget class="QGroupBox" name="resultDeckBox">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+      <property name="title">
+       <string>Optimizer</string>
+      </property>
+      <layout class="QVBoxLayout" name="verticalLayout_2">
        <item>
         <layout class="QHBoxLayout" name="processLayout">
          <item>
-          <widget class="QPushButton" name="checkBaseButton">
+          <widget class="CStatusWidget" name="optimizerStatusWidget" native="true">
            <property name="sizePolicy">
-            <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+            <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
              <horstretch>0</horstretch>
              <verstretch>0</verstretch>
             </sizepolicy>
            </property>
+           <property name="minimumSize">
+            <size>
+             <width>70</width>
+             <height>0</height>
+            </size>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="checkBaseButton">
            <property name="toolTip">
             <string/>
            </property>
@@ -723,12 +748,6 @@
          </item>
          <item>
           <widget class="QPushButton" name="optimizeBaseButton">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
            <property name="text">
             <string>Optimize Base Deck</string>
            </property>
@@ -762,6 +781,26 @@
              <property name="icon">
               <iconset resource="main.qrc">
                <normaloff>:/img/use.png</normaloff>:/img/use.png</iconset>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QPushButton" name="displayOptimizedButton">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="toolTip">
+              <string>Display optimizer console</string>
+             </property>
+             <property name="text">
+              <string/>
+             </property>
+             <property name="icon">
+              <iconset resource="main.qrc">
+               <normaloff>:/img/view-console.png</normaloff>:/img/view-console.png</iconset>
              </property>
             </widget>
            </item>
@@ -838,23 +877,52 @@
          </item>
         </layout>
        </item>
-      </layout>
-     </widget>
-    </item>
-    <item>
-     <widget class="QGroupBox" name="resultDeckBox">
-      <property name="sizePolicy">
-       <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-        <horstretch>0</horstretch>
-        <verstretch>0</verstretch>
-       </sizepolicy>
-      </property>
-      <property name="title">
-       <string>Optimized Deck</string>
-      </property>
-      <layout class="QVBoxLayout" name="verticalLayout_2">
        <item>
-        <widget class="CDeckWidget" name="resultDeckWidget" native="true"/>
+        <widget class="QStackedWidget" name="resultStackedWidget">
+         <property name="currentIndex">
+          <number>0</number>
+         </property>
+         <widget class="QWidget" name="page">
+          <layout class="QVBoxLayout" name="verticalLayout_5">
+           <property name="margin">
+            <number>0</number>
+           </property>
+           <item>
+            <widget class="CDeckWidget" name="resultDeckWidget" native="true"/>
+           </item>
+          </layout>
+         </widget>
+         <widget class="QWidget" name="page_2">
+          <layout class="QVBoxLayout" name="verticalLayout_3">
+           <property name="margin">
+            <number>0</number>
+           </property>
+           <item>
+            <widget class="QPlainTextEdit" name="resultConsoleEdit">
+             <property name="styleSheet">
+              <string notr="true">QPlainTextEdit
+{
+	background-color: rgb(0, 0, 0);
+	color: rgb(200, 200, 200);
+	font: 75 6pt &quot;System&quot;;
+	selection-color: rgb(0, 0, 0);
+	selection-background-color: rgb(200, 200, 200);
+}</string>
+             </property>
+             <property name="lineWrapMode">
+              <enum>QPlainTextEdit::NoWrap</enum>
+             </property>
+             <property name="readOnly">
+              <bool>true</bool>
+             </property>
+             <property name="plainText">
+              <string/>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+        </widget>
        </item>
       </layout>
      </widget>
@@ -898,6 +966,7 @@
     <addaction name="cardFilterAction"/>
     <addaction name="separator"/>
     <addaction name="alwaysOnTopAction"/>
+    <addaction name="muteSoundAction"/>
    </widget>
    <widget class="QMenu" name="menuHelp">
     <property name="title">
@@ -1044,6 +1113,17 @@
     <string>Label whitelisted cards</string>
    </property>
   </action>
+  <action name="muteSoundAction">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Mute sound</string>
+   </property>
+   <property name="shortcut">
+    <string>Alt+M</string>
+   </property>
+  </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>
@@ -1070,6 +1150,12 @@
    <header>CDeckManagementWidget.h</header>
    <container>1</container>
   </customwidget>
+  <customwidget>
+   <class>CStatusWidget</class>
+   <extends>QWidget</extends>
+   <header>CStatusWidget.h</header>
+   <container>1</container>
+  </customwidget>
  </customwidgets>
  <resources>
   <include location="main.qrc"/>
@@ -1082,12 +1168,12 @@
    <slot>setVisible(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>748</x>
-     <y>78</y>
+     <x>693</x>
+     <y>75</y>
     </hint>
     <hint type="destinationlabel">
-     <x>430</x>
-     <y>94</y>
+     <x>730</x>
+     <y>93</y>
     </hint>
    </hints>
   </connection>
@@ -1098,12 +1184,12 @@
    <slot>setVisible(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>748</x>
-     <y>128</y>
+     <x>693</x>
+     <y>121</y>
     </hint>
     <hint type="destinationlabel">
-     <x>389</x>
-     <y>146</y>
+     <x>689</x>
+     <y>139</y>
     </hint>
    </hints>
   </connection>
@@ -1114,12 +1200,12 @@
    <slot>setEnabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>739</x>
-     <y>224</y>
+     <x>714</x>
+     <y>185</y>
     </hint>
     <hint type="destinationlabel">
-     <x>739</x>
-     <y>250</y>
+     <x>714</x>
+     <y>199</y>
     </hint>
    </hints>
   </connection>
@@ -1130,12 +1216,12 @@
    <slot>setEnabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>411</x>
-     <y>222</y>
+     <x>488</x>
+     <y>185</y>
     </hint>
     <hint type="destinationlabel">
-     <x>404</x>
-     <y>240</y>
+     <x>426</x>
+     <y>199</y>
     </hint>
    </hints>
   </connection>
@@ -1146,12 +1232,12 @@
    <slot>setEnabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>435</x>
-     <y>219</y>
+     <x>488</x>
+     <y>185</y>
     </hint>
     <hint type="destinationlabel">
-     <x>457</x>
-     <y>240</y>
+     <x>488</x>
+     <y>199</y>
     </hint>
    </hints>
   </connection>

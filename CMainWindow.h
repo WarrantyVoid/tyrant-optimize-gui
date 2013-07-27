@@ -48,6 +48,7 @@ protected slots:
 	void loadParameterSettings();
 	void saveParameterSettings();
     void toggleAlwaysOnTop(bool checked);
+    void toggleMuteSound(bool checked);
     void toggleCardsShading(bool checked);
     void toggleCardLabelling(bool checked);
     void updateXmlData();
@@ -56,6 +57,7 @@ protected slots:
 
     // Button slots
     void toggleToolProcess();
+    void toggleToolResultWidget();
     void checkBaseDeck();
     void saveCustomDeck();
     void copyDeckHash();
@@ -66,6 +68,7 @@ protected slots:
     void updateWindowHeight(bool grow);
     void updateParameterBoxToolTip(int boxIndex);
     void updateBattleGround(const QString &deckStr);
+
 
     // Widget slots
     void processError(QProcess::ProcessError error);
@@ -86,6 +89,7 @@ protected slots:
     void setResultDeckButtonAvailability(const QString &deckHash);
 
 private:
+    void addConsoleLine(const QString &line, bool truncate = false);
     void getActiveDeckInput(CDeckInput *&deckInput) const;
 
 private:
@@ -107,6 +111,9 @@ private:
 
 private:
     static const QString VERSION;
+    static const QString AUTHOR;
+    static const QString HOMEPAGE;
+    static const QString FORUM;
 };
 
 #endif // MAINWINDOW_H

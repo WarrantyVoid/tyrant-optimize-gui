@@ -4,6 +4,7 @@
         <file>add.png</file>
         <file>block.png</file>
         <file>block-unblock.png</file>
+        <file>busy.gif</file>
         <file>delete.png</file>
         <file>common.png</file>
         <file>hash.png</file>
@@ -15,11 +16,15 @@
         <file>save.png</file>
         <file>switch.png</file>
         <file>search.png</file>
+        <file>success.png</file>
         <file>uncommon.png</file>
         <file>unique.png</file>
         <file>unlocked.png</file>
         <file>use.png</file>
         <file>view.png</file>
+        <file>view-cards.png</file>
+        <file>view-console.png</file>
+        <file>warning.png</file>
         <file>tyrant/ActionGoldIcon.png</file>
         <file>tyrant/ActionLegendaryIcon.png</file>
         <file>tyrant/ActionRegIcon.png</file>
@@ -146,5 +151,8 @@
         <file>tyrant/RaiderSortButton.png</file>
         <file>tyrant/RighteousSortButton.png</file>
         <file>tyrant/XenoSortButton.png</file>
+    </qresource>
+    <qresource prefix="/snd">
+        <file>notify.wav</file>
     </qresource>
 </RCC>

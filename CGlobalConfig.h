@@ -3,6 +3,7 @@
 
 #include <QString>
 #include <QSettings>
+#include <QAction>
 
 class CGlobalConfig
 {
@@ -24,10 +25,12 @@ public:
     void setCardShadingEnabled(bool enabled);
     void setBlackLabellingEnabled(bool enabled);
     void setWhiteLabellingEnabled(bool enabled);
+    void setSoundMuted(bool muted);
     const QString& getLastDir() const;
     bool isCardShadingEnabled() const;
     bool isBlackLabellingEnabled() const;
     bool isWhiteLabellingEnabled() const;
+    bool isSoundMuted() const;
 
 private:
     QString mSep;
@@ -41,6 +44,7 @@ private:
     bool mIsCardShadingEnabled;
     bool mIsBlackLabellingEnabled;
     bool mIsWhiteLabellingEnabled;
+    bool mIsSoundMuted;
 
     static CGlobalConfig *GLOBAL_CONFIG;
 };

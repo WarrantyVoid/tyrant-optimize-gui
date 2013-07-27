@@ -15,6 +15,9 @@
 #include <QClipboard>
 
 const QString CMainWindow::VERSION = "1.3.0";
+const QString CMainWindow::AUTHOR = "warranty_void";
+const QString CMainWindow::HOMEPAGE = "<a href=\'http://www.hunterthinks.com/to/gui\'>hunterthinks.com/to/gui</a>";
+const QString CMainWindow::FORUM = "<a href=\'http://www.kongregate.com/forums/65-tyrant/topics/257807-automatic-deck-optimization\'>kongregate.com/[..]automatic-deck-optimization</a>";
 
 CMainWindow::CMainWindow(QWidget *parent)
 : QMainWindow(parent)
@@ -114,8 +117,8 @@ CMainWindow::CMainWindow(QWidget *parent)
     adjustSize();
 
     // Status bar setup
-    mUi->statusBar->addWidget(mProcessStatusLabel);
-    mUi->statusBar->addWidget(mDownloadStatusLabel);
+    mUi->statusBar->addPermanentWidget(mProcessStatusLabel, 0);
+    mUi->statusBar->addPermanentWidget(mDownloadStatusLabel, 1);
     mProcessStatusLabel->setFocusPolicy(Qt::ClickFocus);
     mProcessStatusLabel->setTextInteractionFlags(Qt::TextSelectableByMouse);
 
@@ -162,6 +165,9 @@ CMainWindow::CMainWindow(QWidget *parent)
     connect(
         mUi->alwaysOnTopAction, SIGNAL(triggered(bool)),
         this, SLOT(toggleAlwaysOnTop(bool)));
+    connect(
+        mUi->muteSoundAction, SIGNAL(triggered(bool)),
+        this, SLOT(toggleMuteSound(bool)));
     connect(
         mUi->shadeOwnedCardsAction, SIGNAL(triggered(bool)),
         this, SLOT(toggleCardsShading(bool)));
@@ -252,7 +258,9 @@ CMainWindow::CMainWindow(QWidget *parent)
     connect(
         mUi->hashOptimizedButton, SIGNAL(clicked()),
         this, SLOT(copyDeckHash()));
-
+    connect(
+        mUi->displayOptimizedButton, SIGNAL(clicked()),
+        this, SLOT(toggleToolResultWidget()));
 
     // Widgets connections
     connect(
@@ -395,6 +403,8 @@ void CMainWindow::startToolProcess(bool isOptimizationEnabled)
             mProcess->setWorkingDirectory(toolExe.absolutePath());
             mProcess->setProcessChannelMode(QProcess::MergedChannels);
             mProcess->start(toolExe.absoluteFilePath(), toolParameters);
+            mUi->optimizerStatusWidget->setStatus(EStatusBusy);
+            addConsoleLine(toolExe.baseName() + " " + toolParameters.join(" "), true);
             setProcessActivityChanged(true);
         }
     }
@@ -419,12 +429,13 @@ void CMainWindow::killToolProcess()
             this, SLOT(processStarted()));
 
         mProcess->kill();
-        mProcess->waitForFinished();
+        mProcess->waitForFinished();        
         delete mProcess;
         mProcess = 0;
 
         if (mUi)
         {
+            mUi->optimizerStatusWidget->setStatus(EStatusUnknown);
             mProcessStatusLabel->setText(mProcessWrapper->getProcessExecutable().fileName() + "\' killed");
         }
         setProcessActivityChanged(false);
@@ -464,6 +475,7 @@ void CMainWindow::loadDefaultSettings()
     mUi->displayEnemyButton->setChecked(enemyDisplayed);
 
     CGlobalConfig::getCfg().load(settings);
+    mUi->muteSoundAction->setChecked(CGlobalConfig::getCfg().isSoundMuted());
     mUi->shadeOwnedCardsAction->setChecked(CGlobalConfig::getCfg().isCardShadingEnabled());
     mUi->labelBlackCardsAction->setChecked(CGlobalConfig::getCfg().isBlackLabellingEnabled());
     mUi->labelWhiteCardsAction->setChecked(CGlobalConfig::getCfg().isWhiteLabellingEnabled());
@@ -613,6 +625,11 @@ void CMainWindow::toggleAlwaysOnTop(bool checked)
     setAcceptDrops(true);
 }
 
+void CMainWindow::toggleMuteSound(bool checked)
+{
+     CGlobalConfig::getCfg().setSoundMuted(checked);
+}
+
 void CMainWindow::toggleCardsShading(bool checked)
 {
     CGlobalConfig::getCfg().setCardShadingEnabled(checked);
@@ -646,7 +663,15 @@ void CMainWindow::updateOwnedCards()
 
 void CMainWindow::displayAboutMessage()
 {
-    QMessageBox::about(this, "About..", QString("%1\nVersion: %2\nAuthor: warranty_void").arg(windowTitle()).arg(CMainWindow::VERSION));
+    QStringList aboutMsg;
+    aboutMsg << QString("<h2>%1</h2>").arg(windowTitle());
+    aboutMsg << "<table>";
+    aboutMsg << QString("<tr><td>Version:</td><td>%1</td></tr>").arg(CMainWindow::VERSION);
+    aboutMsg << QString("<tr><td>Author:</td><td>%1</td></tr>").arg(CMainWindow::AUTHOR);
+    aboutMsg << QString("<tr><td>Home:</td><td>%1</td></tr>").arg(CMainWindow::HOMEPAGE);
+    aboutMsg << QString("<tr><td>Forum:</td><td>%1</td></tr>").arg(CMainWindow::FORUM);
+    aboutMsg << "</table>";
+    QMessageBox::about(this, "About..", aboutMsg.join(QString("")));
 }
 
 void CMainWindow::toggleToolProcess()
@@ -660,6 +685,22 @@ void CMainWindow::toggleToolProcess()
     {
         startToolProcess(true);
     }
+}
+
+void CMainWindow::toggleToolResultWidget()
+{
+    int curOut = mUi->resultStackedWidget->currentIndex();
+    if (curOut == 0)
+    {
+       mUi->displayOptimizedButton->setIcon(QPixmap(":/img/view-cards.png"));
+       mUi->displayOptimizedButton->setToolTip("Display optimized deck");
+    }
+    else
+    {
+        mUi->displayOptimizedButton->setIcon(QPixmap(":/img/view-console.png"));
+        mUi->displayOptimizedButton->setToolTip("Display optimizer console");
+    }
+    mUi->resultStackedWidget->setCurrentIndex(1 - curOut);
 }
 
 void CMainWindow::checkBaseDeck()
@@ -896,16 +937,18 @@ void CMainWindow::processError(QProcess::ProcessError error)
     }
 }
 
-void CMainWindow::processFinished(int /*exitCode*/, QProcess::ExitStatus exitStatus)
+void CMainWindow::processFinished(int exitCode, QProcess::ExitStatus exitStatus)
 {
     QString processName = mProcessWrapper->getProcessExecutable().baseName();
     switch(exitStatus)
     {
-    case QProcess::NormalExit:
-        //mProcessStatusLabel->setText(QString("\'%1\' finished with code %2").arg(PROCESS_NAME).arg(exitCode));
-        break;
     case QProcess::CrashExit:
         mProcessStatusLabel->setText(QString("Process \'%1\' crashed").arg(processName));
+        mUi->optimizerStatusWidget->setStatus(EStatusResultFailure);
+        break;
+    default:
+        mProcessStatusLabel->setText(QString("\'%1\' finished with code %2").arg(processName).arg(exitCode));
+        mUi->optimizerStatusWidget->setStatus(EStatusResultSuccess);
         break;
     }
     if (mProcess)
@@ -920,13 +963,9 @@ void CMainWindow::processReadyReadStandardOutput()
 {
     QString toolOutput = QString(mProcess->readAllStandardOutput());
     QStringList outputLines = toolOutput.split(QRegExp("\\n|\\r"), QString::SkipEmptyParts);    
-    for (int iLine = 0; iLine < outputLines.size(); ++iLine)
+    for (QStringList::const_iterator iLine = outputLines.begin(); iLine != outputLines.end(); ++iLine)
     {
-        QString curLine = outputLines.at(iLine);
-        if (!curLine.isEmpty())
-        {
-            mProcessStatusLabel->setText(curLine);
-        }
+        addConsoleLine(*iLine);
     }
     if (mProcessWrapper)
     {
@@ -944,7 +983,7 @@ void  CMainWindow::downloadProgress(int numDone, int numDownloads)
 {
     if (numDone == numDownloads)
     {
-        mDownloadStatusLabel->setText("Downloading card pictures..done");
+        mDownloadStatusLabel->setText("Downloading card pictures..done");        
     }
     else
     {
@@ -1071,6 +1110,7 @@ void CMainWindow::setResultDeckButtonAvailability(const QString &deckHash)
         mUi->useOptimizedButton->setEnabled((true));
         mUi->saveOptimizedButton->setEnabled(true);
         mUi->hashOptimizedButton->setEnabled(true);
+        mUi->nameOptimizedButton->setEnabled(true);
         mUi->resultDeckWidget->setDeck(deck);
     }
     else
@@ -1078,7 +1118,23 @@ void CMainWindow::setResultDeckButtonAvailability(const QString &deckHash)
         mUi->useOptimizedButton->setEnabled(false);
         mUi->saveOptimizedButton->setEnabled(false);
         mUi->hashOptimizedButton->setEnabled(false);
+        mUi->nameOptimizedButton->setEnabled(false);
         mUi->resultDeckWidget->setDefaultUnits();
+    }
+}
+
+void CMainWindow::addConsoleLine(const QString &line, bool truncate)
+{
+    if (truncate)
+    {
+        mUi->resultConsoleEdit->clear();
+    }
+    mUi->resultConsoleEdit->appendPlainText(QString("%1> %2")
+                                            .arg(mUi->optimizerStatusWidget->getStatusTime())
+                                            .arg(line));
+    if (truncate)
+    {
+        mUi->resultConsoleEdit->moveCursor(QTextCursor::StartOfLine);
     }
 }
 

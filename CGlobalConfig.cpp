@@ -15,6 +15,7 @@ CGlobalConfig::CGlobalConfig()
 , mIsCardShadingEnabled(true)
 , mIsBlackLabellingEnabled(true)
 , mIsWhiteLabellingEnabled(true)
+, mIsSoundMuted(false)
 {
 }
 
@@ -33,6 +34,7 @@ void CGlobalConfig::load(QSettings &settings)
     mIsCardShadingEnabled = settings.value("view/shadingEnabled", mIsCardShadingEnabled).toBool();
     mIsBlackLabellingEnabled = settings.value("view/blackLabellingEnabled", mIsBlackLabellingEnabled).toBool();
     mIsWhiteLabellingEnabled = settings.value("view/whiteLabellingEnabled", mIsWhiteLabellingEnabled).toBool();
+    mIsSoundMuted = settings.value("general/muteSound", mIsSoundMuted).toBool();
 }
 
 void CGlobalConfig::save(QSettings &settings)
@@ -41,7 +43,7 @@ void CGlobalConfig::save(QSettings &settings)
     settings.setValue("view/shadingEnabled", mIsCardShadingEnabled);
     settings.setValue("view/blackLabellingEnabled", mIsBlackLabellingEnabled);
     settings.setValue("view/whiteLabellingEnabled", mIsWhiteLabellingEnabled);
-
+    settings.setValue("general/muteSound", mIsSoundMuted);
 }
 
 const QString& CGlobalConfig::getAppPath() const
@@ -89,6 +91,11 @@ void CGlobalConfig::setWhiteLabellingEnabled(bool enabled)
     mIsWhiteLabellingEnabled = enabled;
 }
 
+void CGlobalConfig::setSoundMuted(bool muted)
+{
+    mIsSoundMuted = muted;
+}
+
 const QString& CGlobalConfig::getLastDir() const
 {
     return mLastDir;
@@ -109,5 +116,7 @@ bool CGlobalConfig::isWhiteLabellingEnabled() const
     return mIsWhiteLabellingEnabled;
 }
 
-
-
+bool CGlobalConfig::isSoundMuted() const
+{
+    return mIsSoundMuted;
+}

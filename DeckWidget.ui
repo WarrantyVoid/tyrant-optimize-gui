@@ -174,9 +174,12 @@
    <item row="1" column="0">
     <widget class="CWinLabel" name="winLabel">
      <property name="styleSheet">
-      <string notr="true">font: 75 12pt &quot;Lucida Sans Unicode&quot;;
-background-color: rgba(66, 66, 66, 255);
-color: rgb(255, 255, 255);</string>
+      <string notr="true">QLabel
+{
+	font: 75 12pt &quot;Lucida Sans Unicode&quot;;
+	background-color: qradialgradient(spread:pad, cx:0.5, cy:0.5, radius:0.5, fx:0.5, fy:0.5, stop:0 rgba(100, 100, 100, 255), stop:0.9 rgba(66, 66, 66, 255), stop:1 rgba(66, 66, 66, 255));
+	color: rgb(255, 255, 255);
+}</string>
      </property>
      <property name="alignment">
       <set>Qt::AlignCenter</set>
