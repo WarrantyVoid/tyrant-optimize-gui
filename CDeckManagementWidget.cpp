@@ -134,6 +134,7 @@ bool CDeckManagementWidget::addCustomDeck(CDeck &customDeck)
     {
         emit deckBlockageChanged(customDeck, true);
     }
+    mDeckSortProxy.invalidate();
     return result;
 }
 
