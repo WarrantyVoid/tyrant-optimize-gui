@@ -71,10 +71,10 @@ protected slots:
 
 
     // Widget slots
+    void processStateChanged(QProcess::ProcessState newState);
     void processError(QProcess::ProcessError error);
     void processFinished(int exitCode, QProcess::ExitStatus exitStatus);
     void processReadyReadStandardOutput();
-    void processStarted();
     void downloadProgress(int numDone, int numDownloads);
     void dataUpdated(const QStringList &result);
     void ownedCardsUpdated(const QStringList &result);

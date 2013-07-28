@@ -3,6 +3,7 @@
 #include "CGlobalConfig.h"
 #include "CDeckSaveWidget.h"
 #include "CCardLabelNexus.h"
+#include "process/CProcessPriority.h"
 #include "process/CTyrantOptimizeWrapper.h"
 #include <QSortFilterProxyModel>
 #include <QDesktopWidget>
@@ -380,11 +381,11 @@ void CMainWindow::startToolProcess(bool isOptimizationEnabled)
 
             QStringList toolParameters;
             mProcessWrapper->getCommandLineParameters(mParameters, toolParameters);
-            //debug output only
-            //mProcessStatusLabel->setText(toolParameters.join(" "));
-            //return;
 
             // Connect signals
+            connect(
+                mProcess, SIGNAL(stateChanged(QProcess::ProcessState)),
+                this, SLOT(processStateChanged(QProcess::ProcessState)));
             connect(
                 mProcess, SIGNAL(error(QProcess::ProcessError)),
                 this, SLOT(processError(QProcess::ProcessError)));
@@ -394,18 +395,13 @@ void CMainWindow::startToolProcess(bool isOptimizationEnabled)
             connect(
                 mProcess, SIGNAL(readyReadStandardOutput()),
                 this, SLOT(processReadyReadStandardOutput()));
-            connect(
-                mProcess, SIGNAL(started()),
-                this, SLOT(processStarted()));
 
             // Start tool
             QFileInfo toolExe = mProcessWrapper->getProcessExecutable();
+            addConsoleLine(toolExe.baseName() + " " + toolParameters.join(" "), true);
             mProcess->setWorkingDirectory(toolExe.absolutePath());
             mProcess->setProcessChannelMode(QProcess::MergedChannels);
             mProcess->start(toolExe.absoluteFilePath(), toolParameters);
-            mUi->optimizerStatusWidget->setStatus(EStatusBusy);
-            addConsoleLine(toolExe.baseName() + " " + toolParameters.join(" "), true);
-            setProcessActivityChanged(true);
         }
     }
 }
@@ -416,6 +412,9 @@ void CMainWindow::killToolProcess()
     {
         // Disconnect signals
         disconnect(
+            mProcess, SIGNAL(stateChanged(QProcess::ProcessState)),
+            this, SLOT(processStateChanged(QProcess::ProcessState)));
+        disconnect(
             mProcess, SIGNAL(error(QProcess::ProcessError)),
             this, SLOT(processError(QProcess::ProcessError)));
         disconnect(
@@ -424,9 +423,6 @@ void CMainWindow::killToolProcess()
         disconnect(
             mProcess, SIGNAL(readyReadStandardOutput()),
             this, SLOT(processReadyReadStandardOutput()));
-        disconnect(
-            mProcess, SIGNAL(started()),
-            this, SLOT(processStarted()));
 
         mProcess->kill();
         mProcess->waitForFinished();        
@@ -435,8 +431,8 @@ void CMainWindow::killToolProcess()
 
         if (mUi)
         {
-            mUi->optimizerStatusWidget->setStatus(EStatusUnknown);
             mProcessStatusLabel->setText(mProcessWrapper->getProcessExecutable().fileName() + "\' killed");
+            mUi->optimizerStatusWidget->setStatus(EStatusUnknown);
         }
         setProcessActivityChanged(false);
     }
@@ -913,32 +909,64 @@ void CMainWindow::updateBattleGround(const QString &deckStr)
     }
 }
 
+void CMainWindow::processStateChanged(QProcess::ProcessState newState)
+{
+    QString processName = mProcessWrapper->getProcessExecutable().baseName();
+    switch(newState)
+    {
+    case QProcess::Starting:
+        mProcessStatusLabel->setText(QString("Process \'%1\' started").arg(processName));
+        mUi->optimizerStatusWidget->setStatus(EStatusBusy);
+        setProcessActivityChanged(true);
+        break;
+    case QProcess::Running:
+        if (mProcess)
+        {
+            CProcessPriority::setProcessPriority(*mProcess, mParameters.priority());
+        }
+        break;
+    case QProcess::NotRunning:
+        if (mProcess)
+        {
+            mProcess->deleteLater();
+            mProcess = 0;
+            setProcessActivityChanged(false);
+        }
+    default:
+        break;
+    }
+}
+
 void CMainWindow::processError(QProcess::ProcessError error)
 {
     QString processName = mProcessWrapper->getProcessExecutable().baseName();
-    switch(error)
+    if (error != QProcess::UnknownError)
     {
-    case QProcess::FailedToStart:
-        mProcessStatusLabel->setText(QString("Process \'%1\' not started").arg(processName));
-        break;
-    case QProcess::Crashed:
-        mProcessStatusLabel->setText(QString("Process \'%1\' crashed").arg(processName));
-        break;
-    case QProcess::Timedout:
-        mProcessStatusLabel->setText(QString("Process \'%1\' timeout").arg(processName));
-        break;
-    case QProcess::ReadError:
-    case QProcess::WriteError:
-        mProcessStatusLabel->setText(QString("Process \'%1\' io error").arg(processName));
-        break;
-    default:
-        mProcessStatusLabel->setText(QString("Process \'%1\' unknown error").arg(processName));
-        break;
+        switch(error)
+        {
+        case QProcess::FailedToStart:
+            mProcessStatusLabel->setText(QString("Process \'%1\' not started").arg(processName));
+            break;
+        case QProcess::Crashed:
+            mProcessStatusLabel->setText(QString("Process \'%1\' crashed").arg(processName));
+            break;
+        case QProcess::Timedout:
+            mProcessStatusLabel->setText(QString("Process \'%1\' timeout").arg(processName));
+            break;
+        case QProcess::ReadError:
+        case QProcess::WriteError:
+            mProcessStatusLabel->setText(QString("Process \'%1\' io error").arg(processName));
+            break;
+        default:
+            break;
+        }
+        mUi->optimizerStatusWidget->setStatus(EStatusResultFailure);
     }
 }
 
 void CMainWindow::processFinished(int exitCode, QProcess::ExitStatus exitStatus)
 {
+
     QString processName = mProcessWrapper->getProcessExecutable().baseName();
     switch(exitStatus)
     {
@@ -948,14 +976,8 @@ void CMainWindow::processFinished(int exitCode, QProcess::ExitStatus exitStatus)
         break;
     default:
         mProcessStatusLabel->setText(QString("\'%1\' finished with code %2").arg(processName).arg(exitCode));
-        mUi->optimizerStatusWidget->setStatus(EStatusResultSuccess);
+        mUi->optimizerStatusWidget->setStatus((exitCode == 0) ? EStatusResultSuccess : EStatusResultFailure);
         break;
-    }
-    if (mProcess)
-    {
-        delete mProcess;
-        mProcess = 0;
-        setProcessActivityChanged(false);
     }
 }
 
@@ -971,12 +993,6 @@ void CMainWindow::processReadyReadStandardOutput()
     {
         mProcessWrapper->processCommandLineOutput(outputLines);
     }
-}
-
-void CMainWindow::processStarted()
-{
-    QString processName = mProcessWrapper->getProcessExecutable().baseName();
-    mProcessStatusLabel->setText(QString("Process \'%1\' started").arg(processName));
 }
 
 void  CMainWindow::downloadProgress(int numDone, int numDownloads)

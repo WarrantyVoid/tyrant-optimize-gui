@@ -66,7 +66,7 @@ void CStatusWidget::setStatus(EStatusValue status)
     case EStatusResultSuccess:
         mStatusIconLabel->setPixmap(QPixmap(":/img/success"));
         updateElapsedTime();
-        if (isSoundEnabled)
+        if (isSoundEnabled && mReferenceTime.elapsed() > 10000)
         {
             mSoundPlayer->seek(0);
             mSoundPlayer->play();
@@ -76,7 +76,7 @@ void CStatusWidget::setStatus(EStatusValue status)
     case EStatusResultFailure:
         mStatusIconLabel->setPixmap(QPixmap(":/img/warning"));
         updateElapsedTime();
-        if (isSoundEnabled)
+        if (isSoundEnabled && mReferenceTime.elapsed() > 10000)
         {
             mSoundPlayer->seek(0);
             mSoundPlayer->play();

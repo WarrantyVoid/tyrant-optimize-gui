@@ -48,7 +48,8 @@ HEADERS += \
     CDeckSaveWidget.h \
     CGlobalConfig.h \
     CCardLabelNexus.h \
-    CStatusWidget.h
+    CStatusWidget.h \
+    process/CProcessPriority.h
 	   
 FORMS += \
     MainWindow.ui \
@@ -93,7 +94,8 @@ SOURCES += \
     CDeckSaveWidget.cpp \
     CGlobalConfig.cpp \
     CCardLabelNexus.cpp \
-    CStatusWidget.cpp
+    CStatusWidget.cpp \
+    process/CProcessPriority.cpp
 
 RESOURCES += main.qrc
 RC_FILE    = main.rc

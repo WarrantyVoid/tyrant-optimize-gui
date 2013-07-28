@@ -3,6 +3,7 @@
 
 #include <QString>
 #include <QSettings>
+#include "CProcessPriority.h"
 
 namespace Ui
 {
@@ -35,6 +36,7 @@ public:
 	int numThreads() const { return mNumThreads; }
 	int numTurns() const { return mNumTurns; }
 	int numBattles() const { return mNumBattles; }
+    EProcessPriority priority() const { return mPriority; }
 	bool anpOnly() const { return mAnpOnly; }
     bool lockCardCount() const { return mLockCardCount; }
 	bool ownedCardsOnly() const { return mOwnedCardsOnly; }    
@@ -57,6 +59,7 @@ private:
 	int mNumThreads;
 	int mNumTurns;
 	int mNumBattles;
+    EProcessPriority mPriority;
 	bool mAnpOnly;
     bool mLockCardCount;
 	bool mOwnedCardsOnly;

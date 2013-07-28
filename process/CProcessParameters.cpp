@@ -16,6 +16,7 @@ CProcessParameters::CProcessParameters()
 , mNumThreads(4)
 , mNumTurns(50)
 , mNumBattles(10000)
+, mPriority(ENormalPriority)
 , mAnpOnly(false)
 , mLockCardCount(false)
 , mOwnedCardsOnly(false)
@@ -91,6 +92,7 @@ void CProcessParameters::fetchFromUi(const Ui::MainWindow &ui)
 	mNumThreads = ui.numThreadsSpinBox->value();
 	mNumTurns = ui.numTurnsSpinBox->value();
 	mNumBattles = ui.numBattlesSpinBox->value();
+    mPriority = static_cast<EProcessPriority>(ui.priorityBox->currentIndex());
 	mAnpOnly = ui.anpOnlyBox->isChecked();
     mLockCardCount = ui.cardCountLockBox->isChecked();
 	mOwnedCardsOnly = ui.ownedCardsBox->isChecked();
@@ -119,6 +121,7 @@ void CProcessParameters::updateUi(Ui::MainWindow &ui) const
 	ui.numThreadsSpinBox->setValue(mNumThreads);
 	ui.numTurnsSpinBox->setValue(mNumTurns);
 	ui.numBattlesSpinBox->setValue(mNumBattles);
+    ui.priorityBox->setCurrentIndex(static_cast<int>(mPriority));
 	ui.anpOnlyBox->setChecked(mAnpOnly);
     ui.cardCountLockBox->setChecked(mLockCardCount);
 	ui.ownedCardsBox->setChecked(mOwnedCardsOnly);
@@ -143,6 +146,7 @@ void CProcessParameters::fetchFromSettings(QSettings &settings)
 	mNumThreads = settings.value("numThreads", mNumThreads).toInt();
 	mNumTurns = settings.value("numTurns", mNumTurns).toInt();
 	mNumBattles = settings.value("numBattles", mNumBattles).toInt();
+    mPriority = static_cast<EProcessPriority>(settings.value("priority", static_cast<int>(mPriority)).toInt());
 	mAnpOnly = settings.value("anpOnly",mAnpOnly).toBool();
     mLockCardCount = settings.value("lockCardCount", mLockCardCount).toBool();
 	mOwnedCardsOnly = settings.value("ownedCardsOnly", mOwnedCardsOnly).toBool();
@@ -168,6 +172,7 @@ void CProcessParameters::fetchFromSettings(QSettings &settings)
 	settings.setValue("numThreads", mNumThreads);
 	settings.setValue("numTurns", mNumTurns);
 	settings.setValue("numBattles", mNumBattles);
+    settings.setValue("priority", static_cast<int>(mPriority));
 	settings.setValue("anpOnly", mAnpOnly);
     settings.setValue("lockCardCount", mLockCardCount);
 	settings.setValue("ownedCardsOnly", mOwnedCardsOnly);
