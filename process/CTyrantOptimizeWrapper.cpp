@@ -35,15 +35,9 @@ void CTyrantOptimizeWrapper::getCommandLineParameters(const CProcessParameters &
     }
     if (guiParams.lockCardCount())
     {
-    //    comLineParams << "-fixedlen";
-        if (guiParams.lockCardCountMin() > 1)
-        {
-            comLineParams << "minlen" << QString("%1").arg(guiParams.lockCardCountMin());
-        }
-        if (guiParams.lockCardCountMax() < 10)
-        {
-            comLineParams << "maxlen" << QString("%1").arg(guiParams.lockCardCountMax());
-        }
+        comLineParams << "-L"
+                      << QString("%1").arg(guiParams.lockCardCountMin())
+                      << QString("%1").arg(guiParams.lockCardCountMax());
     }
 
     if (guiParams.ownedCardsOnly())
