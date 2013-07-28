@@ -43,6 +43,8 @@ public:
     static CCardTable& getCardTable();
 
 public:
+    void refresh();
+
     const CSkill& getSkillForId(const QString id) const;
     const QString getPictureForCardSet(ECardSet cardSet) const;
     const CCard& getCardForId(unsigned int id) const;

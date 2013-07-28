@@ -16,6 +16,8 @@ public:
     static CDeckTable& getDeckTable();
 
 public:
+    void refresh();
+
     bool deckToHash(const CDeck &deck, QString &hashStr) const;
     bool hashToDeck(const QString &hashStr, CDeck &deck) const;
     bool deckToStr(const CDeck &deck, QString &deckStr, bool forceId = false) const;

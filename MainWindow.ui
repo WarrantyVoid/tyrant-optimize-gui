@@ -1023,6 +1023,8 @@
     <property name="title">
      <string>View</string>
     </property>
+    <addaction name="refreshAction"/>
+    <addaction name="separator"/>
     <addaction name="shadeOwnedCardsAction"/>
     <addaction name="labelBlackCardsAction"/>
     <addaction name="labelWhiteCardsAction"/>
@@ -1160,6 +1162,14 @@
    </property>
    <property name="shortcut">
     <string>Alt+M</string>
+   </property>
+  </action>
+  <action name="refreshAction">
+   <property name="text">
+    <string>Refresh</string>
+   </property>
+   <property name="shortcut">
+    <string>F5</string>
    </property>
   </action>
  </widget>

@@ -52,6 +52,11 @@ CCardTable& CCardTable::getCardTable()
     return *CARD_TABLE;
 }
 
+void CCardTable::refresh()
+{
+    initData();
+}
+
 const CSkill& CCardTable::getSkillForId(const QString id) const
 {
     QHash<QString, CSkill>::const_iterator i = mSkillIdMap.find(id);
@@ -132,20 +137,25 @@ const CCard& CCardTable::getOwnedCardEquivalent(const CCard &card, const TCardSt
             if (iUsed == used.end() || iUsed.value().numOwnedFiltered > 0)
             {
                 const CCard &curCard = getCardForId(i.key());
-                int score = 0;
-                if (curCard.getType() == card.getType()) score +=10;
-                if (curCard.getRarity() == card.getRarity()) score += 3;
-                if (curCard.getFaction() == card.getFaction()) score += 3;
-                if (curCard.isUnique() == card.isUnique()) score += 2;
-                if (curCard.getSet() == card.getSet()) score += 1;
-
-                if (score > maxScore)
+                if ((curCard.getRarity() != ELegendaryRarity || card.getRarity() == ELegendaryRarity)
+                    && (curCard.getType() != ECommanderType || card.getType() == ECommanderType)
+                    && (!curCard.isUnique() || card.isUnique()))
                 {
-                    maxScore = score;
-                    result = &curCard;
-                    if (score == 19)
+                    int score = 0;
+                    if (curCard.getType() == card.getType()) score +=10;
+                    if (curCard.getRarity() == card.getRarity()) score += 3;
+                    if (curCard.getFaction() == card.getFaction()) score += 3;
+                    if (curCard.isUnique() == card.isUnique()) score += 2;
+                    if (curCard.getSet() == card.getSet()) score += 1;
+
+                    if (score > maxScore)
                     {
-                        return curCard;
+                        maxScore = score;
+                        result = &curCard;
+                        if (score == 19)
+                        {
+                            return curCard;
+                        }
                     }
                 }
             }

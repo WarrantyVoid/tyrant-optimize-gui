@@ -170,6 +170,9 @@ CMainWindow::CMainWindow(QWidget *parent)
         mUi->muteSoundAction, SIGNAL(triggered(bool)),
         this, SLOT(toggleMuteSound(bool)));
     connect(
+        mUi->refreshAction, SIGNAL(triggered()),
+        this, SLOT(refreshModels()));
+    connect(
         mUi->shadeOwnedCardsAction, SIGNAL(triggered(bool)),
         this, SLOT(toggleCardsShading(bool)));
     connect(
@@ -868,10 +871,11 @@ void CMainWindow::switchDecks()
 
 void CMainWindow::updateView(ECardStatusUpdate status)
 {
-    mUi->baseDeckWidget->updateView();
-    mUi->enemyDeckWidget->updateView();
+    mUi->baseDeckWidget->setDeck(mUi->baseDeckEdit->currentText());
+    mUi->enemyDeckWidget->setDeck(mUi->enemyDeckEdit->currentText());
     mUi->resultDeckWidget->updateView();
     mUi->cardSearchWidget->updateView(status);
+    mUi->deckManagementWidget->updateView();
     mDeckToolTipContent->updateView();
 }
 
@@ -1079,6 +1083,15 @@ void CMainWindow::addCard(unsigned int cardId)
         mDecks.deckToHash(deck, hash);
         deckInput->setDeckId(hash);
     }
+}
+
+void CMainWindow::refreshModels()
+{
+    mDecks.refresh();
+    mCards.refresh();
+    mFilterWidget->setOwnedCardsFile(mParameters.ownedCardsFile());
+    mParameters.fetchFromUi(*mUi);
+    updateView(EOwnedStatusUpdate);
 }
 
 void CMainWindow::setWinChance(float winChance)

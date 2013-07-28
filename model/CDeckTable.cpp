@@ -35,6 +35,12 @@ CDeckTable& CDeckTable::getDeckTable()
     return *DECK_TABLE;
 }
 
+void CDeckTable::refresh()
+{
+    initData();
+    reset();
+}
+
 bool CDeckTable::deckToHash(const CDeck &deck, QString &hashStr) const
 {
     hashStr.clear();

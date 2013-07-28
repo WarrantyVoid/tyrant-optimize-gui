@@ -69,7 +69,6 @@ protected slots:
     void updateParameterBoxToolTip(int boxIndex);
     void updateBattleGround(const QString &deckStr);
 
-
     // Widget slots
     void processStateChanged(QProcess::ProcessState newState);
     void processError(QProcess::ProcessError error);
@@ -81,6 +80,9 @@ protected slots:
     void setOwnedCardsWatchingEnabled(bool enabled);
     void scanForOwnedCards();
     void addCard(unsigned int cardId);
+
+    // Hotkey slots
+    void refreshModels();
 
     // Process slots
     void setWinChance(float winChance);
