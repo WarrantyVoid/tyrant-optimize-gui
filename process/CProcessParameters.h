@@ -10,6 +10,14 @@ namespace Ui
 class MainWindow;
 }
 
+
+enum EOptimizationMode
+{
+    EOptimizeWin = 0,
+    EOptimizeDefense = 1,
+    EOptimizeRaid = 2
+};
+
 class CProcessParameters
 {
 
@@ -37,13 +45,12 @@ public:
 	int numTurns() const { return mNumTurns; }
 	int numBattles() const { return mNumBattles; }
     EProcessPriority priority() const { return mPriority; }
-	bool anpOnly() const { return mAnpOnly; }
+    EOptimizationMode optimizationMode() const { return mOptimizationMode; }
     bool lockCardCount() const { return mLockCardCount; }
 	bool ownedCardsOnly() const { return mOwnedCardsOnly; }    
     bool orderedBase() const { return mOrderedBase; }
     bool orderedEnemy() const { return mOrderedEnemy; }
     bool surge() const { return mSurge; }
-    bool winTie() const { return mWinTie; }
     bool tournament() const { return mTournament; }
     
 private:
@@ -60,13 +67,12 @@ private:
 	int mNumTurns;
 	int mNumBattles;
     EProcessPriority mPriority;
-	bool mAnpOnly;
+    EOptimizationMode mOptimizationMode;
     bool mLockCardCount;
 	bool mOwnedCardsOnly;
     bool mOrderedBase;
     bool mOrderedEnemy;
     bool mSurge;
-    bool mWinTie;
     bool mTournament;
 };
 

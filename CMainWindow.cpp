@@ -15,7 +15,7 @@
 #include <QHelpEvent>
 #include <QClipboard>
 
-const QString CMainWindow::VERSION = "1.4.0";
+const QString CMainWindow::VERSION = "1.4.1";
 const QString CMainWindow::AUTHOR = "warranty_void";
 const QString CMainWindow::HOMEPAGE = "<a href=\'http://www.hunterthinks.com/to/gui\'>hunterthinks.com/to/gui</a>";
 const QString CMainWindow::FORUM = "<a href=\'http://www.kongregate.com/forums/65-tyrant/topics/257807-automatic-deck-optimization\'>kongregate.com/[..]automatic-deck-optimization</a>";
@@ -214,7 +214,7 @@ CMainWindow::CMainWindow(QWidget *parent)
         mUi->enemyDeckWidget, SLOT(setDeck(const QString &)));
     connect(
         mUi->enemyDeckEdit, SIGNAL(deckDropped(const QString &)),
-        this, SLOT(updateBattleGround(const QString &)));
+        this, SLOT(adjustToDeckType(const QString &)));
     connect(
         mUi->enemyDeckWidget, SIGNAL(deckChanged(const QString &)),
         mUi->enemyDeckEdit, SLOT(setDeckId(const QString &)));
@@ -303,14 +303,8 @@ CMainWindow::CMainWindow(QWidget *parent)
 
     // Process wrapper connections
     connect(
-        mProcessWrapper, SIGNAL(winChanceUpdated(float)),
-        this, SLOT(setWinChance(float)));
-    connect(
-        mProcessWrapper, SIGNAL(anpUpdated(float)),
-        this, SLOT(setAnp(float)));
-    connect(
-        mProcessWrapper, SIGNAL(deckUpdated(const QString&)),
-        this, SLOT(setResultDeckButtonAvailability(const QString&)));
+        mProcessWrapper, SIGNAL(statusUpdated(const SOptimizationStatus&)),
+        this, SLOT(setOptimizationStatus(const SOptimizationStatus&)));
 }
 
 CMainWindow::~CMainWindow()
@@ -402,6 +396,7 @@ void CMainWindow::startToolProcess(bool isOptimizationEnabled)
             // Start tool
             QFileInfo toolExe = mProcessWrapper->getProcessExecutable();
             addConsoleLine(toolExe.baseName() + " " + toolParameters.join(" "), true);
+            mProcessWrapper->processInit();
             mProcess->setWorkingDirectory(toolExe.absolutePath());
             mProcess->setProcessChannelMode(QProcess::MergedChannels);
             mProcess->start(toolExe.absoluteFilePath(), toolParameters);
@@ -427,6 +422,7 @@ void CMainWindow::killToolProcess()
             mProcess, SIGNAL(readyReadStandardOutput()),
             this, SLOT(processReadyReadStandardOutput()));
 
+        mProcessWrapper->processFinished();
         mProcess->kill();
         mProcess->waitForFinished();        
         delete mProcess;
@@ -867,6 +863,15 @@ void CMainWindow::switchDecks()
     bool orderedBase = mUi->orderedBaseBox->isChecked();
     mUi->orderedBaseBox->setChecked(mUi->orderedEnemyBox->isChecked());
     mUi->orderedEnemyBox->setChecked(orderedBase);
+
+    if (mUi->optimizationModeBox->currentIndex() == 0)
+    {
+        mUi->optimizationModeBox->setCurrentIndex(1);
+    }
+    else if (mUi->optimizationModeBox->currentIndex() == 1)
+    {
+        mUi->optimizationModeBox->setCurrentIndex(0);
+    }
 }
 
 void CMainWindow::updateView(ECardStatusUpdate status)
@@ -899,9 +904,11 @@ void CMainWindow::updateParameterBoxToolTip(int boxIndex)
     }
 }
 
-void CMainWindow::updateBattleGround(const QString &deckStr)
+void CMainWindow::adjustToDeckType(const QString &deckStr)
 {
     const CDeck& deck = mDecks.getDeckForName(deckStr);
+
+    // Update battle ground
     if (deck.isValid() && deck.getType() == EQuestDeckType)
     {
         const CBattleground &battleground = mCards.getBattlegroundForId(deck.getBattlegroundId());
@@ -910,6 +917,16 @@ void CMainWindow::updateBattleGround(const QString &deckStr)
     else
     {
         mUi->battleGroundBox->setCurrentIndex(0);
+    }
+
+    // Update mode
+    if (deck.isValid() && deck.getType() == ERaidDeckType)
+    {
+        mUi->optimizationModeBox->setCurrentIndex(2);
+    }
+    else
+    {
+        mUi->optimizationModeBox->setCurrentIndex(0);
     }
 }
 
@@ -932,6 +949,7 @@ void CMainWindow::processStateChanged(QProcess::ProcessState newState)
     case QProcess::NotRunning:
         if (mProcess)
         {
+            mProcessWrapper->processFinished();
             mProcess->deleteLater();
             mProcess = 0;
             setProcessActivityChanged(false);
@@ -970,7 +988,6 @@ void CMainWindow::processError(QProcess::ProcessError error)
 
 void CMainWindow::processFinished(int exitCode, QProcess::ExitStatus exitStatus)
 {
-
     QString processName = mProcessWrapper->getProcessExecutable().baseName();
     switch(exitStatus)
     {
@@ -1094,22 +1111,6 @@ void CMainWindow::refreshModels()
     updateView(EOwnedStatusUpdate);
 }
 
-void CMainWindow::setWinChance(float winChance)
-{
-    if (!mParameters.anpOnly())
-    {
-        mUi->resultDeckWidget->setWinLabel(QString("Win=\n%1%").arg(winChance, 3));
-    }
-}
-
-void CMainWindow::setAnp(float anp)
-{
-    if (mParameters.anpOnly())
-    {
-        mUi->resultDeckWidget->setWinLabel(QString("ANP=\n%1").arg(anp, 3));
-    }
-}
-
 void CMainWindow::setDeckInput(const QString &deckStr, EInputDeckTarget target)
 {
     CDeckInput *deckInput = 0;
@@ -1125,16 +1126,18 @@ void CMainWindow::setDeckInput(const QString &deckStr, EInputDeckTarget target)
         deckInput->setDeckId(deckStr);
         if (deckInput == mUi->enemyDeckEdit)
         {
-            updateBattleGround(deckStr);
+            adjustToDeckType(deckStr);
         }
     }
 }
 
-void CMainWindow::setResultDeckButtonAvailability(const QString &deckHash)
+void CMainWindow::setOptimizationStatus(const SOptimizationStatus &status)
 {
     CDeck deck;
-    if (mDecks.hashToDeck(deckHash, deck))
+    if (mDecks.hashToDeck(status.deckHash, deck))
     {
+        mUi->resultDeckWidget->setWinLabel(status, mParameters.optimizationMode());
+
         // We have at least one valid card -> enable saving
         mUi->useOptimizedButton->setEnabled((true));
         mUi->saveOptimizedButton->setEnabled(true);
@@ -1144,6 +1147,7 @@ void CMainWindow::setResultDeckButtonAvailability(const QString &deckHash)
     }
     else
     {
+        mUi->resultDeckWidget->setWinLabel(QPixmap());
         mUi->useOptimizedButton->setEnabled(false);
         mUi->saveOptimizedButton->setEnabled(false);
         mUi->hashOptimizedButton->setEnabled(false);

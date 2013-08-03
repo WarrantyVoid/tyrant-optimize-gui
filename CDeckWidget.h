@@ -12,6 +12,8 @@ class DeckWidget;
 #include <QDrag>
 #include <QMimeData>
 #include "CCardLabel.h"
+#include "process/IProcessWrapper.h"
+#include "process/CProcessParameters.h"
 
 class CDeckWidget : public QWidget
 {
@@ -26,7 +28,7 @@ public:
     bool isLocked(int slot) const;
 
     void setDropEnabled(bool enabled);
-    void setWinLabel(const QString &text);
+    void setWinLabel(const SOptimizationStatus &status, EOptimizationMode mode);
     void setWinLabel(const QPixmap &pixmap);
     void setDefaultUnits();
     void setUnit(int slot, const CCard &unit);

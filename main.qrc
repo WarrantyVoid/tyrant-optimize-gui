@@ -25,6 +25,10 @@
         <file>view-cards.png</file>
         <file>view-console.png</file>
         <file>warning.png</file>
+        <file>tyrant/RaidIcon.png</file>
+        <file>tyrant/WarDefIcon.png</file>
+        <file>tyrant/WarLostIcon.png</file>
+        <file>tyrant/WarWonIcon.png</file>
         <file>tyrant/ActionGoldIcon.png</file>
         <file>tyrant/ActionLegendaryIcon.png</file>
         <file>tyrant/ActionRegIcon.png</file>

@@ -6,6 +6,16 @@
 #include <QObject>
 #include "CProcessParameters.h"
 
+struct SOptimizationStatus
+{
+    SOptimizationStatus() : deckHash(""), chanceWin(0.0f), chanceStall(0.0f), chanceLoss(0.0f), avRaidDmg(0.0f) { }
+    QString deckHash;
+    float chanceWin;
+    float chanceStall;
+    float chanceLoss;
+    float avRaidDmg;
+};
+
 class IProcessWrapper : public QObject
 {
     Q_OBJECT
@@ -25,30 +35,29 @@ public:
     virtual void getCommandLineParameters(const CProcessParameters &guiParams, QStringList &comLineParams) = 0;
 
     /**
+    * Used to handle initialization.
+    */
+    virtual void processInit() = 0;
+
+    /**
     * Used to handle the command line output while tool process is running.
     * @param output One or more lines of process std/err output
     */
     virtual void processCommandLineOutput(const QStringList &output) = 0;
 
+    /**
+    * Used to handle initialization.
+    */
+    virtual void processFinished() = 0;
+
+
 signals:
 
     /**
-    * Signal update of current win chance.
-    * @winChance Win chance in percent as float
+    * Signal update of status during simulation (optional).
+    * @status Current status including deck, win chance, etc.
     */
-    void winChanceUpdated(float winChance);
-
-    /**
-    * Signal update of current average net points.
-    * @anp Net points as float
-    */
-    void anpUpdated(float anp);
-
-    /**
-    * Signal update of current optimum deck.
-    * @deckHash Hash of the current optimum deck
-    */
-    void deckUpdated(const QString &deckHash);
+    void statusUpdated(SOptimizationStatus status);
 };
 
 #endif // ITOOLPROCESSWRAPPER_H

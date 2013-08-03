@@ -78,11 +78,11 @@ bool  CDeckWidget::isLocked(int slot) const
     return false;
 }
 
-void CDeckWidget::setWinLabel(const QString &text)
+void CDeckWidget::setWinLabel(const SOptimizationStatus &status, EOptimizationMode mode)
 {
     if (!mIsLocked)
     {
-        mUi->winLabel->setText(text);
+        mUi->winLabel->setWinText(status, mode);
     }
 }
 
@@ -98,7 +98,6 @@ void CDeckWidget::setDefaultUnits()
 {
     if (!mIsLocked)
     {
-        setWinLabel("");
         for(int i = -1; i < 10; ++i)
         {
             CCard defaultCard;

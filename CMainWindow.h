@@ -67,7 +67,7 @@ protected slots:
     void updateView(ECardStatusUpdate status);
     void updateWindowHeight(bool grow);
     void updateParameterBoxToolTip(int boxIndex);
-    void updateBattleGround(const QString &deckStr);
+    void adjustToDeckType(const QString &deckStr);
 
     // Widget slots
     void processStateChanged(QProcess::ProcessState newState);
@@ -85,10 +85,8 @@ protected slots:
     void refreshModels();
 
     // Process slots
-    void setWinChance(float winChance);
-    void setAnp(float anp);
     void setDeckInput(const QString &deckStr, EInputDeckTarget target);
-    void setResultDeckButtonAvailability(const QString &deckHash);
+    void setOptimizationStatus(const SOptimizationStatus &status);
 
 private:
     void addConsoleLine(const QString &line, bool truncate = false);

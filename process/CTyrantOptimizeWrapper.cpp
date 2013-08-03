@@ -5,6 +5,7 @@
 const QString CTyrantOptimizeWrapper::PROCESS_NAME = "tyrant_optimize";
 
 CTyrantOptimizeWrapper::CTyrantOptimizeWrapper()
+: mStatus()
 {
 }
 
@@ -29,10 +30,6 @@ void CTyrantOptimizeWrapper::getCommandLineParameters(const CProcessParameters &
     comLineParams << processDeckString(guiParams.enemyDeck());
 
     // Switches
-    if (guiParams.anpOnly())
-    {
-        comLineParams << "-a";
-    }
     if (guiParams.lockCardCount())
     {
         comLineParams << "-L"
@@ -63,10 +60,6 @@ void CTyrantOptimizeWrapper::getCommandLineParameters(const CProcessParameters &
     {
         comLineParams << "-s";
     }
-    if (guiParams.winTie())
-    {
-        comLineParams << "-wintie";
-    }
     if (guiParams.tournament())
     {
         comLineParams << "tournament";
@@ -94,6 +87,13 @@ void CTyrantOptimizeWrapper::getCommandLineParameters(const CProcessParameters &
     {
         comLineParams << "-turnlimit" << QString("%1").arg(guiParams.numTurns());
     }
+
+    switch (guiParams.optimizationMode())
+    {
+    case EOptimizeWin: comLineParams << "win"; break;
+    case EOptimizeDefense: comLineParams << "defense"; break;
+    case EOptimizeRaid: comLineParams << "raid"; break;
+    }
 }
 
 void CTyrantOptimizeWrapper::processCommandLineOutput(const QStringList &output)
@@ -101,73 +101,128 @@ void CTyrantOptimizeWrapper::processCommandLineOutput(const QStringList &output)
     for (int iLine = 0; iLine < output.size(); ++iLine)
     {
         QString curLine = output.at(iLine);
-        if (curLine.startsWith("Attacker:"))
+        if (curLine.startsWith("Your Deck:"))
         {
-            emit deckUpdated("");
             QStringList curTokens = curLine.split(QRegExp("\\s|\\(|\\)|:"), QString::SkipEmptyParts);
             if (!curTokens.isEmpty())
             {
-                emit deckUpdated(curTokens.last());
+                mStatus.deckHash = curTokens.last();
             }
         }
-        else if (curLine.startsWith("win%"))
+        else if (curLine.startsWith("win%") || curLine.startsWith("kill%"))
         {
             QStringList curTokens = curLine.split(QRegExp("\\s|\\(|\\)|:"), QString::SkipEmptyParts);
             bool ok(true);
             float winPercent = curTokens.at(1).toFloat(&ok);
             if (ok)
             {
-                emit winChanceUpdated(winPercent);
+                mStatus.chanceWin = winPercent;
             }
         }
-        else if (curLine.startsWith("ANP"))
+        else if (curLine.startsWith("stall%"))
         {
             QStringList curTokens = curLine.split(QRegExp("\\s|\\(|\\)|:"), QString::SkipEmptyParts);
             bool ok(true);
-            float anp = curTokens.at(1).toFloat(&ok);
+            float stallPercent = curTokens.at(1).toFloat(&ok);
             if (ok)
             {
-                emit anpUpdated(anp);
+                mStatus.chanceStall = stallPercent;
+            }
+        }
+        else if (curLine.startsWith("loss%"))
+        {
+            QStringList curTokens = curLine.split(QRegExp("\\s|\\(|\\)|:"), QString::SkipEmptyParts);
+            bool ok(true);
+            float lossPercent = curTokens.at(1).toFloat(&ok);
+            if (ok)
+            {
+                mStatus.chanceLoss = lossPercent;
+            }
+        }
+        else if (curLine.startsWith("ard"))
+        {
+            QStringList curTokens = curLine.split(QRegExp("\\s|\\(|\\)|:"), QString::SkipEmptyParts);
+            bool ok(true);
+            float ard = curTokens.at(1).toFloat(&ok);
+            if (ok)
+            {
+                mStatus.avRaidDmg = ard;
             }
         }
         else if (curLine.startsWith("Deck improved"))
         {
             QStringList curTokens = curLine.split(QRegExp("\\s|\\(|\\)|:"), QString::SkipEmptyParts);
-
-            //Debug output, enable only for testing
-            //QString debugOut = "";
-            //for (int iToken = 0; iToken < curTokens.size(); ++iToken)
-            //{
-            //    debugOut += "[" + curTokens.at(iToken) + "]";
-            //}
-            //mProcessStatusLabel->setText(debugOut);
-            //return;
-
             if (curTokens.size() > 1)
             {
-                emit deckUpdated(curTokens.at(2));
+                mStatus.deckHash = curTokens.at(2);
             }
         }
         else
         {
             // Extra output starting with win chance
-            QStringList curTokens = curLine.split(QRegExp("\\s|\\(|\\)|:|%"), QString::SkipEmptyParts);
+            QStringList curTokens = curLine.split(QRegExp("\\s|\\,|\\(|\\)|:|%"), QString::SkipEmptyParts);
+            bool killFound(false);
+            bool stallFound(false);
+            bool otherFound(false);
             bool ok(true);
-            float winPercent = curTokens.at(0).toFloat(&ok);
-            if (ok)
+            for (int idx = 0; idx < 5; idx += 2)
             {
-                int chanceIndex = curLine.indexOf('%');
-                if (chanceIndex > -1 && chanceIndex < 8)
+                if (idx + 1 < curTokens.size())
                 {
-                    emit winChanceUpdated(winPercent);
+                    const QString& typeToken = curTokens.at(idx + 1);
+                    if (typeToken.compare("kill") == 0)
+                    {
+                        float winPercent = curTokens.at(idx).toFloat(&ok);
+                        if (ok)
+                        {
+                            mStatus.chanceWin = winPercent;
+                            killFound = true;
+                        }
+                    }
+                    else if (typeToken.compare("stall") == 0)
+                    {
+                        float stallPercent = curTokens.at(idx).toFloat(&ok);
+                        if (ok)
+                        {
+                            mStatus.chanceStall = stallPercent;
+                            stallFound = true;
+                        }
+                    }
+                    else
+                    {
+                        float otherValue = curTokens.at(idx).toFloat(&ok);
+                        if (ok)
+                        {
+                            if (idx == 4)
+                            {
+                                mStatus.avRaidDmg = otherValue;
+                            }
+                            else
+                            {
+                                mStatus.chanceWin = otherValue * 100.0f;
+                            }
+                            otherFound = true;
+                        }
+                    }
                 }
-                else
+            }
+            if (killFound || stallFound || otherFound)
+            {
+                if (stallFound && otherFound && !killFound)
                 {
-                    emit anpUpdated(winPercent);
+                    // Stall chance is included when win% is other
+                    mStatus.chanceWin -= mStatus.chanceStall;
                 }
+                mStatus.chanceLoss = 100.0f - mStatus.chanceWin - mStatus.chanceStall;
+                emit statusUpdated(mStatus);
             }
         }
     }
+}
+
+void CTyrantOptimizeWrapper::processInit()
+{
+    mStatus = SOptimizationStatus();
 }
 
 QString CTyrantOptimizeWrapper::processDeckString(const QString &deckStr)
@@ -187,4 +242,9 @@ QString CTyrantOptimizeWrapper::processDeckString(const QString &deckStr)
         }
     }
     return subDecks.join(";");
+}
+
+void CTyrantOptimizeWrapper::processFinished()
+{
+    emit statusUpdated(mStatus);
 }

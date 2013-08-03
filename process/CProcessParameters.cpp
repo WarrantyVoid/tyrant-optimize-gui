@@ -17,13 +17,12 @@ CProcessParameters::CProcessParameters()
 , mNumTurns(50)
 , mNumBattles(10000)
 , mPriority(ENormalPriority)
-, mAnpOnly(false)
+, mOptimizationMode(EOptimizeWin)
 , mLockCardCount(false)
 , mOwnedCardsOnly(false)
 , mOrderedBase(false)
 , mOrderedEnemy(false)
 , mSurge(false)
-, mWinTie(false)
 , mTournament(false)
 {
 }
@@ -93,13 +92,12 @@ void CProcessParameters::fetchFromUi(const Ui::MainWindow &ui)
 	mNumTurns = ui.numTurnsSpinBox->value();
 	mNumBattles = ui.numBattlesSpinBox->value();
     mPriority = static_cast<EProcessPriority>(ui.priorityBox->currentIndex());
-	mAnpOnly = ui.anpOnlyBox->isChecked();
+    mOptimizationMode = static_cast<EOptimizationMode>(ui.optimizationModeBox->currentIndex());
     mLockCardCount = ui.cardCountLockBox->isChecked();
 	mOwnedCardsOnly = ui.ownedCardsBox->isChecked();
     mOrderedBase = ui.orderedBaseBox->isChecked();
     mOrderedEnemy = ui.orderedEnemyBox->isChecked();
 	mSurge = ui.surgeBox->isChecked();
-    mWinTie = ui.winTieBox->isChecked();
     mTournament = ui.tournamentBox->isChecked();
 }
 
@@ -122,13 +120,12 @@ void CProcessParameters::updateUi(Ui::MainWindow &ui) const
 	ui.numTurnsSpinBox->setValue(mNumTurns);
 	ui.numBattlesSpinBox->setValue(mNumBattles);
     ui.priorityBox->setCurrentIndex(static_cast<int>(mPriority));
-	ui.anpOnlyBox->setChecked(mAnpOnly);
+    ui.optimizationModeBox->setCurrentIndex(static_cast<int>(mOptimizationMode));
     ui.cardCountLockBox->setChecked(mLockCardCount);
 	ui.ownedCardsBox->setChecked(mOwnedCardsOnly);
     ui.orderedBaseBox->setChecked(mOrderedBase);
     ui.orderedEnemyBox->setChecked(mOrderedEnemy);
 	ui.surgeBox->setChecked(mSurge);
-    ui.winTieBox->setChecked(mWinTie);
     ui.tournamentBox->setChecked(mTournament);
 }
 
@@ -147,13 +144,12 @@ void CProcessParameters::fetchFromSettings(QSettings &settings)
 	mNumTurns = settings.value("numTurns", mNumTurns).toInt();
 	mNumBattles = settings.value("numBattles", mNumBattles).toInt();
     mPriority = static_cast<EProcessPriority>(settings.value("priority", static_cast<int>(mPriority)).toInt());
-	mAnpOnly = settings.value("anpOnly",mAnpOnly).toBool();
+    mOptimizationMode = static_cast<EOptimizationMode>(settings.value("optimizationMode", static_cast<int>(mOptimizationMode)).toInt());
     mLockCardCount = settings.value("lockCardCount", mLockCardCount).toBool();
 	mOwnedCardsOnly = settings.value("ownedCardsOnly", mOwnedCardsOnly).toBool();
     mOrderedBase = settings.value("orderedBase", mOrderedBase).toBool();
     mOrderedEnemy = settings.value("orderedEnemy", mOrderedEnemy).toBool();
 	mSurge = settings.value("surge", mSurge).toBool();
-    mWinTie = settings.value("winTie", mWinTie).toBool();
     mTournament = settings.value("tournament", mTournament).toBool();
 	settings.endGroup();
 }
@@ -173,13 +169,12 @@ void CProcessParameters::fetchFromSettings(QSettings &settings)
 	settings.setValue("numTurns", mNumTurns);
 	settings.setValue("numBattles", mNumBattles);
     settings.setValue("priority", static_cast<int>(mPriority));
-	settings.setValue("anpOnly", mAnpOnly);
+    settings.setValue("optimizationMode", static_cast<int>(mOptimizationMode));
     settings.setValue("lockCardCount", mLockCardCount);
 	settings.setValue("ownedCardsOnly", mOwnedCardsOnly);
     settings.setValue("orderedBase", mOrderedBase);
     settings.setValue("orderedEnemy", mOrderedEnemy);
 	settings.setValue("surge", mSurge);
-    settings.setValue("winTie", mWinTie);
     settings.setValue("tournament", mTournament);
 	settings.endGroup();
  }
