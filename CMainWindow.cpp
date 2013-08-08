@@ -485,6 +485,8 @@ void CMainWindow::closeEvent(QCloseEvent *e)
     settings.setValue("window/baseDeckDisplayed", mUi->displayBaseButton->isChecked());
     settings.setValue("window/enemyDeckDisplayed", mUi->displayEnemyButton->isChecked());
 
+    saveDefaultParameterSettings();
+
     CGlobalConfig::getCfg().save(settings);
     mFilterWidget->saveParameterSettings(settings);
     mUi->cardSearchWidget->saveParameterSettings(settings);
