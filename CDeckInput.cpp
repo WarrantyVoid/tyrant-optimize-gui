@@ -37,13 +37,16 @@ void CDeckInput::updateHistory(const QStringList &history)
 
 void CDeckInput::updateHistory()
 {
-    QString deckStr = lineEdit()->text();
+    QString deckStr = lineEdit()->text().trimmed();
     if (!deckStr.isEmpty())
     {
-        if (count() == 0 || itemText(0).compare(deckStr) != 0)
+        int idx = findText(deckStr);
+        if (idx > -1)
         {
-            insertItem(0, lineEdit()->text());
+            removeItem(idx);
         }
+        insertItem(0, deckStr);
+        setCurrentIndex(0);
     }
 }
 

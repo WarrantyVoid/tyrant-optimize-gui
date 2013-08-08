@@ -358,12 +358,6 @@ void CMainWindow::startToolProcess(bool isOptimizationEnabled)
         mProcess = new QProcess();
         if (mProcess)
         {
-            // Update history of all deck input widgets
-            mUi->baseDeckEdit->updateHistory();
-            mUi->enemyDeckEdit->updateHistory();
-            mMultiDeckWidget->initDecks();
-            mMultiDeckWidget->updateHistory();
-
             // Fetch parameters from gui
             mParameters.setOptimizationEnabled(isOptimizationEnabled);
             mParameters.fetchFromUi(*mUi);
@@ -997,7 +991,21 @@ void CMainWindow::processFinished(int exitCode, QProcess::ExitStatus exitStatus)
         break;
     default:
         mProcessStatusLabel->setText(QString("\'%1\' finished with code %2").arg(processName).arg(exitCode));
-        mUi->optimizerStatusWidget->setStatus((exitCode == 0) ? EStatusResultSuccess : EStatusResultFailure);
+        if (exitCode == 0)
+        {
+            // Success
+            mUi->optimizerStatusWidget->setStatus(EStatusResultSuccess);
+
+            // Update history of all deck input widgets
+            mUi->baseDeckEdit->updateHistory();
+            mUi->enemyDeckEdit->updateHistory();
+            mMultiDeckWidget->initDecks();
+            mMultiDeckWidget->updateHistory();
+        }
+        else
+        {
+            mUi->optimizerStatusWidget->setStatus(EStatusResultFailure);
+        }
         break;
     }
 }
