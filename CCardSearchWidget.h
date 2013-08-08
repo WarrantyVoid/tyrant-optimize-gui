@@ -5,8 +5,8 @@
 #include <QGraphicsScene>
 #include <QComboBox>
 #include <QList>
+#include "filter/CCardSearchParameters.h"
 #include "model/CCardTable.h"
-#include "CCardSearchParameters.h"
 
 namespace Ui {
 class CardSearchWidget;

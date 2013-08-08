@@ -3,7 +3,7 @@
 
 #include <QWidget>
 #include <QDateTime>
-#include "CCardFilterParameters.h"
+#include "filter/CCardFilterParameters.h"
 
 namespace Ui
 {

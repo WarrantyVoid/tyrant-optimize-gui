@@ -1,6 +1,6 @@
 #include "CCardFilterWidget.h"
 #include "CGlobalConfig.h"
-#include "CCardFilter.h"
+#include "filter/CCardFilter.h"
 #include "ui_CardFilterWidget.h"
 #include <QApplication>
 #include <QClipboard>

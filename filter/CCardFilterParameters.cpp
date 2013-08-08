@@ -32,7 +32,7 @@ CCardFilterParameters::CCardFilterParameters()
         << "Blood Rider" << "Blood Wall" << "Boot Camp" << "Clipper" << "Daizon"
         << "Egg Infector" << "Enclave Warp Gate" << "Exoskeleton" << "Fortified Cannons"
         << "Fury Walker" << "Gene Reader" << "Groteske" << "Gruesome Crawler"
-        << "Heli-Duster" << "Holy Beacon <<" "Hunter" << "Hydraulis" << "Impulse Walker"
+        << "Heli-Duster" << "Holy Beacon" << "Hunter" << "Hydraulis" << "Impulse Walker"
         << "Irradiated Infantry" << "Meteor" << "Mirror Wall" << "Mizar VIII"
         << "Nephilim Knight" << "Neverender" << "Offshore Platform" << "Outfitted Scow"
         << "Partisan" << "Pathrazer" << "Patriarch" << "Patrol Cruiser" << "Phantasm"

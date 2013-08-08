@@ -15,8 +15,6 @@ INCLUDEPATH += .
 # Input
 HEADERS += \
     CMainWindow.h \
-    CPictureDownload.h \
-    CDownload.h \
     CDeckWidget.h \
     CWinLabel.h \
     xml/CQuestsXmlParser.h \
@@ -24,8 +22,6 @@ HEADERS += \
     xml/CMissionsXmlParser.h \
     xml/CRaidsXmlParser.h \
     xml/CCardsXmlParser.h \
-    CCardFilterParameters.h \
-    CCardFilter.h \
     CCardFilterWidget.h \
     CMultiDeckEditorWidget.h \
     CMultiDeckWidget.h \
@@ -39,7 +35,6 @@ HEADERS += \
     process/CProcessParameters.h \
     process/IProcessWrapper.h \
     process/CTyrantOptimizeWrapper.h \
-    CCardSearchParameters.h \
     CCardSearchWidget.h \
     ICardCheck.h \
     CDeckManagementWidget.h \
@@ -49,7 +44,12 @@ HEADERS += \
     CGlobalConfig.h \
     CCardLabelNexus.h \
     CStatusWidget.h \
-    process/CProcessPriority.h
+    process/CProcessPriority.h \
+    filter/CCardFilter.h \
+    filter/CCardFilterParameters.h \
+    download/CDownload.h \
+    download/CPictureDownload.h \
+    filter/CCardSearchParameters.h
 	   
 FORMS += \
     MainWindow.ui \
@@ -62,9 +62,7 @@ FORMS += \
 
 SOURCES += \
     CMainWindow.cpp \
-    CPictureDownload.cpp \
     main.cpp \
-    CDownload.cpp \
     CDeckWidget.cpp \
     CWinLabel.cpp \
     xml/CQuestsXmlParser.cpp \
@@ -72,8 +70,6 @@ SOURCES += \
     xml/CAchievementsXmlParser.cpp \
     xml/CCardsXmlParser.cpp \
     xml/CRaidsXmlParser.cpp \
-    CCardFilterParameters.cpp \
-    CCardFilter.cpp \
     CCardFilterWidget.cpp \
     CMultiDeckEditorWidget.cpp \
     CMultiDeckWidget.cpp \
@@ -86,7 +82,6 @@ SOURCES += \
     model/CDeckTable.cpp \
     process/CTyrantOptimizeWrapper.cpp \
     process/CProcessParameters.cpp \
-    CCardSearchParameters.cpp \
     CCardSearchWidget.cpp \
     CDeckManagementWidget.cpp \
     CCardLabel.cpp \
@@ -95,7 +90,12 @@ SOURCES += \
     CGlobalConfig.cpp \
     CCardLabelNexus.cpp \
     CStatusWidget.cpp \
-    process/CProcessPriority.cpp
+    process/CProcessPriority.cpp \
+    filter/CCardFilter.cpp \
+    download/CDownload.cpp \
+    download/CPictureDownload.cpp \
+    filter/CCardSearchParameters.cpp \
+    filter/CCardFilterParameters.cpp
 
 RESOURCES += main.qrc
 RC_FILE    = main.rc

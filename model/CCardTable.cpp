@@ -1,15 +1,15 @@
 #include "CCardTable.h"
-#include "CPictureDownload.h"
 #include "CGlobalConfig.h"
+#include "download/CPictureDownload.h"
+#include "xml/CCardsXmlParser.h"
+#include "xml/CQuestsXmlParser.h"
+#include "xml/CAchievementsXmlParser.h"
 #include <QFileInfo>
 #include <QDateTime>
 #include <QXmlSimpleReader>
 #include <QNetworkRequest>
 #include <QNetworkProxyFactory>
 #include <QUrl>
-#include "xml/CCardsXmlParser.h"
-#include "xml/CQuestsXmlParser.h"
-#include "xml/CAchievementsXmlParser.h"
 
 CCardTable* CCardTable::CARD_TABLE = 0;
 
