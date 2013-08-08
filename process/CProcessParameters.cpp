@@ -63,6 +63,12 @@ void CProcessParameters::fetchFromUi(const Ui::MainWindow &ui)
                     --newStatus.numOwnedFiltered;
                     deckStatus.insert(card->getId(), newStatus);
                 }
+
+                // Ignore ownage / blacklist status
+                if (ui.baseDeckWidget->isLocked(i - 1))
+                {
+                    break;
+                }
             }
         }
         else
