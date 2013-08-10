@@ -93,6 +93,7 @@ void CTyrantOptimizeWrapper::getCommandLineParameters(const CProcessParameters &
     case EOptimizeWin: comLineParams << "win"; break;
     case EOptimizeDefense: comLineParams << "defense"; break;
     case EOptimizeRaid: comLineParams << "raid"; break;
+    case EOptimizeAchievement: break;
     }
 }
 
@@ -109,7 +110,7 @@ void CTyrantOptimizeWrapper::processCommandLineOutput(const QStringList &output)
                 mStatus.deckHash = curTokens.last();
             }
         }
-        else if (curLine.startsWith("win%") || curLine.startsWith("kill%"))
+        else if (curLine.startsWith("win%") || curLine.startsWith("kill%") || curLine.startsWith("achievement%"))
         {
             QStringList curTokens = curLine.split(QRegExp("\\s|\\(|\\)|:"), QString::SkipEmptyParts);
             bool ok(true);
@@ -178,6 +179,10 @@ void CTyrantOptimizeWrapper::processCommandLineOutput(const QStringList &output)
                             mStatus.chanceWin = winPercent;
                             killFound = true;
                         }
+                        else
+                        {
+                            break;
+                        }
                     }
                     else if (typeToken.compare("stall") == 0)
                     {
@@ -186,6 +191,10 @@ void CTyrantOptimizeWrapper::processCommandLineOutput(const QStringList &output)
                         {
                             mStatus.chanceStall = stallPercent;
                             stallFound = true;
+                        }
+                        else
+                        {
+                            break;
                         }
                     }
                     else
@@ -202,6 +211,10 @@ void CTyrantOptimizeWrapper::processCommandLineOutput(const QStringList &output)
                                 mStatus.chanceWin = otherValue * 100.0f;
                             }
                             otherFound = true;
+                        }
+                        else
+                        {
+                            break;
                         }
                     }
                 }

@@ -26,6 +26,10 @@ void CWinLabel::setWinText(const SOptimizationStatus &status, EOptimizationMode 
         mWintext = QString("%1").arg(status.avRaidDmg, -1, 'f', 2);
         mWinPic = rcPath + "RaidIcon.png";
         break;
+    case EOptimizeAchievement:
+        mWintext = QString("%1%").arg(status.chanceWin, -1, 'f', 3);
+        mWinPic = rcPath + "AchievementBadgeIcon.png";
+        break;
     }
     update();
 }

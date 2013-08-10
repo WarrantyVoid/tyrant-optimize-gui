@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1108</width>
+    <width>1110</width>
     <height>417</height>
    </rect>
   </property>
@@ -761,6 +761,15 @@
               <normaloff>:/img/tyrant/RaidIcon.png</normaloff>:/img/tyrant/RaidIcon.png</iconset>
             </property>
            </item>
+           <item>
+            <property name="text">
+             <string>Achievement</string>
+            </property>
+            <property name="icon">
+             <iconset resource="main.qrc">
+              <normaloff>:/img/tyrant/AchievementBadgeIcon.png</normaloff>:/img/tyrant/AchievementBadgeIcon.png</iconset>
+            </property>
+           </item>
           </widget>
          </item>
         </layout>
@@ -1007,7 +1016,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1108</width>
+     <width>1110</width>
      <height>21</height>
     </rect>
    </property>

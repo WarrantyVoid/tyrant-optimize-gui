@@ -15,7 +15,8 @@ enum EOptimizationMode
 {
     EOptimizeWin = 0,
     EOptimizeDefense = 1,
-    EOptimizeRaid = 2
+    EOptimizeRaid = 2,
+    EOptimizeAchievement = 3
 };
 
 class CProcessParameters
