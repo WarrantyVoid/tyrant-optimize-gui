@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1110</width>
-    <height>417</height>
+    <width>1082</width>
+    <height>418</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -545,6 +545,25 @@
        </item>
        <item>
         <layout class="QGridLayout" name="parameterLayout2">
+         <property name="spacing">
+          <number>6</number>
+         </property>
+         <item row="1" column="0">
+          <widget class="QCheckBox" name="tournamentBox">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="toolTip">
+            <string>Enable/Disable tournament play order</string>
+           </property>
+           <property name="text">
+            <string>Tourn.</string>
+           </property>
+          </widget>
+         </item>
          <item row="0" column="3">
           <widget class="QCheckBox" name="ownedCardsBox">
            <property name="sizePolicy">
@@ -559,6 +578,112 @@
            <property name="text">
             <string>Owned cards  only:</string>
            </property>
+          </widget>
+         </item>
+         <item row="0" column="0">
+          <widget class="QCheckBox" name="surgeBox">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="toolTip">
+            <string>Enabled/Disables surge mode (enemy draws first)</string>
+           </property>
+           <property name="text">
+            <string>Surge</string>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="4">
+          <widget class="QComboBox" name="optimizationModeBox">
+           <item>
+            <property name="text">
+             <string>Win</string>
+            </property>
+            <property name="icon">
+             <iconset resource="main.qrc">
+              <normaloff>:/img/tyrant/WarWonIcon.png</normaloff>:/img/tyrant/WarWonIcon.png</iconset>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>Defense</string>
+            </property>
+            <property name="icon">
+             <iconset resource="main.qrc">
+              <normaloff>:/img/tyrant/WarDefIcon.png</normaloff>:/img/tyrant/WarDefIcon.png</iconset>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>Raid</string>
+            </property>
+            <property name="icon">
+             <iconset resource="main.qrc">
+              <normaloff>:/img/tyrant/RaidIcon.png</normaloff>:/img/tyrant/RaidIcon.png</iconset>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>Achieve</string>
+            </property>
+            <property name="icon">
+             <iconset resource="main.qrc">
+              <normaloff>:/img/tyrant/AchievementBadgeIcon.png</normaloff>:/img/tyrant/AchievementBadgeIcon.png</iconset>
+            </property>
+           </item>
+          </widget>
+         </item>
+         <item row="0" column="2">
+          <widget class="QCheckBox" name="orderedBaseBox">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="toolTip">
+            <string>Account for base card order during optimization</string>
+           </property>
+           <property name="text">
+            <string>Ordered base</string>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="2">
+          <widget class="QCheckBox" name="orderedEnemyBox">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="toolTip">
+            <string>Account for enemy card order during optimization</string>
+           </property>
+           <property name="text">
+            <string>Ordered enemy</string>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="3">
+          <widget class="QComboBox" name="ownedCardsFileBox">
+           <property name="enabled">
+            <bool>false</bool>
+           </property>
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <item>
+            <property name="text">
+             <string>ownedcards.txt</string>
+            </property>
+           </item>
           </widget>
          </item>
          <item row="1" column="1">
@@ -615,72 +740,6 @@
            </layout>
           </widget>
          </item>
-         <item row="1" column="0">
-          <widget class="QCheckBox" name="tournamentBox">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-           <property name="toolTip">
-            <string>Enable/Disable tournament play order</string>
-           </property>
-           <property name="text">
-            <string>Tournament</string>
-           </property>
-          </widget>
-         </item>
-         <item row="0" column="2">
-          <widget class="QCheckBox" name="orderedBaseBox">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-           <property name="toolTip">
-            <string>Account for base card order during optimization</string>
-           </property>
-           <property name="text">
-            <string>Ordered base</string>
-           </property>
-          </widget>
-         </item>
-         <item row="1" column="2">
-          <widget class="QCheckBox" name="orderedEnemyBox">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-           <property name="toolTip">
-            <string>Account for enemy card order during optimization</string>
-           </property>
-           <property name="text">
-            <string>Ordered enemy</string>
-           </property>
-          </widget>
-         </item>
-         <item row="1" column="3">
-          <widget class="QComboBox" name="ownedCardsFileBox">
-           <property name="enabled">
-            <bool>false</bool>
-           </property>
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-           <item>
-            <property name="text">
-             <string>ownedcards.txt</string>
-            </property>
-           </item>
-          </widget>
-         </item>
          <item row="0" column="1">
           <widget class="QCheckBox" name="cardCountLockBox">
            <property name="sizePolicy">
@@ -697,22 +756,6 @@
            </property>
           </widget>
          </item>
-         <item row="0" column="0">
-          <widget class="QCheckBox" name="surgeBox">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-           <property name="toolTip">
-            <string>Enabled/Disables surge mode (enemy draws first)</string>
-           </property>
-           <property name="text">
-            <string>Surge</string>
-           </property>
-          </widget>
-         </item>
          <item row="0" column="4">
           <widget class="QLabel" name="label_2">
            <property name="sizePolicy">
@@ -724,52 +767,6 @@
            <property name="text">
             <string>Optimizer Mode:</string>
            </property>
-          </widget>
-         </item>
-         <item row="1" column="4">
-          <widget class="QComboBox" name="optimizationModeBox">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-           <item>
-            <property name="text">
-             <string>Win</string>
-            </property>
-            <property name="icon">
-             <iconset resource="main.qrc">
-              <normaloff>:/img/tyrant/WarWonIcon.png</normaloff>:/img/tyrant/WarWonIcon.png</iconset>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>Defense</string>
-            </property>
-            <property name="icon">
-             <iconset resource="main.qrc">
-              <normaloff>:/img/tyrant/WarDefIcon.png</normaloff>:/img/tyrant/WarDefIcon.png</iconset>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>Raid</string>
-            </property>
-            <property name="icon">
-             <iconset resource="main.qrc">
-              <normaloff>:/img/tyrant/RaidIcon.png</normaloff>:/img/tyrant/RaidIcon.png</iconset>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>Achievement</string>
-            </property>
-            <property name="icon">
-             <iconset resource="main.qrc">
-              <normaloff>:/img/tyrant/AchievementBadgeIcon.png</normaloff>:/img/tyrant/AchievementBadgeIcon.png</iconset>
-            </property>
-           </item>
           </widget>
          </item>
         </layout>
@@ -1016,7 +1013,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1110</width>
+     <width>1082</width>
      <height>21</height>
     </rect>
    </property>
