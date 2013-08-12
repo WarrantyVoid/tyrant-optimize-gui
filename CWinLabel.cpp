@@ -15,18 +15,22 @@ void CWinLabel::setWinText(const SOptimizationStatus &status, EOptimizationMode 
     switch (mode)
     {
     case EOptimizeWin:
+        setToolTip(QString("Chance to win: %1%").arg(status.chanceWin, -1, 'f', 3));
         mWintext = QString("%1%").arg(status.chanceWin, -1, 'f', 3);
         mWinPic = rcPath + "WarWonIcon.png";
         break;
     case EOptimizeDefense:
+        setToolTip(QString("Chance to win or draw: %1%").arg(status.chanceWin + status.chanceStall, -1, 'f', 3));
         mWintext = QString("%1%").arg(status.chanceWin + status.chanceStall, -1, 'f', 3);
         mWinPic = rcPath + "WarDefIcon.png";
         break;
     case EOptimizeRaid:
+        setToolTip(QString("Average raid damage: %1").arg(status.avRaidDmg, -1, 'f', 2));
         mWintext = QString("%1").arg(status.avRaidDmg, -1, 'f', 2);
         mWinPic = rcPath + "RaidIcon.png";
         break;
     case EOptimizeAchievement:
+        setToolTip(QString("Chance to get achievement: %1%").arg(status.chanceWin, -1, 'f', 3));
         mWintext = QString("%1%").arg(status.chanceWin, -1, 'f', 3);
         mWinPic = rcPath + "AchievementBadgeIcon.png";
         break;
