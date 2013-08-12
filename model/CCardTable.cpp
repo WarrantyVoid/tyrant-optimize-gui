@@ -142,6 +142,7 @@ const CCard& CCardTable::getOwnedCardEquivalent(const CCard &card, const TCardSt
                     && (!curCard.isUnique() || card.isUnique()))
                 {
                     int score = 0;
+                    if (curCard.getName().compare(card.getName()) == 0) score +=20;
                     if (curCard.getType() == card.getType()) score +=10;
                     if (curCard.getRarity() == card.getRarity()) score += 3;
                     if (curCard.getFaction() == card.getFaction()) score += 3;
@@ -152,7 +153,7 @@ const CCard& CCardTable::getOwnedCardEquivalent(const CCard &card, const TCardSt
                     {
                         maxScore = score;
                         result = &curCard;
-                        if (score == 19)
+                        if (score == 39)
                         {
                             return curCard;
                         }
