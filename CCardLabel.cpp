@@ -231,7 +231,12 @@ void CCardLabel::paintEvent(QPaintEvent *ev)
             const CSkill& curSkill = mCards.getSkillForId(i->getId());
             if (curSkill.isValid())
             {
-                painter.drawPixmap(skillPos, QPixmap(cfg.getResourcePicturePath() + curSkill.getPicture() + ".png"));
+                QPixmap skillPixmap;
+                if (!skillPixmap.load(cfg.getResourcePicturePath() + curSkill.getPicture() + ".png"))
+                {
+                    skillPixmap.load(cfg.getCustomPicturePath() + curSkill.getPicture() + ".png");
+                }
+                painter.drawPixmap(skillPos, skillPixmap);
                 skillPos += QPointF(16 + 2, 0);
                 //painter.drawText(dx, 80 + i*10, 100, 10, Qt::AlignLeft | Qt::AlignVCenter, curSkill.makeSignature(skills.at(i)));
             }
@@ -240,7 +245,12 @@ void CCardLabel::paintEvent(QPaintEvent *ev)
         // Paint set symbol
         if (mCard.getSet() != EUnknownSet)
         {
-            painter.drawPixmap(setRect, QPixmap(cfg.getResourcePicturePath() + mCards.getPictureForCardSet(mCard.getSet())), QRectF(0, 0, 24, 24));
+            QPixmap setPixmap;
+            if (!setPixmap.load(cfg.getResourcePicturePath() + mCards.getPictureForCardSet(mCard.getSet())))
+            {
+                setPixmap.load(cfg.getCustomPicturePath() + mCards.getPictureForCardSet(mCard.getSet()));
+            }
+            painter.drawPixmap(setRect, setPixmap, QRectF(0, 0, 24, 24));
         }
 
 

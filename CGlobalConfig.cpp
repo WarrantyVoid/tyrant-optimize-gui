@@ -11,6 +11,7 @@ CGlobalConfig::CGlobalConfig()
 , mPicturePath(mAppPath + "cards" + mSep)
 , mOnlinePicturePath("http://cdn.tyrantonline.com/warhawk/images/")
 , mResourcePicturePath(":/img/tyrant/")
+, mCustomPicturePath(mAppPath + "custom" + mSep)
 , mLastDir(QApplication::applicationDirPath())
 , mIsCardShadingEnabled(true)
 , mIsBlackLabellingEnabled(true)
@@ -69,6 +70,11 @@ const QString& CGlobalConfig::getOnlinePicturePath() const
 const QString& CGlobalConfig::getResourcePicturePath() const
 {
     return mResourcePicturePath;
+}
+
+const QString& CGlobalConfig::getCustomPicturePath() const
+{
+    return mCustomPicturePath;
 }
 
 void CGlobalConfig::setLastDir(const QString& dir)

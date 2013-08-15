@@ -20,6 +20,7 @@ public:
     const QString& getPicturePath() const;
     const QString& getOnlinePicturePath() const;
     const QString& getResourcePicturePath() const;
+    const QString& getCustomPicturePath() const;
 
     void setLastDir(const QString& dir);
     void setCardShadingEnabled(bool enabled);
@@ -39,6 +40,7 @@ private:
     QString mPicturePath;
     QString mOnlinePicturePath;
     QString mResourcePicturePath;
+    QString mCustomPicturePath;
 
     QString mLastDir;
     bool mIsCardShadingEnabled;
