@@ -919,10 +919,12 @@ void CMainWindow::adjustToDeckType(const QString &deckStr)
     if (deck.isValid() && deck.getType() == ERaidDeckType)
     {
         mUi->optimizationModeBox->setCurrentIndex(2);
+        mUi->numTurnsSpinBox->setValue(30);
     }
     else
     {
         mUi->optimizationModeBox->setCurrentIndex(0);
+        mUi->numTurnsSpinBox->setValue(50);
     }
 }
 
