@@ -110,7 +110,7 @@ void CTyrantOptimizeWrapper::processCommandLineOutput(const QStringList &output)
                 mStatus.deckHash = curTokens.last();
             }
         }
-        else if (curLine.startsWith("win%") || curLine.startsWith("kill%") || curLine.startsWith("achievement%"))
+        else if (curLine.startsWith("win%") || curLine.startsWith("achievement%"))
         {
             QStringList curTokens = curLine.split(QRegExp("\\s|\\(|\\)|:"), QString::SkipEmptyParts);
             bool ok(true);
@@ -128,16 +128,6 @@ void CTyrantOptimizeWrapper::processCommandLineOutput(const QStringList &output)
             if (ok)
             {
                 mStatus.chanceStall = stallPercent;
-            }
-        }
-        else if (curLine.startsWith("loss%"))
-        {
-            QStringList curTokens = curLine.split(QRegExp("\\s|\\(|\\)|:"), QString::SkipEmptyParts);
-            bool ok(true);
-            float lossPercent = curTokens.at(1).toFloat(&ok);
-            if (ok)
-            {
-                mStatus.chanceLoss = lossPercent;
             }
         }
         else if (curLine.startsWith("ard"))
@@ -162,71 +152,49 @@ void CTyrantOptimizeWrapper::processCommandLineOutput(const QStringList &output)
         {
             // Extra output starting with win chance
             QStringList curTokens = curLine.split(QRegExp("\\s|\\,|\\(|\\)|:|%"), QString::SkipEmptyParts);
-            bool killFound(false);
+            bool winFound(false);
+            bool slayFound(false);
             bool stallFound(false);
             bool otherFound(false);
             bool ok(true);
-            for (int idx = 0; idx < 5; idx += 2)
+            for (int idx = 0; idx < qMin(5, curTokens.size()); idx += 2)
             {
+                float value = curTokens.at(idx).toFloat(&ok);
+                if (!ok)
+                {
+                    break;
+                }
                 if (idx + 1 < curTokens.size())
                 {
                     const QString& typeToken = curTokens.at(idx + 1);
-                    if (typeToken.compare("kill") == 0)
+                    if (typeToken.compare("win") == 0)
                     {
-                        float winPercent = curTokens.at(idx).toFloat(&ok);
-                        if (ok)
-                        {
-                            mStatus.chanceWin = winPercent;
-                            killFound = true;
-                        }
-                        else
-                        {
-                            break;
-                        }
+                        winFound = true;
+                    }
+                    else if (typeToken.compare("slay") == 0)
+                    {
+                        slayFound = true;
                     }
                     else if (typeToken.compare("stall") == 0)
                     {
-                        float stallPercent = curTokens.at(idx).toFloat(&ok);
-                        if (ok)
-                        {
-                            mStatus.chanceStall = stallPercent;
-                            stallFound = true;
-                        }
-                        else
-                        {
-                            break;
-                        }
+                        stallFound = true;
                     }
                     else
                     {
-                        float otherValue = curTokens.at(idx).toFloat(&ok);
-                        if (ok)
+                        if (idx == 4)
                         {
-                            if (idx == 4)
-                            {
-                                mStatus.avRaidDmg = otherValue;
-                            }
-                            else
-                            {
-                                mStatus.chanceWin = otherValue * 100.0f;
-                            }
-                            otherFound = true;
+                            mStatus.avRaidDmg = value;
                         }
                         else
                         {
-                            break;
+                            mStatus.chanceWin = value;
                         }
+                        otherFound = true;
                     }
                 }
             }
-            if (killFound || stallFound || otherFound)
+            if (otherFound)
             {
-                if (stallFound && otherFound && !killFound)
-                {
-                    // Stall chance is included when win% is other
-                    mStatus.chanceWin -= mStatus.chanceStall;
-                }
-                mStatus.chanceLoss = 100.0f - mStatus.chanceWin - mStatus.chanceStall;
                 emit statusUpdated(mStatus);
             }
         }

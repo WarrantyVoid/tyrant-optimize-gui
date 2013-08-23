@@ -8,11 +8,10 @@
 
 struct SOptimizationStatus
 {
-    SOptimizationStatus() : deckHash(""), chanceWin(0.0f), chanceStall(0.0f), chanceLoss(0.0f), avRaidDmg(0.0f) { }
+    SOptimizationStatus() : deckHash(""), chanceWin(0.0f), chanceStall(0.0f), avRaidDmg(0.0f) { }
     QString deckHash;
     float chanceWin;
     float chanceStall;
-    float chanceLoss;
     float avRaidDmg;
 };
 
