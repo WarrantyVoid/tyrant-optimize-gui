@@ -148,6 +148,21 @@ void CCardFilterWidget::setCardWhiteListStatus(const CCard &card, bool isWhite)
     pushParametersToModel();
 }
 
+void CCardFilterWidget::createOwnedAllCardsFile()
+{
+    const CGlobalConfig &cfg = CGlobalConfig::getCfg();
+    CCardTable &cardTable = CCardTable::getCardTable();
+    QList<CCard*> cards;
+    cardTable.searchCards(CardCheckAcceptAll(), cards);
+    QList<TOwnedCard> allCards;
+    for (QList<CCard*>::iterator i = cards.begin(); i != cards.end(); ++i)
+    {
+        allCards.push_back(TOwnedCard(**i, 10));
+    }
+    CCardFilter filter;
+    filter.writeOwnedCardsToFile(cfg.getToolPath() + "ownedcards_all.txt", allCards);
+}
+
 void CCardFilterWidget::declineFilter()
 {
     mParameters.updateUi(*mUi);
@@ -179,14 +194,12 @@ void CCardFilterWidget::resetFilter()
 void CCardFilterWidget::executeFilter()
 {
     const CGlobalConfig &cfg = CGlobalConfig::getCfg();
-    QString input = cfg.getToolPath() + mOwnedCardsFile;
-    QString output = cfg.getToolPath() + "ownedcards_f.txt";
     CCardFilter filter;
     QList<TOwnedCard> originalCards;
     QList<TOwnedCard> filteredCards;
-    filter.readOwnedCardsFromFile(input, originalCards);
+    filter.readOwnedCardsFromFile(cfg.getToolPath() + mOwnedCardsFile, originalCards);
     filter.execute(originalCards, filteredCards, mParameters);
-    filter.writeOwnedCardsToFile(output, filteredCards);
+    filter.writeOwnedCardsToFile(cfg.getToolPath() + "ownedcards_f.txt", filteredCards);
 
     // Updated owned status
     CCardTable &cards = CCardTable::getCardTable();

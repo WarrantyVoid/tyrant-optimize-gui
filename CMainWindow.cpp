@@ -1042,6 +1042,7 @@ void  CMainWindow::downloadProgress(int numDone, int numDownloads)
 
 void CMainWindow::dataUpdated(const QStringList &result)
 {
+    mFilterWidget->createOwnedAllCardsFile();
     mUi->updateXmlAction->setEnabled(true);
     QMessageBox::information(this, "xml update result", result.join("\n"));
 }

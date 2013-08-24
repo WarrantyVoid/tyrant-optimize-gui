@@ -34,6 +34,7 @@ public slots:
     void setDeckBlockage(const CDeck &deck, bool isBlocked);
     void setCardBlackListStatus(const CCard &card, bool isBlack);
     void setCardWhiteListStatus(const CCard &card, bool isWhite);
+    void createOwnedAllCardsFile();
 
 protected slots:
     void declineFilter();
