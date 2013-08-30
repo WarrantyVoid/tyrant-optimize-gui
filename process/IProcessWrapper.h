@@ -57,6 +57,12 @@ signals:
     * @status Current status including deck, win chance, etc.
     */
     void statusUpdated(SOptimizationStatus status);
+
+    /**
+    * Signal simulator version (major.minor.patch).
+    * @versionStr Simulator version as string.
+    */
+    void versionInfo(const QString versionStr);
 };
 
 #endif // ITOOLPROCESSWRAPPER_H

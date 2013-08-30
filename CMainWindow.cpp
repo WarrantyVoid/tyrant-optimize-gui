@@ -19,6 +19,7 @@ const QString CMainWindow::VERSION = "1.4.3";
 const QString CMainWindow::AUTHOR = "warranty_void";
 const QString CMainWindow::HOMEPAGE = "<a href=\'http://www.hunterthinks.com/to/gui\'>hunterthinks.com/to/gui</a>";
 const QString CMainWindow::FORUM = "<a href=\'http://www.kongregate.com/forums/65-tyrant/topics/257807-automatic-deck-optimization\'>kongregate.com/[..]automatic-deck-optimization</a>";
+QString CMainWindow::TOOL_VERSION = "unknown";
 
 CMainWindow::CMainWindow(QWidget *parent)
 : QMainWindow(parent)
@@ -192,7 +193,7 @@ CMainWindow::CMainWindow(QWidget *parent)
         this, SLOT(updateXmlData()));
     connect(
         mUi->aboutAction, SIGNAL(triggered()),
-        this, SLOT(displayAboutMessage()));
+        this, SLOT(checkToolVersion()));
 
     // Base deck connections
     connect(
@@ -303,6 +304,9 @@ CMainWindow::CMainWindow(QWidget *parent)
 
     // Process wrapper connections
     connect(
+        mProcessWrapper, SIGNAL(versionInfo(const QString&)),
+        this, SLOT(setToolVersion(const QString&)));
+    connect(
         mProcessWrapper, SIGNAL(statusUpdated(const SOptimizationStatus&)),
         this, SLOT(setOptimizationStatus(const SOptimizationStatus&)));
 }
@@ -351,7 +355,7 @@ void CMainWindow::getInputDeck(const CDeckInput *input, CDeck &deck) const
     }
 }
 
-void CMainWindow::startToolProcess(bool isOptimizationEnabled)
+void CMainWindow::startToolProcess(EProcessMode processMode)
 {
     if (mProcessWrapper && mProcess == 0)
     {
@@ -359,7 +363,7 @@ void CMainWindow::startToolProcess(bool isOptimizationEnabled)
         if (mProcess)
         {
             // Fetch parameters from gui
-            mParameters.setOptimizationEnabled(isOptimizationEnabled);
+            mParameters.setProcessMode(processMode);
             mParameters.fetchFromUi(*mUi);
             if (mParameters.ownedCardsOnly())
             {
@@ -657,7 +661,8 @@ void CMainWindow::displayAboutMessage()
     QStringList aboutMsg;
     aboutMsg << QString("<h2>%1</h2>").arg(windowTitle());
     aboutMsg << "<table>";
-    aboutMsg << QString("<tr><td>Version:</td><td>%1</td></tr>").arg(CMainWindow::VERSION);
+    aboutMsg << QString("<tr><td>GUI Version:</td><td>%1</td></tr>").arg(CMainWindow::VERSION);
+    aboutMsg << QString("<tr><td>Sim Version:</td><td>%1</td></tr>").arg(CMainWindow::TOOL_VERSION);
     aboutMsg << QString("<tr><td>Author:</td><td>%1</td></tr>").arg(CMainWindow::AUTHOR);
     aboutMsg << QString("<tr><td>Home:</td><td>%1</td></tr>").arg(CMainWindow::HOMEPAGE);
     aboutMsg << QString("<tr><td>Forum:</td><td>%1</td></tr>").arg(CMainWindow::FORUM);
@@ -674,7 +679,7 @@ void CMainWindow::toggleToolProcess()
     }
     else
     {
-        startToolProcess(true);
+        startToolProcess(EProcessOptimize);
     }
 }
 
@@ -694,9 +699,21 @@ void CMainWindow::toggleToolResultWidget()
     mUi->resultStackedWidget->setCurrentIndex(1 - curOut);
 }
 
+void CMainWindow::checkToolVersion()
+{
+    if (mProcess)
+    {
+        displayAboutMessage();
+    }
+    else
+    {
+        startToolProcess(EProcessVersion);
+    }
+}
+
 void CMainWindow::checkBaseDeck()
 {
-    startToolProcess(false);
+    startToolProcess(EProcessSimulate);
 }
 
 void CMainWindow::saveCustomDeck()
@@ -1124,6 +1141,12 @@ void CMainWindow::refreshModels()
     updateView(EOwnedStatusUpdate);
 }
 
+void CMainWindow::setToolVersion(const QString &toolVersion)
+{
+    TOOL_VERSION = toolVersion;
+    displayAboutMessage();
+}
+
 void CMainWindow::setDeckInput(const QString &deckStr, EInputDeckTarget target)
 {
     CDeckInput *deckInput = 0;
@@ -1146,26 +1169,29 @@ void CMainWindow::setDeckInput(const QString &deckStr, EInputDeckTarget target)
 
 void CMainWindow::setOptimizationStatus(const SOptimizationStatus &status)
 {
-    CDeck deck;
-    if (mDecks.hashToDeck(status.deckHash, deck))
+    if (mParameters.processMode() != EProcessVersion)
     {
-        mUi->resultDeckWidget->setWinLabel(status, mParameters.optimizationMode());
+        CDeck deck;
+        if (mDecks.hashToDeck(status.deckHash, deck))
+        {
+            mUi->resultDeckWidget->setWinLabel(status, mParameters.optimizationMode());
 
-        // We have at least one valid card -> enable saving
-        mUi->useOptimizedButton->setEnabled((true));
-        mUi->saveOptimizedButton->setEnabled(true);
-        mUi->hashOptimizedButton->setEnabled(true);
-        mUi->nameOptimizedButton->setEnabled(true);
-        mUi->resultDeckWidget->setDeck(deck);
-    }
-    else
-    {
-        mUi->resultDeckWidget->setWinLabel(QPixmap());
-        mUi->useOptimizedButton->setEnabled(false);
-        mUi->saveOptimizedButton->setEnabled(false);
-        mUi->hashOptimizedButton->setEnabled(false);
-        mUi->nameOptimizedButton->setEnabled(false);
-        mUi->resultDeckWidget->setDefaultUnits();
+            // We have at least one valid card -> enable saving
+            mUi->useOptimizedButton->setEnabled((true));
+            mUi->saveOptimizedButton->setEnabled(true);
+            mUi->hashOptimizedButton->setEnabled(true);
+            mUi->nameOptimizedButton->setEnabled(true);
+            mUi->resultDeckWidget->setDeck(deck);
+        }
+        else
+        {
+            mUi->resultDeckWidget->setWinLabel(QPixmap());
+            mUi->useOptimizedButton->setEnabled(false);
+            mUi->saveOptimizedButton->setEnabled(false);
+            mUi->hashOptimizedButton->setEnabled(false);
+            mUi->nameOptimizedButton->setEnabled(false);
+            mUi->resultDeckWidget->setDefaultUnits();
+        }
     }
 }
 

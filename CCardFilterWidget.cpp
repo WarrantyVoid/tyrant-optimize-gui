@@ -157,7 +157,7 @@ void CCardFilterWidget::createOwnedAllCardsFile()
     QList<TOwnedCard> allCards;
     for (QList<CCard*>::iterator i = cards.begin(); i != cards.end(); ++i)
     {
-        allCards.push_back(TOwnedCard(**i, 10));
+        allCards.push_back(TOwnedCard(**i, 99));
     }
     CCardFilter filter;
     filter.writeOwnedCardsToFile(cfg.getToolPath() + "ownedcards_all.txt", allCards);

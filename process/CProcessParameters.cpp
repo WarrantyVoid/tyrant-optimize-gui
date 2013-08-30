@@ -4,7 +4,7 @@
 #include <QLineEdit>
 
 CProcessParameters::CProcessParameters()
-: mIsOptimizationEnabled(true)
+: mProcessMode(EProcessOptimize)
 , mBaseDeckOrig("")
 , mBaseDeckOut("")
 , mEnemyDeck("")

@@ -25,75 +25,89 @@ void CTyrantOptimizeWrapper::getCommandLineParameters(const CProcessParameters &
     const CGlobalConfig &cfg = CGlobalConfig::getCfg();
     comLineParams.clear();
 
-    // Decks
-    comLineParams << processDeckString(guiParams.baseDeck());
-    comLineParams << processDeckString(guiParams.enemyDeck());
-
-    // Switches
-    if (guiParams.lockCardCount())
+    if (guiParams.processMode() == EProcessVersion)
     {
-        comLineParams << "-L"
-                      << QString("%1").arg(guiParams.lockCardCountMin())
-                      << QString("%1").arg(guiParams.lockCardCountMax());
-    }
-
-    if (guiParams.ownedCardsOnly())
-    {
-        if (QFileInfo(cfg.getToolPath() + "ownedcards_f.txt").exists())
-        {
-            comLineParams << "-o=ownedcards_f.txt";
-        }
-        else
-        {
-            comLineParams << "-o";
-        }
-    }
-    if (guiParams.orderedBase())
-    {
-        comLineParams << "-r";
-    }
-    if (guiParams.orderedEnemy())
-    {
-        comLineParams << "defender:ordered";
-    }
-    if (guiParams.surge())
-    {
-        comLineParams << "-s";
-    }
-    if (guiParams.tournament())
-    {
-        comLineParams << "tournament";
-    }
-    if (!guiParams.battleGround().isEmpty())
-    {
-        comLineParams << "-e" << guiParams.battleGround();
-    }
-    if (guiParams.achievement() > 0)
-    {
-        comLineParams << "-A" << QString("%1").arg(guiParams.achievement());
-    }
-
-    if (guiParams.isOptimizationEnabled())
-    {
-        comLineParams << "climb" << QString("%1").arg(guiParams.numBattles());
+        comLineParams << "-version";
     }
     else
     {
-        comLineParams << "sim" << QString("%1").arg(guiParams.numBattles());
-    }
-    comLineParams << "-t" << QString("%1").arg(guiParams.numThreads());
+        // Decks
+        comLineParams << processDeckString(guiParams.baseDeck());
+        comLineParams << processDeckString(guiParams.enemyDeck());
 
-    if (guiParams.numTurns() != 50)
-    {
-        comLineParams << "-turnlimit" << QString("%1").arg(guiParams.numTurns());
-    }
+        // Switches
+        if (guiParams.lockCardCount())
+        {
+            comLineParams << "-L"
+                          << QString("%1").arg(guiParams.lockCardCountMin())
+                          << QString("%1").arg(guiParams.lockCardCountMax());
+        }
 
-    switch (guiParams.optimizationMode())
-    {
-    case EOptimizeWin: comLineParams << "win"; break;
-    case EOptimizeDefense: comLineParams << "defense"; break;
-    case EOptimizeRaid: comLineParams << "raid"; break;
-    case EOptimizeAchievement: break;
+        if (guiParams.ownedCardsOnly())
+        {
+            if (QFileInfo(cfg.getToolPath() + "ownedcards_f.txt").exists())
+            {
+                comLineParams << "-o=ownedcards_f.txt";
+            }
+            else
+            {
+                comLineParams << "-o";
+            }
+        }
+        if (guiParams.orderedBase())
+        {
+            comLineParams << "-r";
+        }
+        if (guiParams.orderedEnemy())
+        {
+            comLineParams << "defender:ordered";
+        }
+        if (guiParams.surge())
+        {
+            comLineParams << "-s";
+        }
+        if (guiParams.tournament())
+        {
+            comLineParams << "tournament";
+        }
+        if (!guiParams.battleGround().isEmpty())
+        {
+            comLineParams << "-e" << guiParams.battleGround();
+        }
+        if (guiParams.achievement() > 0)
+        {
+            comLineParams << "-A" << QString("%1").arg(guiParams.achievement());
+        }
+
+        switch (guiParams.processMode())
+        {
+        case EProcessSimulate:
+            comLineParams << "sim" << QString("%1").arg(guiParams.numBattles());
+            break;
+        case EProcessReorder :
+            comLineParams << "reorder" << QString("%1").arg(guiParams.numBattles());
+            break;
+        case EProcessOptimize:
+            comLineParams << "climb" << QString("%1").arg(guiParams.numBattles());
+            break;
+        case EProcessVersion:
+        default:
+            break;
+        }
+        comLineParams << "-t" << QString("%1").arg(guiParams.numThreads());
+
+        if (guiParams.numTurns() != 50)
+        {
+            comLineParams << "-turnlimit" << QString("%1").arg(guiParams.numTurns());
+        }
+
+        switch (guiParams.optimizationMode())
+        {
+        case EOptimizeWin: comLineParams << "win"; break;
+        case EOptimizeDefense: comLineParams << "defense"; break;
+        case EOptimizeRaid: comLineParams << "raid"; break;
+        case EOptimizeAchievement: break;
+        }
     }
 }
 
@@ -146,6 +160,14 @@ void CTyrantOptimizeWrapper::processCommandLineOutput(const QStringList &output)
             if (curTokens.size() > 1)
             {
                 mStatus.deckHash = curTokens.at(2);
+            }
+        }
+        else if (curLine.startsWith("Tyrant Optimizer"))
+        {
+            QStringList curTokens = curLine.split(QRegExp("\\D"), QString::SkipEmptyParts);
+            if (curTokens.size() == 3)
+            {
+                emit versionInfo(QString("%1.%2.%3").arg(curTokens[0]).arg(curTokens[1]).arg(curTokens[2]));
             }
         }
         else

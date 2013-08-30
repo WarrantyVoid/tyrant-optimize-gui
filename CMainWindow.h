@@ -31,7 +31,7 @@ public:
 
 protected:
     void getInputDeck(const CDeckInput *input, CDeck &deck) const;
-    void startToolProcess(bool isOptimizationEnabled);
+    void startToolProcess(EProcessMode processMode);
     void killToolProcess();
     void setProcessActivityChanged(bool isActive);
     void loadDefaultSettings();
@@ -58,6 +58,7 @@ protected slots:
     // Button slots
     void toggleToolProcess();
     void toggleToolResultWidget();
+    void checkToolVersion();
     void checkBaseDeck();
     void saveCustomDeck();
     void copyDeckHash();
@@ -85,6 +86,7 @@ protected slots:
     void refreshModels();
 
     // Process slots
+    void setToolVersion(const QString &toolVersion);
     void setDeckInput(const QString &deckStr, EInputDeckTarget target);
     void setOptimizationStatus(const SOptimizationStatus &status);
 
@@ -114,6 +116,7 @@ private:
     static const QString AUTHOR;
     static const QString HOMEPAGE;
     static const QString FORUM;
+    static QString TOOL_VERSION;
 };
 
 #endif // MAINWINDOW_H

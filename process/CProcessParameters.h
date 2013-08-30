@@ -10,6 +10,13 @@ namespace Ui
 class MainWindow;
 }
 
+enum EProcessMode
+{
+    EProcessVersion = 0,
+    EProcessSimulate = 1,
+    EProcessReorder = 2,
+    EProcessOptimize = 3
+};
 
 enum EOptimizationMode
 {
@@ -32,8 +39,8 @@ public:
 	void fetchFromSettings(QSettings &settings);
 	void updateSettings(QSettings &settings) const;
 
-    void setOptimizationEnabled(bool enabled) { mIsOptimizationEnabled = enabled; }
-    bool isOptimizationEnabled() const { return mIsOptimizationEnabled; }
+    void setProcessMode(EProcessMode processMode) { mProcessMode = processMode; }
+    EProcessMode processMode() const { return mProcessMode; }
 
     QString baseDeck() const { return mBaseDeckOut; }
 	QString enemyDeck() const { return mEnemyDeck; }
@@ -55,7 +62,7 @@ public:
     bool tournament() const { return mTournament; }
     
 private:
-    bool mIsOptimizationEnabled;
+    EProcessMode mProcessMode;
     QString mBaseDeckOrig;
     QString mBaseDeckOut;
 	QString mEnemyDeck;
