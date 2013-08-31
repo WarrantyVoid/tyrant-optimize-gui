@@ -807,17 +807,30 @@
          <item>
           <widget class="QPushButton" name="checkBaseButton">
            <property name="toolTip">
-            <string/>
+            <string>Simulate base deck as is</string>
            </property>
            <property name="text">
-            <string>Check Base Deck</string>
+            <string>Simulate</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="reorderBaseButton">
+           <property name="toolTip">
+            <string>Optimize only order of base deck </string>
+           </property>
+           <property name="text">
+            <string>Reorder</string>
            </property>
           </widget>
          </item>
          <item>
           <widget class="QPushButton" name="optimizeBaseButton">
+           <property name="toolTip">
+            <string>Optimize base deck</string>
+           </property>
            <property name="text">
-            <string>Optimize Base Deck</string>
+            <string>Optimize</string>
            </property>
           </widget>
          </item>

@@ -231,6 +231,9 @@ CMainWindow::CMainWindow(QWidget *parent)
         mUi->checkBaseButton, SIGNAL(clicked()),
         this, SLOT(checkBaseDeck()));
     connect(
+        mUi->reorderBaseButton, SIGNAL(clicked()),
+        this, SLOT(reorderBaseDeck()));
+    connect(
         mUi->optimizeBaseButton, SIGNAL(clicked()),
         this, SLOT(toggleToolProcess()));
     connect(
@@ -442,12 +445,14 @@ void CMainWindow::setProcessActivityChanged(bool isActive)
         if (isActive)
         {
             mUi->checkBaseButton->setEnabled(false);
-            mUi->optimizeBaseButton->setText("Stop Optimization");
+            mUi->reorderBaseButton->setEnabled(false);
+            mUi->optimizeBaseButton->setText("Cancel");
         }
         else
         {
             mUi->checkBaseButton->setEnabled(true);
-            mUi->optimizeBaseButton->setText("Optimize Base Deck");
+            mUi->reorderBaseButton->setEnabled(true);
+            mUi->optimizeBaseButton->setText("Optimize");
         }
     }
 }
@@ -714,6 +719,11 @@ void CMainWindow::checkToolVersion()
 void CMainWindow::checkBaseDeck()
 {
     startToolProcess(EProcessSimulate);
+}
+
+void CMainWindow::reorderBaseDeck()
+{
+    startToolProcess(EProcessReorder);
 }
 
 void CMainWindow::saveCustomDeck()

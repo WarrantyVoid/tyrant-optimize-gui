@@ -60,6 +60,7 @@ protected slots:
     void toggleToolResultWidget();
     void checkToolVersion();
     void checkBaseDeck();
+    void reorderBaseDeck();
     void saveCustomDeck();
     void copyDeckHash();
     void copyDeckCards();
