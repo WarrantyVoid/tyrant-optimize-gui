@@ -283,7 +283,7 @@ void CCardTable::setOwnedCards(const QList<TOwnedCard> &ownedCards, const QList<
     emit cardStatusUpdated(EOwnedStatusUpdate);
 }
 
-void CCardTable::updateData()
+void CCardTable::updateData(bool isBeta)
 {
     if (mDataDownloads.isEmpty())
     {
@@ -291,12 +291,12 @@ void CCardTable::updateData()
         {
             mDataDownloadResults.clear();
             const CGlobalConfig& pm = CGlobalConfig::getCfg();
-
-            CDownload* cardsDownload = new CDownload("http://kg.tyrantonline.com/assets/cards.xml", pm.getToolPath() + "cards.xml", true);
-            CDownload* raidsDownload = new CDownload("http://kg.tyrantonline.com/assets/raids.xml", pm.getToolPath() + "raids.xml", true);
-            CDownload* missionsDownload = new CDownload("http://kg.tyrantonline.com/assets/missions.xml", pm.getToolPath() + "missions.xml", true);
-            CDownload* questsDownload = new CDownload("http://kg.tyrantonline.com/assets/quests.xml", pm.getToolPath() + "quests.xml", true);
-            CDownload* achievementsDownload = new CDownload("http://kg.tyrantonline.com/assets/achievements.xml", pm.getToolPath() + "achievements.xml", true);
+            QString prefix = isBeta ? "dev" : "kg";
+            CDownload* cardsDownload = new CDownload(QString("http://%1.tyrantonline.com/assets/cards.xml").arg(prefix), pm.getToolPath() + "cards.xml", true);
+            CDownload* raidsDownload = new CDownload(QString("http://%1.tyrantonline.com/assets/raids.xml").arg(prefix), pm.getToolPath() + "raids.xml", true);
+            CDownload* missionsDownload = new CDownload(QString("http://%1.tyrantonline.com/assets/missions.xml").arg(prefix), pm.getToolPath() + "missions.xml", true);
+            CDownload* questsDownload = new CDownload(QString("http://%1.tyrantonline.com/assets/quests.xml").arg(prefix), pm.getToolPath() + "quests.xml", true);
+            CDownload* achievementsDownload = new CDownload(QString("http://%1.tyrantonline.com/assets/achievements.xml").arg(prefix), pm.getToolPath() + "achievements.xml", true);
 
             mDataDownloads.enqueue(cardsDownload);
             mDataDownloads.enqueue(raidsDownload);

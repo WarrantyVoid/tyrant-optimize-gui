@@ -192,6 +192,9 @@ CMainWindow::CMainWindow(QWidget *parent)
         mUi->updateXmlAction, SIGNAL(triggered(bool)),
         this, SLOT(updateXmlData()));
     connect(
+        mUi->updateXmlBetaAction, SIGNAL(triggered(bool)),
+        this, SLOT(updateXmlData()));
+    connect(
         mUi->aboutAction, SIGNAL(triggered()),
         this, SLOT(checkToolVersion()));
 
@@ -653,7 +656,7 @@ void CMainWindow::toggleCardLabelling(bool checked)
 void CMainWindow::updateXmlData()
 {
     mUi->updateXmlAction->setEnabled(false);
-    mCards.updateData();
+    mCards.updateData(QWidget::sender() == mUi->updateXmlBetaAction);
 }
 
 void CMainWindow::updateOwnedCards()

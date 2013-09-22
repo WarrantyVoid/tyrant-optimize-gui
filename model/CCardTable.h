@@ -58,7 +58,7 @@ public:
     void setListedCards(const QStringList &blackList, const QStringList &whiteList);
     void setOwnedCards(const QList<TOwnedCard> &ownedCards, const QList<TOwnedCard> &filteredCards);
 
-    void updateData();
+    void updateData(bool beta);
     const CBattleground& getBattlegroundForId(unsigned int id) const;
     const QList<CBattleground>& getBattlegrounds() const;
     const QList<CAchievement>& getAchievements() const;
