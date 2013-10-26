@@ -22,13 +22,13 @@ CCardSearchParameters::CCardSearchParameters()
 
 void CCardSearchParameters::fetchFromUi(const Ui::CardSearchWidget &ui)
 {
-    mName = ui.nameBox->currentText();
+    mName = ui.nameBox->currentText().trimmed();
     mLwCsName = mName.toLower();
     mSkill = ui.skillBox->currentText().split("+", QString::SkipEmptyParts);
     mLwCsSkill.clear();
     for (QStringList::const_iterator i = mSkill.begin(); i != mSkill.end(); ++i)
     {
-        mLwCsSkill.push_back(i->toLower());
+        mLwCsSkill.push_back(i->toLower().trimmed());
     }
 
     mRarityMask = 0;
