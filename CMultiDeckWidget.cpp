@@ -11,6 +11,7 @@ CMultiDeckWidget::CMultiDeckWidget(QWidget *parent)
 , mOkButton(new QPushButton("Ok"))
 , mNumberOfDecks(1)
 {
+
     mAddButton->setIcon(QPixmap(":/img/add.png"));
     QBoxLayout *vLayout = new QBoxLayout(QBoxLayout::TopToBottom, this);
     connect(
@@ -22,7 +23,7 @@ CMultiDeckWidget::CMultiDeckWidget(QWidget *parent)
     connect(
         mOkButton, SIGNAL(clicked()),
         this, SLOT(acceptDecks()));
-    for (int i = 0; i < 10; ++i)
+    for (int i = 0; i < MAX_NUMBER_OF_DECKS; ++i)
     {        
         mMultiDeckEditors[i] = new CMultiDeckEditorWidget(i);
         vLayout->addWidget(mMultiDeckEditors[i]);
@@ -31,12 +32,12 @@ CMultiDeckWidget::CMultiDeckWidget(QWidget *parent)
             mMultiDeckEditors[i]->setVisible(false);
         }
     }
-    for (int i = 0; i < 10; ++i)
+    for (int i = 0; i < MAX_NUMBER_OF_DECKS; ++i)
     {
         connect(
             this, SIGNAL(numberOfDecksChanged(int)),
             mMultiDeckEditors[i], SLOT(updateBaseFraction(int)));
-        for (int j = 0; j < 10; ++j)
+        for (int j = 0; j < MAX_NUMBER_OF_DECKS; ++j)
         {
             if (j != i)
             {
@@ -60,7 +61,7 @@ void CMultiDeckWidget::setDeckInputWidget(CDeckInput* inputWidget)
 
 void CMultiDeckWidget::setToolTipHandler(QObject *handler)
 {
-    for (int i = 0; i < 10; ++i)
+    for (int i = 0; i < MAX_NUMBER_OF_DECKS; ++i)
     {
         mMultiDeckEditors[i]->setToolTipHandler(handler);
     }
@@ -68,7 +69,7 @@ void CMultiDeckWidget::setToolTipHandler(QObject *handler)
 
 void CMultiDeckWidget::updateHistory()
 {
-    for (int i = 0; i < 10; ++i)
+    for (int i = 0; i < MAX_NUMBER_OF_DECKS; ++i)
     {
         if (i < mNumberOfDecks)
         {
@@ -83,9 +84,9 @@ void CMultiDeckWidget::initDecks()
     {
         QStringList multiDeckStr = mDeckSourceWidget->currentText().split(";");
         resetEditors();
-        double numDecks = qMin(10, multiDeckStr.size());
+        double numDecks = qMin(MAX_NUMBER_OF_DECKS, multiDeckStr.size());
         double totalFractions = 0.0;
-        double deckFractions[10];
+        double deckFractions[MAX_NUMBER_OF_DECKS];
         for (int i = 0; i < numDecks; ++i)
         {
             deckFractions[i] = 0.0;
@@ -132,7 +133,7 @@ void CMultiDeckWidget::declineDecks()
 void CMultiDeckWidget::acceptDecks()
 {
     QStringList multiDeckStr;
-    for (int i = 0; i < 10; ++i)
+    for (int i = 0; i < MAX_NUMBER_OF_DECKS; ++i)
     {
         QString deckStr = "";
         if (mMultiDeckEditors[i])
@@ -153,7 +154,7 @@ void CMultiDeckWidget::acceptDecks()
 
 void CMultiDeckWidget::addDeck()
 {
-    if (mNumberOfDecks < 10)
+    if (mNumberOfDecks < MAX_NUMBER_OF_DECKS)
     {
         mMultiDeckEditors[mNumberOfDecks]->setVisible(true);
         ++mNumberOfDecks;
@@ -174,7 +175,7 @@ bool CMultiDeckWidget::isDoubleEqual(double d1, double d2)
 void CMultiDeckWidget::resetEditors()
 {
     mNumberOfDecks = 1;
-    for (int i = 0; i < 10; ++i)
+    for (int i = 0; i < MAX_NUMBER_OF_DECKS; ++i)
     {
         if (i >= mNumberOfDecks)
         {

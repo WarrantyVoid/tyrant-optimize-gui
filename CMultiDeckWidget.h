@@ -39,12 +39,15 @@ private:
     void resetEditors();
 
 private:
+    static const int MAX_NUMBER_OF_DECKS = 30;
+
     CDeckInput* mDeckSourceWidget;
-    CMultiDeckEditorWidget* mMultiDeckEditors[10];
+    CMultiDeckEditorWidget* mMultiDeckEditors[MAX_NUMBER_OF_DECKS];
     QPushButton *mAddButton;
     QPushButton *mCancelButton;
     QPushButton *mOkButton;
     int mNumberOfDecks;
+
 };
 
 #endif // CMULTIDECKWIDGET_H
