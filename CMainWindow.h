@@ -30,7 +30,6 @@ public:
     ~CMainWindow();
 
 protected:
-    void getInputDeck(const CDeckInput *input, CDeck &deck) const;
     void startToolProcess(EProcessMode processMode);
     void killToolProcess();
     void setProcessActivityChanged(bool isActive);
@@ -93,7 +92,7 @@ protected slots:
 
 private:
     void addConsoleLine(const QString &line, bool truncate = false);
-    void getActiveDeckInput(CDeckInput *&deckInput) const;
+    void getActiveDeck(CDeckInput *&deckInput, CDeckWidget *&deckWidget) const;
 
 private:
     Ui::MainWindow *mUi;

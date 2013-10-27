@@ -15,6 +15,14 @@ class DeckWidget;
 #include "process/IProcessWrapper.h"
 #include "process/CProcessParameters.h"
 
+enum EDeckSpecificationType
+{
+    ENoSpecification,
+    ENameSpecification,
+    EHashSpecification,
+    ECardListSpecification
+};
+
 class CDeckWidget : public QWidget
 {
     Q_OBJECT
@@ -31,31 +39,33 @@ public:
     void setWinLabel(const SOptimizationStatus &status, EOptimizationMode mode);
     void setWinLabel(const QPixmap &pixmap);
     void setDefaultUnits();
-    void setUnit(int slot, const CCard &unit);
     void setDeck(const CDeck &deck);
-    const CCard& getUnit(int slot) const;
     const CDeck& getDeck() const;
 
 signals:
     void deckChanged(const QString& deckId);
 
 public slots:
-    void setDeck(const QString & deckId);
+    void setDeck(const QString & deckSpec, EDeckSpecificationType specType = ENoSpecification);
     void updateView();
 
 protected slots:
     void updateDeck();
 
 private:
+    const CCard& getUnit(int slot) const;
+    void setUnit(int slot, const CCard &unit);
+    void syncAllUnits();
+
+private:
     CCardLabel* getLabelForSlot(int slot) const;
 
 private:
     Ui::DeckWidget *mUi;
+    QList<CCardLabel*> mCardLabels;
     CDeckTable &mDecks;
     bool mIsLocked;
-
-    // @todo make this member useful
-    mutable CDeck mDeck;
+    CDeck mDeck;
 };
 
 #endif // CDECKWIDGET_H

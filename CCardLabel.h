@@ -22,10 +22,17 @@ public:
     void setCard(const CCard& card);
     const CCard& getCard() const;
 
+    static QMimeData *createCardLabelDropData(const CCardLabel &label);
+    static bool isCardLabelDropData(const QMimeData *data);
+
 signals:
     void unitDropped();
     void unitRightClicked(bool isBlack);
     void unitCtrlRightClicked(bool isWhite);
+
+protected slots:
+    void actionToggleBlack(bool isBlack);
+    void actionToggleWhite(bool isWhite);
 
 protected:
     virtual void paintEvent(QPaintEvent *ev);

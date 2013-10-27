@@ -5,6 +5,7 @@
 #include <QApplication>
 #include <QPaintEvent>
 #include <QPainter>
+#include <QMenu>
 
 CCardLabel::CCardLabel(QWidget *parent)
 : QLabel(parent)
@@ -168,6 +169,38 @@ const CCard& CCardLabel::getCard() const
     return mCard;
 }
 
+QMimeData *CCardLabel::createCardLabelDropData(const CCardLabel &label)
+{
+    QMimeData *data = new QMimeData();
+    data->setText(QString("@CCardLabel:id=%1;locked=%2")
+                  .arg(label.getCard().getId())
+                  .arg(label.isLocked() ? 1 : 0));
+    return data;
+}
+
+bool CCardLabel::isCardLabelDropData(const QMimeData *data)
+{
+    if (data)
+    {
+        QString textData = data->text().toLatin1();
+        if (textData.length() < 50 && textData.startsWith("@CCardLabel:id="))
+        {
+            return true;
+        }
+    }
+    return false;
+}
+
+void CCardLabel::actionToggleBlack(bool isBlack)
+{
+    emit unitRightClicked(isBlack);
+}
+
+void CCardLabel::actionToggleWhite(bool isWhite)
+{
+    emit unitCtrlRightClicked(isWhite);
+}
+
 void CCardLabel::paintEvent(QPaintEvent *ev)
 {
     QRectF titleRect(translatePoint(5, 2), translatePoint(155, 25));
@@ -324,14 +357,22 @@ void CCardLabel::mouseReleaseEvent(QMouseEvent * ev)
     if (ev->button() == Qt::RightButton)
     {
         SCardStatus status = mCards.getCardStatus(mCard);
-        if (ev->modifiers() == Qt::ControlModifier)
-        {
-            emit unitCtrlRightClicked(!status.isWhite);
-        }
-        else
-        {
-            emit unitRightClicked(!status.isBlack);
-        }
+        QAction* blackListAction  = new QAction("Black list", this);
+        blackListAction->setCheckable(true);
+        blackListAction->setChecked(status.isBlack);
+        QAction* whiteListAction  = new QAction("White list", this);
+        whiteListAction->setCheckable(true);
+        whiteListAction->setChecked(status.isWhite);
+        connect(blackListAction, SIGNAL(triggered(bool)), this, SLOT(actionToggleBlack(bool)));
+        connect(whiteListAction, SIGNAL(triggered(bool)), this, SLOT(actionToggleWhite(bool)));
+
+        QMenu *menu = new QMenu();
+        menu->addAction(blackListAction);
+        menu->addAction(whiteListAction);
+        menu->exec(QCursor::pos());
+
+        delete menu;
+        menu = 0;
     }
     if (mLastLeftClickPos)
     {
@@ -352,9 +393,7 @@ void CCardLabel::mouseMoveEvent(QMouseEvent *ev)
         if (moveLine.length() >= QApplication::startDragDistance())
         {
             QDrag *drag = new QDrag(this);
-
-            QMimeData *dragData = new QMimeData();
-            dragData->setText(QString("http://tyrant.40in.net/kg/card.php?id=%1").arg(mCard.getId()));
+            QMimeData *dragData = createCardLabelDropData(*this);
             drag->setMimeData(dragData);
             drag->setHotSpot(ev->pos());
 
@@ -380,10 +419,13 @@ void CCardLabel::mouseMoveEvent(QMouseEvent *ev)
             else
             {
                 CCard cardBuf = mCard;
+                bool lockBuf = isLocked();
                 setCard(CCard::INVALID_CARD);
+                setLocked(false);
                 if (!drag->exec(Qt::MoveAction))
                 {
                     setCard(cardBuf);
+                    setLocked(lockBuf);
                 }
             }
             delete mLastLeftClickPos;
@@ -403,26 +445,31 @@ void CCardLabel::leaveEvent(QEvent *ev)
 
 void CCardLabel::dropEvent(QDropEvent *ev)
 {
-    QString data = ev->mimeData()->text().toLatin1();
-    if (data.length() < 50)
+    if (ev && isCardLabelDropData(ev->mimeData()))
     {
-        QStringList valueList = data.split("=");
-        if (valueList.size() == 2)
+        QString textData = ev->mimeData()->text().toLatin1();
+        QStringList valueList = textData.split(QRegExp("=|;"));
+        if (valueList.size() == 4)
         {
-            bool ok(true);
-            int id = valueList.at(1).toInt(&ok);
-            if (ok)
+            bool ok1(true);
+            bool ok2(true);
+            int id = valueList.at(1).toInt(&ok1);
+            bool locked = valueList.at(3).toInt(&ok2) == 1;
+            if (ok1 && ok2)
             {
                 ev->accept();
                 const CCard &card = CCardTable::getCardTable().getCardForId(id);
                 if (card.isValid())
                 {
                     CCard cardBuf = mCard;
+                    bool lockBuf = isLocked();
                     setCard(card);
+                    setLocked(locked);
                     CCardLabel *source = dynamic_cast<CCardLabel*>(ev->source());
                     if (source && source != this && ev->dropAction() == Qt::MoveAction)
                     {
                         source->setCard(cardBuf);
+                        source->setLocked(lockBuf);
                     }
                     emit unitDropped();
                 }
@@ -433,8 +480,7 @@ void CCardLabel::dropEvent(QDropEvent *ev)
 
 void CCardLabel::dragMoveEvent(QDragMoveEvent *ev)
 {
-    QString data = ev->mimeData()->text().toLatin1();
-    if (data.length() < 50 && data.startsWith("http://tyrant.40in.net/kg/card.php?id="))
+    if (ev && isCardLabelDropData(ev->mimeData()))
     {
         ev->accept();
     }
@@ -442,8 +488,7 @@ void CCardLabel::dragMoveEvent(QDragMoveEvent *ev)
 
 void CCardLabel::dragEnterEvent(QDragEnterEvent *ev)
 {
-    QString data = ev->mimeData()->text().toLatin1();
-    if (data.length() < 50 && data.startsWith("http://tyrant.40in.net/kg/card.php?id="))
+    if (ev && isCardLabelDropData(ev->mimeData()))
     {
         ev->acceptProposedAction();
     }

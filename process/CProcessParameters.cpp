@@ -110,6 +110,8 @@ void CProcessParameters::fetchFromUi(const Ui::MainWindow &ui)
 void CProcessParameters::updateUi(Ui::MainWindow &ui) const
 {
     ui.baseDeckEdit->setDeckId(mBaseDeckOrig);
+
+    ui.baseDeckWidget->setDeck(mBaseDeckOrig);
     QStringList deck = mBaseDeckOut.split(",");
     for (int i = 0; i < deck.size(); ++i)
     {

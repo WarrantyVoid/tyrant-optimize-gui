@@ -14,7 +14,12 @@ void CDeckInput::setAllowMultiDecks(bool allow)
     mAreMultiDecksAllowed = allow;
 }
 
-QStringList CDeckInput::history() const
+QString CDeckInput::getDeckId() const
+{
+    return currentText();
+}
+
+QStringList CDeckInput::getHistory() const
 {
     QStringList history;
     for(int i = 0; i < count(); ++i)

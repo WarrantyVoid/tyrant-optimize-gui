@@ -13,7 +13,8 @@ public:
 
 public:
     void setAllowMultiDecks(bool allow);
-    QStringList history() const;
+    QString getDeckId() const;
+    QStringList getHistory() const;
 
 signals:
     void deckDropped(const QString &deckStr);

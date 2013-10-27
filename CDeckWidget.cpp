@@ -5,22 +5,28 @@
 CDeckWidget::CDeckWidget(QWidget *parent)
 : QWidget(parent)
 , mUi(new Ui::DeckWidget)
+, mCardLabels()
 , mDecks(CDeckTable::getDeckTable())
 , mIsLocked(false)
 , mDeck()
 {
     mUi->setupUi(this);
 
+    // Init card labels for indexed widget acess
+    mCardLabels.push_back(mUi->commanderLabel);
+    for(int iSlot = 0; iSlot < 10; ++iSlot)
+    {
+        QString widgetName = QString("unit%1Label").arg(iSlot, 2, 10, QChar('0'));
+        mCardLabels.push_back(findChild<CCardLabel*>(widgetName));
+    }
+
+    // Initialize widget connections
     connect(
         mUi->winLabel, SIGNAL(unitDropped()),
         this, SLOT(updateDeck()));
-    connect(
-        mUi->commanderLabel, SIGNAL(unitDropped()),
-        this, SLOT(updateDeck()));
-    for(int i = 0; i < 10; ++i)
+    for(int iSlot = -1; iSlot < 10; ++iSlot)
     {
-        QString widgetName = QString("unit%1Label").arg(i, 2, 10, QChar('0'));
-        CCardLabel* widget = findChild<CCardLabel*>(widgetName);
+        CCardLabel *widget = getLabelForSlot(iSlot);
         if (widget)
         {
             connect(
@@ -33,11 +39,9 @@ CDeckWidget::CDeckWidget(QWidget *parent)
 void CDeckWidget::setDropEnabled(bool enabled)
 {
     mUi->winLabel->setAcceptDrops(enabled);
-    mUi->commanderLabel->setAcceptDrops(enabled);
-    for(int i = 0; i < 10; ++i)
+    for(int i = -1; i < 10; ++i)
     {
-        QString widgetName = QString("unit%1Label").arg(i, 2, 10, QChar('0'));
-        CCardLabel* widget = findChild<CCardLabel*>(widgetName);
+        CCardLabel *widget = getLabelForSlot(i);
         if (widget)
         {
             widget->setAcceptDrops(enabled);
@@ -47,11 +51,9 @@ void CDeckWidget::setDropEnabled(bool enabled)
 
 void CDeckWidget::setLockEnabled(bool enabled)
 {
-    mUi->commanderLabel->setLockEnabled(enabled);
-    for(int i = 0; i < 10; ++i)
+    for(int i = -1; i < 10; ++i)
     {
-        QString widgetName = QString("unit%1Label").arg(i, 2, 10, QChar('0'));
-        CCardLabel* widget = findChild<CCardLabel*>(widgetName);
+        CCardLabel *widget = getLabelForSlot(i);
         if (widget)
         {
             widget->setLockEnabled(enabled);
@@ -98,24 +100,8 @@ void CDeckWidget::setDefaultUnits()
 {
     if (!mIsLocked)
     {
-        for(int i = -1; i < 10; ++i)
-        {
-            CCard defaultCard;
-            defaultCard.setName(QString("%1").arg(i + 1));
-            setUnit(i, defaultCard);
-        }
-    }
-}
-
-void CDeckWidget::setUnit(int slot, const CCard &unit)
-{
-    if (!mIsLocked)
-    {
-        CCardLabel* widget = getLabelForSlot(slot);
-        if (widget)
-        {
-            widget->setCard(unit);
-        }
+        mDeck.clearCards();
+        syncAllUnits();
     }
 }
 
@@ -124,93 +110,51 @@ void  CDeckWidget::setDeck(const CDeck &deck)
     if (!mIsLocked)
     {
         mDeck = deck;
-        const QList<CCard> &cards = deck.getCards();
-        for (int i = -1; i < 10; ++i)
-        {
-            if (i + 1 < cards.size())
-            {
-                setUnit(i, cards.at(i + 1));
-            }
-            else
-            {
-               CCard defaultCard;
-               defaultCard.setName(QString("%1").arg(i + 1));
-               setUnit(i, defaultCard);
-            }
-        }
-    }
-}
-
-const CCard& CDeckWidget::getUnit(int slot) const
-{
-    CCardLabel* widget = 0;
-    if (slot == -1)
-    {
-        // Commander slot
-        widget = mUi->commanderLabel;
-    }
-    else if (slot > -1 && slot < 10)
-    {
-        // Assault/Action slot
-        QString widgetName = QString("unit%1Label").arg(slot, 2, 10, QChar('0'));
-        widget = findChild<CCardLabel*>(widgetName);
-    }
-
-    if (widget)
-    {
-        return widget->getCard();
-    }
-    else
-    {
-        return CCard::INVALID_CARD;
+        syncAllUnits();
     }
 }
 
 const CDeck& CDeckWidget::getDeck() const
 {
-    mDeck.clearCards();
-    for (int i = -1; i < 10; ++i)
-    {
-        const CCard &unit = getUnit(i);
-        if (unit.isValid())
-        {
-            mDeck.addCard(unit);
-        }
-    }
     return mDeck;
 }
 
-void CDeckWidget::setDeck(const QString &deckIdParam)
+void CDeckWidget::setDeck(const QString &deckSpecParam, EDeckSpecificationType specType)
 {
     if (!mIsLocked)
     {
-        QString deckId = deckIdParam;
-        if (!deckId.isEmpty())
+        QString deckSpec = deckSpecParam;
+        if (!deckSpec.isEmpty())
         {
             // Choose first deck, if multi decks
-            QStringList deckParts = deckId.split(QRegExp("\\;|\\:"), QString::SkipEmptyParts);
+            QStringList deckParts = deckSpec.split(QRegExp("\\;|\\:"), QString::SkipEmptyParts);
             if (deckParts.size() > 1)
             {
-                deckId = deckParts.first();
+                deckSpec = deckParts.first();
             }
 
-            mDeck = mDecks.getDeckForName(deckId);
-            if (mDeck.isValid())
+            switch(specType)
             {
-                // Custom Deck
+            case ENameSpecification:
+                mDeck = mDecks.getDeckForName(deckSpec);
+                break;
+            case EHashSpecification:
+                mDecks.hashToDeck(deckSpec, mDeck);
+                break;
+            case ECardListSpecification:
+                mDecks.strToDeck(deckSpec, mDeck);
+                break;
+            default:
+                mDeck = mDecks.getDeckForName(deckSpec);
+                if (!mDeck.isValid())
+                {
+                    if (!mDecks.hashToDeck(deckSpec, mDeck))
+                    {
+                        mDecks.strToDeck(deckSpec, mDeck);
+                    }
+                }
             }
-            else if (mDecks.hashToDeck(deckId, mDeck))
-            {
-                // Deck Hash
-            }
-            else if (mDecks.strToDeck(deckId, mDeck))
-            {
-                // Direct Card List
-            }
-            if (mDeck.isValid())
-            {
-                setDeck(mDeck);
-            }
+            syncAllUnits();
         }
         else
         {
@@ -244,20 +188,89 @@ void CDeckWidget::updateDeck()
     }
 }
 
+const CCard& CDeckWidget::getUnit(int slot) const
+{
+    CCardLabel* widget = getLabelForSlot(slot);
+    if (widget)
+    {
+        return widget->getCard();
+    }
+    else
+    {
+        return CCard::INVALID_CARD;
+    }
+}
+
+void CDeckWidget::setUnit(int slot, const CCard &unit)
+{
+    if (!mIsLocked)
+    {
+        CCardLabel* widget = getLabelForSlot(slot);
+        if (widget)
+        {
+            widget->setCard(unit);
+        }
+    }
+}
+
+void CDeckWidget::syncAllUnits()
+{
+    const QList<CCard> &cards = mDeck.getCards();
+    const int maxCards = qMin(cards.size(), mCardLabels.size());
+
+    // Sync lock state
+    bool newLockState[maxCards];
+    for (int iLock = 0; iLock < maxCards; ++iLock)
+    {
+        newLockState[iLock] = false;
+    }
+    for (int iOld = 0; iOld < maxCards; ++iOld)
+    {
+        if (mCardLabels[iOld] && mCardLabels[iOld]->isLocked())
+        {
+            if (mCardLabels[iOld]->getCard().isValid()
+                && (mCardLabels[iOld]->getCard().getId() != cards[iOld].getId() || newLockState[iOld]))
+            {
+                for (int iNew = 0; iNew < maxCards; ++iNew)
+                {
+                    if (mCardLabels[iNew]
+                        && mCardLabels[iOld]->getCard().getId() == cards[iNew].getId()
+                        && newLockState[iNew] == false)
+                    {
+                        newLockState[iNew] = true;
+                        break;
+                    }
+                }
+            }
+            else
+            {
+                newLockState[iOld] = true;
+            }
+        }
+    }
+
+    for (int iCard = 0; iCard < mCardLabels.size(); ++iCard)
+    {
+        if (iCard < cards.size())
+        {
+            setLocked(iCard - 1, newLockState[iCard]);
+            setUnit(iCard - 1, cards.at(iCard));
+        }
+        else
+        {
+           CCard defaultCard;
+           defaultCard.setName(QString("%1").arg(iCard));
+           setUnit(iCard - 1, defaultCard);
+        }
+    }
+}
+
 CCardLabel* CDeckWidget::getLabelForSlot(int slot) const
 {
-    CCardLabel* widget = 0;
-    if (slot == -1)
+    if (slot > -2 && slot < 10)
     {
-        // Commander slot
-        widget = mUi->commanderLabel;
+        return mCardLabels[slot + 1];
     }
-    else if (slot > -1 && slot < 10)
-    {
-        // Assault/Action slot
-        QString widgetName = QString("unit%1Label").arg(slot, 2, 10, QChar('0'));
-        widget = findChild<CCardLabel*>(widgetName);
-    }
-    return widget;
+    return 0;
 }
 

@@ -1,5 +1,6 @@
 #include "CWinLabel.h"
 #include "CGlobalConfig.h"
+#include "CCardLabel.h"
 #include <QPaintEvent>
 #include <QPainter>
 
@@ -54,15 +55,17 @@ void CWinLabel::paintEvent(QPaintEvent *ev)
 
 void CWinLabel::dropEvent(QDropEvent *ev)
 {
-    QString data = ev->mimeData()->text().toLatin1();
-    if (data.length() < 50)
+    if (ev && CCardLabel::isCardLabelDropData(ev->mimeData()))
     {
-        QStringList valueList = data.split("=");
-        if (valueList.size() == 2)
+        QString textData = ev->mimeData()->text().toLatin1();
+        QStringList valueList = textData.split(QRegExp("=|;"));
+        if (valueList.size() == 4)
         {
-            bool ok(true);
-            valueList.at(1).toInt(&ok);
-            if (ok)
+            bool ok1(true);
+            bool ok2(true);
+            valueList.at(1).toInt(&ok1);
+            valueList.at(3).toInt(&ok2);
+            if (ok1 && ok2)
             {
                 ev->accept();
                 emit unitDropped();
@@ -73,10 +76,16 @@ void CWinLabel::dropEvent(QDropEvent *ev)
 
 void CWinLabel::dragMoveEvent(QDragMoveEvent *ev)
 {
-    ev->accept();
+    if (ev && CCardLabel::isCardLabelDropData(ev->mimeData()))
+    {
+        ev->accept();
+    }
 }
 
 void CWinLabel::dragEnterEvent(QDragEnterEvent *ev)
 {
-    ev->acceptProposedAction();
+    if (ev && CCardLabel::isCardLabelDropData(ev->mimeData()))
+    {
+        ev->acceptProposedAction();
+    }
 }
