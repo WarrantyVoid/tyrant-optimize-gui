@@ -15,7 +15,7 @@
 #include <QHelpEvent>
 #include <QClipboard>
 
-const QString CMainWindow::VERSION = "1.4.3";
+const QString CMainWindow::VERSION = "1.4.4";
 const QString CMainWindow::AUTHOR = "warranty_void";
 const QString CMainWindow::HOMEPAGE = "<a href=\'http://www.hunterthinks.com/to/gui\'>hunterthinks.com/to/gui</a>";
 const QString CMainWindow::FORUM = "<a href=\'http://www.kongregate.com/forums/65-tyrant/topics/257807-automatic-deck-optimization\'>kongregate.com/[..]automatic-deck-optimization</a>";
@@ -620,6 +620,7 @@ void CMainWindow::toggleCardLabelling(bool checked)
 void CMainWindow::updateXmlData()
 {
     mUi->updateXmlAction->setEnabled(false);
+    mUi->updateXmlBetaAction->setEnabled(false);
     mCards.updateData(QWidget::sender() == mUi->updateXmlBetaAction);
 }
 
@@ -1038,6 +1039,7 @@ void CMainWindow::dataUpdated(const QStringList &result)
 {
     mFilterWidget->createOwnedAllCardsFile();
     mUi->updateXmlAction->setEnabled(true);
+    mUi->updateXmlBetaAction->setEnabled(true);
     QMessageBox::information(this, "xml update result", result.join("\n"));
 }
 
