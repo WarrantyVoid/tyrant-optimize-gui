@@ -20,7 +20,7 @@ CDeckWidget::CDeckWidget(QWidget *parent)
         QString widgetName = QString("unit%1Label").arg(iSlot, 2, 10, QChar('0'));
         mCardLabels.push_back(findChild<CCardLabel*>(widgetName));
     }
-    syncScrollArea(mMaxCards);
+    syncScrollArea(10);
 
     // Initialize widget connections
     connect(
