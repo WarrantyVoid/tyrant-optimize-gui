@@ -305,7 +305,8 @@ void CCardLabel::paintEvent(QPaintEvent *ev)
         if (mCard.hasHealth())
         {
             painter.drawPixmap(healthRect, QPixmap(cfg.getResourcePicturePath() + "HealthIcon.png"), QRectF(0, 0, 20, 20));
-            painter.drawText(healthRect.translated(-healthRect.width() - 1, 0), Qt::AlignRight | Qt::AlignVCenter, QString("%1").arg(mCard.getHealth()));
+
+            painter.drawText(healthRect.adjusted(-2 * healthRect.width() - 1, 0, -healthRect.width() - 1, 0), Qt::AlignRight | Qt::AlignVCenter, QString("%1").arg(mCard.getHealth()));
         }
 
         // Display owned status
