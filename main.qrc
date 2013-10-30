@@ -60,7 +60,13 @@
         <file>tyrant/ClockIcon3.png</file>
         <file>tyrant/ClockIcon4.png</file>
         <file>tyrant/AttackIcon.png</file>
+        <file>tyrant/AttackIcon_minus.png</file>
+        <file>tyrant/AttackIcon_plus.png</file>
+        <file>tyrant/AttackIcon_equal.png</file>
         <file>tyrant/HealthIcon.png</file>
+        <file>tyrant/HealthIcon_minus.png</file>
+        <file>tyrant/HealthIcon_plus.png</file>
+        <file>tyrant/HealthIcon_equal.png</file>
         <file>tyrant/AntiairSkillIcon.png</file>
         <file>tyrant/ArmoredSkillIcon.png</file>
         <file>tyrant/AttackSkillIcon.png</file>

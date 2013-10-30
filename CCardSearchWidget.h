@@ -28,7 +28,9 @@ signals:
     void cardSelected(unsigned int cardId);
 
 public slots:
-    void updateView(ECardStatusUpdate status = EOwnedStatusUpdate);
+    void switchAttackOption();
+    void switchHpOption();
+    void updateView(ECardStatusUpdate status = EOwnedStatusUpdate); 
     void updateLayout();
 
 protected:

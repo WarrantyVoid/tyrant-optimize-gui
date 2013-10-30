@@ -98,6 +98,8 @@ CMainWindow::CMainWindow(QWidget *parent)
         mFilterWidget, SLOT(setDeckBlockage(const CDeck&, bool)));
 
     mUi->baseDeckWidget->setLockEnabled(true);
+    mUi->baseDeckWidget->setVisible(false);
+    mUi->enemyDeckWidget->setVisible(false);
     scanForOwnedCards();
     loadDefaultSettings();
 
@@ -432,7 +434,7 @@ void CMainWindow::setProcessActivityChanged(bool isActive)
 
 void CMainWindow::loadDefaultSettings()
 {
-    QSettings settings("default.ini", QSettings::IniFormat); 
+    QSettings settings("default.ini", QSettings::IniFormat);
     restoreGeometry(settings.value("window/geometry").toByteArray());
     restoreState(settings.value("window/state").toByteArray());
 

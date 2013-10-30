@@ -30,6 +30,30 @@ CCardSearchWidget::CCardSearchWidget(QWidget *parent)
     mUi->finderView->setMinimumWidth(widthView + widthWidget - widthView);
 
     connect(
+        mUi->hpPlusButton, SIGNAL(clicked()),
+        this, SLOT(switchHpOption()));
+    connect(
+        mUi->hpEqualButton, SIGNAL(clicked()),
+        this, SLOT(switchHpOption()));
+    connect(
+        mUi->hpMinusButton, SIGNAL(clicked()),
+        this, SLOT(switchHpOption()));
+    connect(
+        mUi->attackPlusButton, SIGNAL(clicked()),
+        this, SLOT(switchAttackOption()));
+    connect(
+        mUi->attackEqualButton, SIGNAL(clicked()),
+        this, SLOT(switchAttackOption()));
+    connect(
+        mUi->attackMinusButton, SIGNAL(clicked()),
+        this, SLOT(switchAttackOption()));
+
+
+    connect(
+        mUi->skillBox, SIGNAL(editTextChanged(const QString&)),
+        this, SLOT(updateView()));
+
+    connect(
         mUi->nameBox, SIGNAL(editTextChanged(const QString&)),
         this, SLOT(updateView()));
     connect(
@@ -120,6 +144,36 @@ void CCardSearchWidget::saveParameterSettings(QSettings &settings)
 {
     mSearchParameters.fetchFromUi(*mUi);
     mSearchParameters.updateSettings(settings);
+}
+
+void CCardSearchWidget::switchAttackOption()
+{
+    int numStates = mUi->attackStackedWidget->count();
+    int curState = mUi->attackStackedWidget->currentIndex();
+    if (curState < numStates - 1)
+    {
+       mUi->attackStackedWidget->setCurrentIndex(curState + 1);
+    }
+    else
+    {
+        mUi->attackStackedWidget->setCurrentIndex(0);
+    }
+    updateView();
+}
+
+void CCardSearchWidget::switchHpOption()
+{
+    int numStates = mUi->hpStackedWidget->count();
+    int curState = mUi->hpStackedWidget->currentIndex();
+    if (curState < numStates - 1)
+    {
+       mUi->hpStackedWidget->setCurrentIndex(curState + 1);
+    }
+    else
+    {
+        mUi->hpStackedWidget->setCurrentIndex(0);
+    }
+    updateView();
 }
 
 void CCardSearchWidget::updateView(ECardStatusUpdate status)

@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>264</width>
-    <height>297</height>
+    <width>287</width>
+    <height>237</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -79,19 +79,79 @@
          </widget>
         </item>
         <item>
-         <widget class="QLabel" name="label_1">
+         <widget class="QStackedWidget" name="attackStackedWidget">
           <property name="sizePolicy">
            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
             <horstretch>0</horstretch>
             <verstretch>0</verstretch>
            </sizepolicy>
           </property>
-          <property name="pixmap">
-           <pixmap resource="main.qrc">:/img/tyrant/AttackIcon.png</pixmap>
+          <property name="currentIndex">
+           <number>0</number>
           </property>
-          <property name="margin">
-           <number>2</number>
-          </property>
+          <widget class="QWidget" name="attackPlusPage">
+           <layout class="QVBoxLayout" name="verticalLayout_5">
+            <property name="margin">
+             <number>0</number>
+            </property>
+            <item>
+             <widget class="QPushButton" name="attackPlusButton">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="icon">
+               <iconset resource="main.qrc">
+                <normaloff>:/img/tyrant/AttackIcon_plus.png</normaloff>:/img/tyrant/AttackIcon_plus.png</iconset>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </widget>
+          <widget class="QWidget" name="attackEqualPage">
+           <layout class="QVBoxLayout" name="verticalLayout_6">
+            <property name="margin">
+             <number>0</number>
+            </property>
+            <item>
+             <widget class="QPushButton" name="attackEqualButton">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="icon">
+               <iconset resource="main.qrc">
+                <normaloff>:/img/tyrant/AttackIcon_equal.png</normaloff>:/img/tyrant/AttackIcon_equal.png</iconset>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </widget>
+          <widget class="QWidget" name="attackMinusPage">
+           <layout class="QVBoxLayout" name="verticalLayout_7">
+            <property name="margin">
+             <number>0</number>
+            </property>
+            <item>
+             <widget class="QPushButton" name="attackMinusButton">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="icon">
+               <iconset resource="main.qrc">
+                <normaloff>:/img/tyrant/AttackIcon_minus.png</normaloff>:/img/tyrant/AttackIcon_minus.png</iconset>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </widget>
          </widget>
         </item>
         <item>
@@ -162,22 +222,91 @@
          </widget>
         </item>
         <item>
-         <widget class="QLabel" name="label_3">
+         <widget class="QStackedWidget" name="hpStackedWidget">
           <property name="sizePolicy">
-           <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+           <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
             <horstretch>0</horstretch>
             <verstretch>0</verstretch>
            </sizepolicy>
           </property>
-          <property name="text">
-           <string/>
+          <property name="currentIndex">
+           <number>0</number>
           </property>
-          <property name="pixmap">
-           <pixmap resource="main.qrc">:/img/tyrant/HealthIcon.png</pixmap>
-          </property>
-          <property name="margin">
-           <number>2</number>
-          </property>
+          <widget class="QWidget" name="hpPlusPage">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <layout class="QVBoxLayout" name="verticalLayout_2">
+            <property name="margin">
+             <number>0</number>
+            </property>
+            <item>
+             <widget class="QPushButton" name="hpPlusButton">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="icon">
+               <iconset resource="main.qrc">
+                <normaloff>:/img/tyrant/HealthIcon_plus.png</normaloff>:/img/tyrant/HealthIcon_plus.png</iconset>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </widget>
+          <widget class="QWidget" name="hpEqualPage">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <layout class="QVBoxLayout" name="verticalLayout_3">
+            <property name="margin">
+             <number>0</number>
+            </property>
+            <item>
+             <widget class="QPushButton" name="hpEqualButton">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="icon">
+               <iconset resource="main.qrc">
+                <normaloff>:/img/tyrant/HealthIcon_equal.png</normaloff>:/img/tyrant/HealthIcon_equal.png</iconset>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </widget>
+          <widget class="QWidget" name="hpMinusPage">
+           <layout class="QVBoxLayout" name="verticalLayout_4">
+            <property name="margin">
+             <number>0</number>
+            </property>
+            <item>
+             <widget class="QPushButton" name="hpMinusButton">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="icon">
+               <iconset resource="main.qrc">
+                <normaloff>:/img/tyrant/HealthIcon_minus.png</normaloff>:/img/tyrant/HealthIcon_minus.png</iconset>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </widget>
          </widget>
         </item>
         <item>
@@ -592,12 +721,12 @@
    <slot>setNum(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>286</x>
-     <y>123</y>
+     <x>275</x>
+     <y>32</y>
     </hint>
     <hint type="destinationlabel">
-     <x>253</x>
-     <y>127</y>
+     <x>159</x>
+     <y>34</y>
     </hint>
    </hints>
   </connection>
@@ -608,12 +737,12 @@
    <slot>setNum(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>283</x>
-     <y>81</y>
+     <x>275</x>
+     <y>64</y>
     </hint>
     <hint type="destinationlabel">
-     <x>254</x>
-     <y>82</y>
+     <x>130</x>
+     <y>66</y>
     </hint>
    </hints>
   </connection>

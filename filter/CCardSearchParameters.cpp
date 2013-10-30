@@ -15,8 +15,10 @@ CCardSearchParameters::CCardSearchParameters()
 , mTypeMask(0)
 , mFactionMask(0)
 , mTimerMask(0)
-, mMinAttack(0)
-, mMinHp(0)
+, mAttackCompare(ECompareEqualOrLarger)
+, mHpCompare(ECompareEqualOrLarger)
+, mAttackValue(0)
+, mHpValue(0)
 {
 }
 
@@ -57,8 +59,21 @@ void CCardSearchParameters::fetchFromUi(const Ui::CardSearchWidget &ui)
     mTimerMask |= ui.timer3Button->isChecked() ? 0x8 : 0;
     mTimerMask |= ui.timer4Button->isChecked() ? 0x10 : 0;
 
-    mMinAttack = ui.attackSlider->value();
-    mMinHp = ui.hpSlider->value();
+    switch(ui.attackStackedWidget->currentIndex())
+    {
+    case 1: mAttackCompare = ECompareEqual; break;
+    case 2: mAttackCompare = ECompareEqualOrLesser; break;
+    default: mAttackCompare = ECompareEqualOrLarger; break;
+    }
+    switch(ui.hpStackedWidget->currentIndex())
+    {
+    case 1: mHpCompare = ECompareEqual; break;
+    case 2: mHpCompare = ECompareEqualOrLesser; break;
+    default: mHpCompare = ECompareEqualOrLarger; break;
+    }
+
+    mAttackValue = ui.attackSlider->value();
+    mHpValue = ui.hpSlider->value();
 }
 
 void CCardSearchParameters::updateUi(Ui::CardSearchWidget &ui) const
@@ -88,8 +103,20 @@ void CCardSearchParameters::updateUi(Ui::CardSearchWidget &ui) const
     ui.timer3Button->setChecked((mTimerMask & 0x8) != 0);
     ui.timer4Button->setChecked((mTimerMask & 0x10) != 0);
 
-    ui.attackSlider->setValue(mMinAttack);
-    ui.hpSlider->setValue(mMinHp);
+    switch(mAttackCompare)
+    {
+    case ECompareEqual: ui.attackStackedWidget->setCurrentIndex(1); break;
+    case ECompareEqualOrLesser: ui.attackStackedWidget->setCurrentIndex(2); break;
+    default: ui.attackStackedWidget->setCurrentIndex(0); break;
+    }
+    switch(mHpCompare)
+    {
+    case ECompareEqual: ui.hpStackedWidget->setCurrentIndex(1); break;
+    case ECompareEqualOrLesser: ui.hpStackedWidget->setCurrentIndex(2); break;
+    default: ui.hpStackedWidget->setCurrentIndex(0); break;
+    }
+    ui.attackSlider->setValue(mAttackValue);
+    ui.hpSlider->setValue(mHpValue);
 }
 
 void CCardSearchParameters::fetchFromSettings(QSettings &settings)
@@ -107,8 +134,10 @@ void CCardSearchParameters::fetchFromSettings(QSettings &settings)
     mTypeMask = settings.value("typeMask", mTypeMask).toInt();
     mFactionMask = settings.value("factionMask", mFactionMask).toInt();
     mTimerMask = settings.value("timerMask", mTimerMask).toInt();
-    mMinAttack = settings.value("minAttack", mMinAttack).toInt();
-    mMinHp = settings.value("minHp", mMinHp).toInt();
+    mAttackCompare = static_cast<EComparisonMethod>(settings.value("attackCompare").toInt());
+    mHpCompare = static_cast<EComparisonMethod>(settings.value("hpCompare").toInt());
+    mAttackValue = settings.value("attackValue", mAttackValue).toInt();
+    mHpValue = settings.value("hpValue", mHpValue).toInt();
     settings.endGroup();
 }
 
@@ -121,8 +150,10 @@ void CCardSearchParameters::updateSettings(QSettings &settings) const
     settings.setValue("typeMask", mTypeMask);
     settings.setValue("factionMask", mFactionMask);
     settings.setValue("timerMask", mTimerMask);
-    settings.setValue("minAttack", mMinAttack);
-    settings.setValue("minHp", mMinHp);
+    settings.setValue("attackCompare", static_cast<int>(mAttackCompare));
+    settings.setValue("hpCompare", static_cast<int>(mHpCompare));
+    settings.setValue("attackValue", mAttackValue);
+    settings.setValue("hpValue", mHpValue);
     settings.endGroup();
 }
 
@@ -137,12 +168,28 @@ bool CCardSearchParameters::checkCard(const CCard &card, int &/*num*/) const
 
     if (pass)
     {
-        pass = qMax(0, card.getAttack()) >= mMinAttack;
+        switch(mAttackCompare)
+        {
+        case ECompareLarger: pass = qMax(0, card.getAttack()) > mAttackValue; break;
+        case ECompareEqualOrLarger: pass = qMax(0, card.getAttack()) >= mAttackValue; break;
+        case ECompareEqual: pass = qMax(0, card.getAttack()) == mAttackValue; break;
+        case ECompareEqualOrLesser: pass = qMax(0, card.getAttack()) <= mAttackValue; break;
+        case ECompareLesser: pass = qMax(0, card.getAttack()) < mAttackValue; break;
+        default: pass = false; break;
+        }
     }
 
     if (pass)
     {
-        pass = qMax(0,card.getHealth()) >= mMinHp;
+        switch(mHpCompare)
+        {
+        case ECompareLarger: pass = qMax(0, card.getHealth()) > mHpValue; break;
+        case ECompareEqualOrLarger: pass = qMax(0, card.getHealth()) >= mHpValue; break;
+        case ECompareEqual: pass = qMax(0, card.getHealth()) == mHpValue; break;
+        case ECompareEqualOrLesser: pass = qMax(0, card.getHealth()) <= mHpValue; break;
+        case ECompareLesser: pass = qMax(0, card.getHealth()) < mHpValue; break;
+        default: pass = false; break;
+        }
     }
 
 

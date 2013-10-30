@@ -11,6 +11,15 @@ class CardSearchWidget;
 }
 class CCardTable;
 
+enum EComparisonMethod
+{
+    ECompareLarger,
+    ECompareEqualOrLarger,
+    ECompareEqual,
+    ECompareEqualOrLesser,
+    ECompareLesser
+};
+
 class CCardSearchParameters : public ICardCheck
 {
 public:
@@ -36,8 +45,10 @@ private:
     TSearchMask mTypeMask;
     TSearchMask mFactionMask;
     TSearchMask mTimerMask;
-    int mMinAttack;
-    int mMinHp;
+    EComparisonMethod mAttackCompare;
+    EComparisonMethod mHpCompare;
+    int mAttackValue;
+    int mHpValue;
 };
 
 #endif // CCARDSEARCHPARAMETERS_H
