@@ -119,6 +119,7 @@ void CProcessParameters::updateUi(Ui::MainWindow &ui) const
     }
 
     ui.enemyDeckEdit->setDeckId(mEnemyDeck);
+    ui.enemyDeckWidget->setDeck(mEnemyDeck);
     ui.battleGroundBox->setCurrentIndex(ui.battleGroundBox->findText(mBattleGround)); 
     ui.ownedCardsFileBox->setCurrentIndex(qMax(0, ui.ownedCardsFileBox->findText(mOwnedCardsFile)));
     ui.achievementBox->setCurrentIndex(ui.achievementBox->findData(mAchievement));
