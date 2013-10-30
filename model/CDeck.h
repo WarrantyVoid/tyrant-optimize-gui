@@ -27,6 +27,7 @@ public:
     void setBattleground(unsigned int battlegroundId);
     void addCard(const CCard& card);
     void replaceCard(int index, const CCard& card);
+    void trimCards(int maxCards);
     void clearCards();
 
     unsigned int getId() const;

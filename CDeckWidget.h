@@ -34,7 +34,8 @@ public:
     void setLockEnabled(bool enabled);
     void setLocked(int slot, bool locked);
     bool isLocked(int slot) const;
-
+    void setMaxCards(int maxCards);
+    int getMaxCards() const;
     void setDropEnabled(bool enabled);
     void setWinLabel(const SOptimizationStatus &status, EOptimizationMode mode);
     void setWinLabel(const QPixmap &pixmap);
@@ -56,6 +57,7 @@ private:
     const CCard& getUnit(int slot) const;
     void setUnit(int slot, const CCard &unit);
     void syncAllUnits();
+    void syncScrollArea(int numCards);
 
 private:
     CCardLabel* getLabelForSlot(int slot) const;
@@ -66,6 +68,7 @@ private:
     CDeckTable &mDecks;
     bool mIsLocked;
     CDeck mDeck;
+    int mMaxCards;
 };
 
 #endif // CDECKWIDGET_H

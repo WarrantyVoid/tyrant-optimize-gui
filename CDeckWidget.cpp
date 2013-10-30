@@ -9,22 +9,24 @@ CDeckWidget::CDeckWidget(QWidget *parent)
 , mDecks(CDeckTable::getDeckTable())
 , mIsLocked(false)
 , mDeck()
+, mMaxCards(20)
 {
     mUi->setupUi(this);
 
     // Init card labels for indexed widget acess
     mCardLabels.push_back(mUi->commanderLabel);
-    for(int iSlot = 0; iSlot < 10; ++iSlot)
+    for(int iSlot = 0; iSlot < 20; ++iSlot)
     {
         QString widgetName = QString("unit%1Label").arg(iSlot, 2, 10, QChar('0'));
         mCardLabels.push_back(findChild<CCardLabel*>(widgetName));
     }
+    syncScrollArea(mMaxCards);
 
     // Initialize widget connections
     connect(
         mUi->winLabel, SIGNAL(unitDropped()),
         this, SLOT(updateDeck()));
-    for(int iSlot = -1; iSlot < 10; ++iSlot)
+    for(int iSlot = -1; iSlot < mMaxCards; ++iSlot)
     {
         CCardLabel *widget = getLabelForSlot(iSlot);
         if (widget)
@@ -39,7 +41,7 @@ CDeckWidget::CDeckWidget(QWidget *parent)
 void CDeckWidget::setDropEnabled(bool enabled)
 {
     mUi->winLabel->setAcceptDrops(enabled);
-    for(int i = -1; i < 10; ++i)
+    for(int i = -1; i < mMaxCards; ++i)
     {
         CCardLabel *widget = getLabelForSlot(i);
         if (widget)
@@ -51,7 +53,7 @@ void CDeckWidget::setDropEnabled(bool enabled)
 
 void CDeckWidget::setLockEnabled(bool enabled)
 {
-    for(int i = -1; i < 10; ++i)
+    for(int i = -1; i < mMaxCards; ++i)
     {
         CCardLabel *widget = getLabelForSlot(i);
         if (widget)
@@ -61,7 +63,7 @@ void CDeckWidget::setLockEnabled(bool enabled)
     }
 }
 
-void  CDeckWidget::setLocked(int slot, bool locked)
+void CDeckWidget::setLocked(int slot, bool locked)
 {
     CCardLabel* widget = getLabelForSlot(slot);
     if (widget)
@@ -70,7 +72,7 @@ void  CDeckWidget::setLocked(int slot, bool locked)
     }
 }
 
-bool  CDeckWidget::isLocked(int slot) const
+bool CDeckWidget::isLocked(int slot) const
 {
     CCardLabel* widget = getLabelForSlot(slot);
     if (widget)
@@ -78,6 +80,18 @@ bool  CDeckWidget::isLocked(int slot) const
         return widget->isLocked();
     }
     return false;
+}
+
+void CDeckWidget::setMaxCards(int maxCards)
+{
+    mMaxCards = maxCards;
+    mDeck.trimCards(mMaxCards + 1);
+    syncAllUnits();
+}
+
+int CDeckWidget::getMaxCards() const
+{
+    return mMaxCards;
 }
 
 void CDeckWidget::setWinLabel(const SOptimizationStatus &status, EOptimizationMode mode)
@@ -171,7 +185,7 @@ void CDeckWidget::updateView()
 void CDeckWidget::updateDeck()
 {
     mDeck.clearCards();
-    for (int i = -1; i < 10; ++i)
+    for (int i = -1; i < mMaxCards; ++i)
     {
         const CCard &unit = getUnit(i);
         if (unit.isValid())
@@ -216,7 +230,8 @@ void CDeckWidget::setUnit(int slot, const CCard &unit)
 void CDeckWidget::syncAllUnits()
 {
     const QList<CCard> &cards = mDeck.getCards();
-    const int maxCards = qMin(cards.size(), mCardLabels.size());
+    const int maxCards = qMin(cards.size(), mMaxCards + 1);
+    syncScrollArea(maxCards - 1);
 
     // Sync lock state
     bool newLockState[maxCards];
@@ -265,9 +280,22 @@ void CDeckWidget::syncAllUnits()
     }
 }
 
+void CDeckWidget::syncScrollArea(int numCards)
+{
+    for(int iLabel = 11; iLabel < mCardLabels.size(); ++iLabel)
+    {
+        if (mCardLabels[iLabel])
+        {
+            mCardLabels[iLabel]->setVisible(iLabel <= numCards);
+        }
+    }
+    mUi->deckScrollAreaWidgetContents->setGeometry(0, 0, 420, qMax(220, (numCards + 4)  / 5 * 110));
+
+}
+
 CCardLabel* CDeckWidget::getLabelForSlot(int slot) const
 {
-    if (slot > -2 && slot < 10)
+    if (slot > -2 && slot < mMaxCards)
     {
         return mCardLabels[slot + 1];
     }

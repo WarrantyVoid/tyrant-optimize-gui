@@ -6,272 +6,655 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>510</width>
-    <height>226</height>
+    <width>502</width>
+    <height>222</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Form</string>
   </property>
-  <layout class="QGridLayout" name="gridLayout">
+  <layout class="QHBoxLayout" name="horizontalLayout">
+   <property name="spacing">
+    <number>0</number>
+   </property>
    <property name="margin">
     <number>0</number>
    </property>
-   <item row="1" column="1">
-    <widget class="CCardLabel" name="unit05Label">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Ignored" vsizetype="Ignored">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
+   <item>
+    <layout class="QVBoxLayout" name="verticalLayout">
+     <property name="spacing">
+      <number>0</number>
      </property>
-     <property name="minimumSize">
-      <size>
-       <width>80</width>
-       <height>110</height>
-      </size>
-     </property>
-     <property name="pixmap">
-      <pixmap resource="main.qrc">:/img/tyrant/CardBack.png</pixmap>
-     </property>
-     <property name="scaledContents">
-      <bool>true</bool>
-     </property>
-    </widget>
-   </item>
-   <item row="0" column="2">
-    <widget class="CCardLabel" name="unit01Label">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Ignored" vsizetype="Ignored">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-     <property name="minimumSize">
-      <size>
-       <width>80</width>
-       <height>110</height>
-      </size>
-     </property>
-     <property name="pixmap">
-      <pixmap resource="main.qrc">:/img/tyrant/CardBack.png</pixmap>
-     </property>
-     <property name="scaledContents">
-      <bool>true</bool>
-     </property>
-    </widget>
-   </item>
-   <item row="1" column="5">
-    <widget class="CCardLabel" name="unit09Label">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Ignored" vsizetype="Ignored">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-     <property name="minimumSize">
-      <size>
-       <width>80</width>
-       <height>110</height>
-      </size>
-     </property>
-     <property name="pixmap">
-      <pixmap resource="main.qrc">:/img/tyrant/CardBack.png</pixmap>
-     </property>
-     <property name="scaledContents">
-      <bool>true</bool>
-     </property>
-    </widget>
-   </item>
-   <item row="0" column="1">
-    <widget class="CCardLabel" name="unit00Label">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Ignored" vsizetype="Ignored">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-     <property name="minimumSize">
-      <size>
-       <width>80</width>
-       <height>110</height>
-      </size>
-     </property>
-     <property name="pixmap">
-      <pixmap resource="main.qrc">:/img/tyrant/CardBack.png</pixmap>
-     </property>
-     <property name="scaledContents">
-      <bool>true</bool>
-     </property>
-    </widget>
-   </item>
-   <item row="1" column="3">
-    <widget class="CCardLabel" name="unit07Label">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Ignored" vsizetype="Ignored">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-     <property name="minimumSize">
-      <size>
-       <width>80</width>
-       <height>110</height>
-      </size>
-     </property>
-     <property name="pixmap">
-      <pixmap resource="main.qrc">:/img/tyrant/CardBack.png</pixmap>
-     </property>
-     <property name="scaledContents">
-      <bool>true</bool>
-     </property>
-    </widget>
-   </item>
-   <item row="1" column="4">
-    <widget class="CCardLabel" name="unit08Label">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Ignored" vsizetype="Ignored">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-     <property name="minimumSize">
-      <size>
-       <width>80</width>
-       <height>110</height>
-      </size>
-     </property>
-     <property name="pixmap">
-      <pixmap resource="main.qrc">:/img/tyrant/CardBack.png</pixmap>
-     </property>
-     <property name="scaledContents">
-      <bool>true</bool>
-     </property>
-    </widget>
-   </item>
-   <item row="0" column="5">
-    <widget class="CCardLabel" name="unit04Label">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Ignored" vsizetype="Ignored">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-     <property name="minimumSize">
-      <size>
-       <width>80</width>
-       <height>110</height>
-      </size>
-     </property>
-     <property name="pixmap">
-      <pixmap resource="main.qrc">:/img/tyrant/CardBack.png</pixmap>
-     </property>
-     <property name="scaledContents">
-      <bool>true</bool>
-     </property>
-    </widget>
-   </item>
-   <item row="1" column="0">
-    <widget class="CWinLabel" name="winLabel">
-     <property name="styleSheet">
-      <string notr="true">QLabel
+     <item>
+      <widget class="CCardLabel" name="commanderLabel">
+       <property name="minimumSize">
+        <size>
+         <width>80</width>
+         <height>110</height>
+        </size>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>80</width>
+         <height>110</height>
+        </size>
+       </property>
+       <property name="baseSize">
+        <size>
+         <width>80</width>
+         <height>110</height>
+        </size>
+       </property>
+       <property name="pixmap">
+        <pixmap resource="main.qrc">:/img/tyrant/CardBack.png</pixmap>
+       </property>
+       <property name="scaledContents">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="CWinLabel" name="winLabel">
+       <property name="minimumSize">
+        <size>
+         <width>80</width>
+         <height>110</height>
+        </size>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>80</width>
+         <height>110</height>
+        </size>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">QLabel
 {
 	font: 75 12pt &quot;Lucida Sans Unicode&quot;;
 	background-color: qradialgradient(spread:pad, cx:0.5, cy:0.5, radius:0.5, fx:0.5, fy:0.5, stop:0 rgba(100, 100, 100, 255), stop:0.9 rgba(66, 66, 66, 255), stop:1 rgba(66, 66, 66, 255));
 	color: rgb(255, 255, 255);
 }</string>
-     </property>
-     <property name="alignment">
-      <set>Qt::AlignCenter</set>
-     </property>
-    </widget>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignCenter</set>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <spacer name="verticalSpacer">
+       <property name="orientation">
+        <enum>Qt::Vertical</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>0</width>
+         <height>0</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+    </layout>
    </item>
-   <item row="0" column="3">
-    <widget class="CCardLabel" name="unit02Label">
+   <item>
+    <widget class="QScrollArea" name="deckScrollArea">
      <property name="sizePolicy">
-      <sizepolicy hsizetype="Ignored" vsizetype="Ignored">
+      <sizepolicy hsizetype="Expanding" vsizetype="Ignored">
        <horstretch>0</horstretch>
        <verstretch>0</verstretch>
       </sizepolicy>
      </property>
      <property name="minimumSize">
       <size>
-       <width>80</width>
-       <height>110</height>
+       <width>420</width>
+       <height>221</height>
       </size>
      </property>
-     <property name="pixmap">
-      <pixmap resource="main.qrc">:/img/tyrant/CardBack.png</pixmap>
+     <property name="frameShape">
+      <enum>QFrame::NoFrame</enum>
      </property>
-     <property name="scaledContents">
-      <bool>true</bool>
+     <property name="lineWidth">
+      <number>0</number>
      </property>
-    </widget>
-   </item>
-   <item row="0" column="0">
-    <widget class="CCardLabel" name="commanderLabel">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Ignored" vsizetype="Ignored">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
+     <property name="verticalScrollBarPolicy">
+      <enum>Qt::ScrollBarAlwaysOn</enum>
      </property>
-     <property name="minimumSize">
-      <size>
-       <width>80</width>
-       <height>110</height>
-      </size>
+     <property name="horizontalScrollBarPolicy">
+      <enum>Qt::ScrollBarAlwaysOff</enum>
      </property>
-     <property name="pixmap">
-      <pixmap resource="main.qrc">:/img/tyrant/CardBack.png</pixmap>
+     <property name="widgetResizable">
+      <bool>false</bool>
      </property>
-     <property name="scaledContents">
-      <bool>true</bool>
-     </property>
-    </widget>
-   </item>
-   <item row="0" column="4">
-    <widget class="CCardLabel" name="unit03Label">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Ignored" vsizetype="Ignored">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-     <property name="minimumSize">
-      <size>
-       <width>80</width>
-       <height>110</height>
-      </size>
-     </property>
-     <property name="pixmap">
-      <pixmap resource="main.qrc">:/img/tyrant/CardBack.png</pixmap>
-     </property>
-     <property name="scaledContents">
-      <bool>true</bool>
-     </property>
-    </widget>
-   </item>
-   <item row="1" column="2">
-    <widget class="CCardLabel" name="unit06Label">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Ignored" vsizetype="Ignored">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-     <property name="minimumSize">
-      <size>
-       <width>80</width>
-       <height>110</height>
-      </size>
-     </property>
-     <property name="pixmap">
-      <pixmap resource="main.qrc">:/img/tyrant/CardBack.png</pixmap>
-     </property>
-     <property name="scaledContents">
-      <bool>true</bool>
-     </property>
+     <widget class="QWidget" name="deckScrollAreaWidgetContents">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>0</y>
+        <width>420</width>
+        <height>440</height>
+       </rect>
+      </property>
+      <layout class="QGridLayout" name="gridLayout">
+       <property name="margin">
+        <number>0</number>
+       </property>
+       <property name="spacing">
+        <number>0</number>
+       </property>
+       <item row="3" column="2">
+        <widget class="CCardLabel" name="unit17Label">
+         <property name="minimumSize">
+          <size>
+           <width>80</width>
+           <height>110</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>80</width>
+           <height>110</height>
+          </size>
+         </property>
+         <property name="baseSize">
+          <size>
+           <width>80</width>
+           <height>110</height>
+          </size>
+         </property>
+         <property name="pixmap">
+          <pixmap resource="main.qrc">:/img/tyrant/CardBack.png</pixmap>
+         </property>
+         <property name="scaledContents">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="3">
+        <widget class="CCardLabel" name="unit13Label">
+         <property name="minimumSize">
+          <size>
+           <width>80</width>
+           <height>110</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>80</width>
+           <height>110</height>
+          </size>
+         </property>
+         <property name="baseSize">
+          <size>
+           <width>80</width>
+           <height>110</height>
+          </size>
+         </property>
+         <property name="pixmap">
+          <pixmap resource="main.qrc">:/img/tyrant/CardBack.png</pixmap>
+         </property>
+         <property name="scaledContents">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="3">
+        <widget class="CCardLabel" name="unit03Label">
+         <property name="minimumSize">
+          <size>
+           <width>80</width>
+           <height>110</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>80</width>
+           <height>110</height>
+          </size>
+         </property>
+         <property name="pixmap">
+          <pixmap resource="main.qrc">:/img/tyrant/CardBack.png</pixmap>
+         </property>
+         <property name="scaledContents">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="1">
+        <widget class="CCardLabel" name="unit01Label">
+         <property name="minimumSize">
+          <size>
+           <width>80</width>
+           <height>110</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>80</width>
+           <height>110</height>
+          </size>
+         </property>
+         <property name="pixmap">
+          <pixmap resource="main.qrc">:/img/tyrant/CardBack.png</pixmap>
+         </property>
+         <property name="scaledContents">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item row="3" column="4">
+        <widget class="CCardLabel" name="unit19Label">
+         <property name="minimumSize">
+          <size>
+           <width>80</width>
+           <height>110</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>80</width>
+           <height>110</height>
+          </size>
+         </property>
+         <property name="baseSize">
+          <size>
+           <width>80</width>
+           <height>110</height>
+          </size>
+         </property>
+         <property name="pixmap">
+          <pixmap resource="main.qrc">:/img/tyrant/CardBack.png</pixmap>
+         </property>
+         <property name="scaledContents">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="3">
+        <widget class="CCardLabel" name="unit08Label">
+         <property name="minimumSize">
+          <size>
+           <width>80</width>
+           <height>110</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>80</width>
+           <height>110</height>
+          </size>
+         </property>
+         <property name="pixmap">
+          <pixmap resource="main.qrc">:/img/tyrant/CardBack.png</pixmap>
+         </property>
+         <property name="scaledContents">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="0">
+        <widget class="CCardLabel" name="unit10Label">
+         <property name="minimumSize">
+          <size>
+           <width>80</width>
+           <height>110</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>80</width>
+           <height>110</height>
+          </size>
+         </property>
+         <property name="baseSize">
+          <size>
+           <width>80</width>
+           <height>110</height>
+          </size>
+         </property>
+         <property name="pixmap">
+          <pixmap resource="main.qrc">:/img/tyrant/CardBack.png</pixmap>
+         </property>
+         <property name="scaledContents">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="0">
+        <widget class="CCardLabel" name="unit00Label">
+         <property name="minimumSize">
+          <size>
+           <width>80</width>
+           <height>110</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>80</width>
+           <height>110</height>
+          </size>
+         </property>
+         <property name="pixmap">
+          <pixmap resource="main.qrc">:/img/tyrant/CardBack.png</pixmap>
+         </property>
+         <property name="scaledContents">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="4">
+        <widget class="CCardLabel" name="unit04Label">
+         <property name="minimumSize">
+          <size>
+           <width>80</width>
+           <height>110</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>80</width>
+           <height>110</height>
+          </size>
+         </property>
+         <property name="pixmap">
+          <pixmap resource="main.qrc">:/img/tyrant/CardBack.png</pixmap>
+         </property>
+         <property name="scaledContents">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item row="3" column="3">
+        <widget class="CCardLabel" name="unit18Label">
+         <property name="minimumSize">
+          <size>
+           <width>80</width>
+           <height>110</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>80</width>
+           <height>110</height>
+          </size>
+         </property>
+         <property name="baseSize">
+          <size>
+           <width>80</width>
+           <height>110</height>
+          </size>
+         </property>
+         <property name="pixmap">
+          <pixmap resource="main.qrc">:/img/tyrant/CardBack.png</pixmap>
+         </property>
+         <property name="scaledContents">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="1">
+        <widget class="CCardLabel" name="unit11Label">
+         <property name="minimumSize">
+          <size>
+           <width>80</width>
+           <height>110</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>80</width>
+           <height>110</height>
+          </size>
+         </property>
+         <property name="baseSize">
+          <size>
+           <width>80</width>
+           <height>110</height>
+          </size>
+         </property>
+         <property name="pixmap">
+          <pixmap resource="main.qrc">:/img/tyrant/CardBack.png</pixmap>
+         </property>
+         <property name="scaledContents">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="2">
+        <widget class="CCardLabel" name="unit02Label">
+         <property name="minimumSize">
+          <size>
+           <width>80</width>
+           <height>110</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>80</width>
+           <height>110</height>
+          </size>
+         </property>
+         <property name="pixmap">
+          <pixmap resource="main.qrc">:/img/tyrant/CardBack.png</pixmap>
+         </property>
+         <property name="scaledContents">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="2">
+        <widget class="CCardLabel" name="unit12Label">
+         <property name="minimumSize">
+          <size>
+           <width>80</width>
+           <height>110</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>80</width>
+           <height>110</height>
+          </size>
+         </property>
+         <property name="baseSize">
+          <size>
+           <width>80</width>
+           <height>110</height>
+          </size>
+         </property>
+         <property name="pixmap">
+          <pixmap resource="main.qrc">:/img/tyrant/CardBack.png</pixmap>
+         </property>
+         <property name="scaledContents">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="2">
+        <widget class="CCardLabel" name="unit07Label">
+         <property name="minimumSize">
+          <size>
+           <width>80</width>
+           <height>110</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>80</width>
+           <height>110</height>
+          </size>
+         </property>
+         <property name="pixmap">
+          <pixmap resource="main.qrc">:/img/tyrant/CardBack.png</pixmap>
+         </property>
+         <property name="scaledContents">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="1">
+        <widget class="CCardLabel" name="unit06Label">
+         <property name="minimumSize">
+          <size>
+           <width>80</width>
+           <height>110</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>80</width>
+           <height>110</height>
+          </size>
+         </property>
+         <property name="pixmap">
+          <pixmap resource="main.qrc">:/img/tyrant/CardBack.png</pixmap>
+         </property>
+         <property name="scaledContents">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="4">
+        <widget class="CCardLabel" name="unit14Label">
+         <property name="minimumSize">
+          <size>
+           <width>80</width>
+           <height>110</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>80</width>
+           <height>110</height>
+          </size>
+         </property>
+         <property name="baseSize">
+          <size>
+           <width>80</width>
+           <height>110</height>
+          </size>
+         </property>
+         <property name="pixmap">
+          <pixmap resource="main.qrc">:/img/tyrant/CardBack.png</pixmap>
+         </property>
+         <property name="scaledContents">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item row="3" column="0">
+        <widget class="CCardLabel" name="unit15Label">
+         <property name="minimumSize">
+          <size>
+           <width>80</width>
+           <height>110</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>80</width>
+           <height>110</height>
+          </size>
+         </property>
+         <property name="baseSize">
+          <size>
+           <width>80</width>
+           <height>110</height>
+          </size>
+         </property>
+         <property name="pixmap">
+          <pixmap resource="main.qrc">:/img/tyrant/CardBack.png</pixmap>
+         </property>
+         <property name="scaledContents">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="4">
+        <widget class="CCardLabel" name="unit09Label">
+         <property name="minimumSize">
+          <size>
+           <width>80</width>
+           <height>110</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>80</width>
+           <height>110</height>
+          </size>
+         </property>
+         <property name="pixmap">
+          <pixmap resource="main.qrc">:/img/tyrant/CardBack.png</pixmap>
+         </property>
+         <property name="scaledContents">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item row="3" column="1">
+        <widget class="CCardLabel" name="unit16Label">
+         <property name="minimumSize">
+          <size>
+           <width>80</width>
+           <height>110</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>80</width>
+           <height>110</height>
+          </size>
+         </property>
+         <property name="baseSize">
+          <size>
+           <width>80</width>
+           <height>110</height>
+          </size>
+         </property>
+         <property name="pixmap">
+          <pixmap resource="main.qrc">:/img/tyrant/CardBack.png</pixmap>
+         </property>
+         <property name="scaledContents">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="0">
+        <widget class="CCardLabel" name="unit05Label">
+         <property name="minimumSize">
+          <size>
+           <width>80</width>
+           <height>110</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>80</width>
+           <height>110</height>
+          </size>
+         </property>
+         <property name="pixmap">
+          <pixmap resource="main.qrc">:/img/tyrant/CardBack.png</pixmap>
+         </property>
+         <property name="scaledContents">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="5">
+        <spacer name="horizontalSpacer">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>20</width>
+           <height>20</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+      </layout>
+     </widget>
     </widget>
    </item>
   </layout>

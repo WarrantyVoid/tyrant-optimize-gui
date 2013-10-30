@@ -499,7 +499,7 @@ bool CMainWindow::eventFilter(QObject *obj, QEvent *e)
                     int yRel = (QApplication::desktop()->height() - he->globalY() < reqH)
                         ? -reqH
                         : 20;
-                    mDeckToolTip->move(he->globalX() + xRel, he->globalY() + yRel);
+                    mDeckToolTip->setGeometry(he->globalX() + xRel, he->globalY() + yRel, 440, 220);
                     mDeckToolTip->setVisible(true);
                     he->accept();
                 }

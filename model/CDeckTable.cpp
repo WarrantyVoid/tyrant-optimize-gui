@@ -89,7 +89,7 @@ bool CDeckTable::deckToHash(const CDeck &deck, QString &hashStr) const
 bool CDeckTable::hashToDeck(const QString &hashStr, CDeck &deck) const
 {
     QList<unsigned int> ids;
-    int maxIds = 11;
+    int maxIds = 20;
     int lastIndex = -1;
     unsigned int lastId = 0;
     unsigned int extId = 0;
@@ -232,7 +232,7 @@ bool CDeckTable::strToDeck(const QString &deckStr, CDeck &deck) const
 
             if (curCard.isValid() && num > 0)
             {
-                for(int iNum = 0; iNum < num && customDeckCards.size() < 12; ++iNum)
+                for(int iNum = 0; iNum < num && customDeckCards.size() < 21; ++iNum)
                 {
                     deck.addCard(curCard);
                 }

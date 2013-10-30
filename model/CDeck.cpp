@@ -54,6 +54,19 @@ void CDeck::replaceCard(int index, const CCard& card)
     }
 }
 
+void CDeck::trimCards(int maxCards)
+{
+    if (maxCards < mCards.size())
+    {
+        TCardList newCards;
+        for (int i = 0; i < maxCards; ++i)
+        {
+            newCards.push_back(mCards[i]);
+        }
+        mCards = newCards;
+    }
+}
+
 void CDeck::clearCards()
 {
     mCards.clear();
