@@ -210,6 +210,7 @@ void CCardLabel::paintEvent(QPaintEvent *ev)
     QRectF delayRect(translatePoint(155 - 40, 24), translatePoint(155,  24 + 40));
     QRectF attackRect(translatePoint(5 + 2, 215 - 20), translatePoint(5 + 2 + 20, 215));
     QRectF healthRect(translatePoint(155 - 2 - 20, 215 - 20), translatePoint(155 - 2, 215));
+    QRectF ownedRect(translatePoint(155 - 60 - 2, 144 - 28), translatePoint(155 - 2, 144));
     QPointF upgradePos(translatePoint(50, 193));
     QPointF uniquePos(translatePoint(5 + 2, 144 - 28 - 2));
     QPointF skillPos(translatePoint(5 + 2, 144 + 8));
@@ -310,21 +311,28 @@ void CCardLabel::paintEvent(QPaintEvent *ev)
         }
 
         // Display owned status
-        if (cfg.isCardShadingEnabled() && !mCards.isCardOwned(mCard))
-        {
-            QBrush darkBrush(Qt::black);
-            painter.setBrush(darkBrush);
-            painter.setOpacity(0.6);
-            painter.fillRect(rect(), Qt::SolidPattern);
-        }
-
         SCardStatus status = mCards.getCardStatus(mCard);
+        {
+            painter.setPen(Qt::green);
+            QString ownageStr("x0");
+            if (status.numOwned > 0)
+            {
+                ownageStr = QString("x%1").arg(status.numOwned);
+            }
+            painter.drawText(ownedRect, Qt::AlignRight | Qt::AlignVCenter, ownageStr);
+        }
+        if (cfg.isCardShadingEnabled() && status.numOwned <= 0)
+        {
+            painter.setPen(Qt::NoPen);
+            painter.setBrush(Qt::black);
+            painter.setOpacity(0.6);
+            painter.drawRoundedRect(rect(), 2.0, 2.0);
+        }
         if (cfg.isBlackLabellingEnabled() && status.isBlack)
         {
             // Display black list status
-            QBrush darkBrush(Qt::black);
             painter.setOpacity(0.6);
-            painter.fillRect(blackRect, darkBrush);
+            painter.fillRect(blackRect, QBrush(Qt::black));
             painter.setOpacity(1.0);
             painter.drawText(blackRect, Qt::AlignCenter, "Blacklisted");
         }
