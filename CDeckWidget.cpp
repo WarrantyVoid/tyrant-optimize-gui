@@ -179,6 +179,7 @@ void CDeckWidget::setDeck(const QString &deckSpecParam, EDeckSpecificationType s
 
 void CDeckWidget::updateView()
 {
+    mUi->deckScrollAreaWidgetContents->update();
     update();
 }
 
