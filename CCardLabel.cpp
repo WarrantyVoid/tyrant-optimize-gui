@@ -331,6 +331,7 @@ void CCardLabel::paintEvent(QPaintEvent *ev)
         if (cfg.isBlackLabellingEnabled() && status.isBlack)
         {
             // Display black list status
+            painter.setPen(Qt::white);
             painter.setOpacity(0.6);
             painter.fillRect(blackRect, QBrush(Qt::black));
             painter.setOpacity(1.0);
@@ -339,7 +340,7 @@ void CCardLabel::paintEvent(QPaintEvent *ev)
         else if (cfg.isWhiteLabellingEnabled() && status.isWhite)
         {
             // Display white list status
-            painter.setPen(QPen(Qt::black));
+            painter.setPen(Qt::black);
             painter.setOpacity(0.6);
             painter.fillRect(blackRect, QBrush(Qt::white));
             painter.setOpacity(1.0);
