@@ -276,6 +276,7 @@ void CDeckWidget::syncAllUnits()
         {
            CCard defaultCard;
            defaultCard.setName(QString("%1").arg(iCard));
+           setLocked(iCard - 1, false);
            setUnit(iCard - 1, defaultCard);
         }
     }
