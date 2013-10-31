@@ -89,3 +89,8 @@ void CWinLabel::dragEnterEvent(QDragEnterEvent *ev)
         ev->acceptProposedAction();
     }
 }
+
+void CWinLabel::mouseDoubleClickEvent (QMouseEvent */*ev*/)
+{
+    emit trashTriggered();
+}

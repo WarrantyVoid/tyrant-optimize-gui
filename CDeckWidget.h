@@ -48,6 +48,7 @@ signals:
 
 public slots:
     void setDeck(const QString & deckSpec, EDeckSpecificationType specType = ENoSpecification);
+    void clearDeck();
     void updateView();
 
 protected slots:

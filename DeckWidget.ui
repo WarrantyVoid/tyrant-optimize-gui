@@ -71,8 +71,8 @@
         <string notr="true">QLabel
 {
 	font: 75 12pt &quot;Lucida Sans Unicode&quot;;
-	background-color: qradialgradient(spread:pad, cx:0.5, cy:0.5, radius:0.5, fx:0.5, fy:0.5, stop:0 rgba(100, 100, 100, 255), stop:0.9 rgba(66, 66, 66, 255), stop:1 rgba(66, 66, 66, 255));
-	color: rgb(255, 255, 255);
+    color: rgb(255, 255, 255);
+	background-image: url(:/img/status-background.png);
 }</string>
        </property>
        <property name="alignment">
@@ -106,7 +106,7 @@
      <property name="minimumSize">
       <size>
        <width>420</width>
-       <height>221</height>
+       <height>220</height>
       </size>
      </property>
      <property name="frameShape">

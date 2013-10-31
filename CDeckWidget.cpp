@@ -24,6 +24,9 @@ CDeckWidget::CDeckWidget(QWidget *parent)
 
     // Initialize widget connections
     connect(
+        mUi->winLabel, SIGNAL(trashTriggered()),
+            this, SLOT(clearDeck()));
+    connect(
         mUi->winLabel, SIGNAL(unitDropped()),
         this, SLOT(updateDeck()));
     for(int iSlot = -1; iSlot < mMaxCards; ++iSlot)
@@ -36,6 +39,7 @@ CDeckWidget::CDeckWidget(QWidget *parent)
                 this, SLOT(updateDeck()));
         }
     }
+
 }
 
 void CDeckWidget::setDropEnabled(bool enabled)
@@ -175,6 +179,12 @@ void CDeckWidget::setDeck(const QString &deckSpecParam, EDeckSpecificationType s
             setDefaultUnits();
         }
     }
+}
+
+void CDeckWidget::clearDeck()
+{
+    setDefaultUnits();
+    emit deckChanged("");
 }
 
 void CDeckWidget::updateView()

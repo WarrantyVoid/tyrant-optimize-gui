@@ -17,12 +17,14 @@ public:
     
 signals:
     void unitDropped();
+    void trashTriggered();
 
 protected:
     virtual void paintEvent(QPaintEvent *ev);
     virtual void dropEvent(QDropEvent *ev);
     virtual void dragMoveEvent(QDragMoveEvent *ev);
     virtual void dragEnterEvent(QDragEnterEvent *ev);
+    virtual void mouseDoubleClickEvent (QMouseEvent *ev);
 
 private:
     QString mWintext;
