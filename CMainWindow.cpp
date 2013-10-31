@@ -15,7 +15,7 @@
 #include <QHelpEvent>
 #include <QClipboard>
 
-const QString CMainWindow::VERSION = "1.4.4";
+const QString CMainWindow::VERSION = "1.4.5";
 const QString CMainWindow::AUTHOR = "warranty_void";
 const QString CMainWindow::HOMEPAGE = "<a href=\'http://www.hunterthinks.com/to/gui\'>hunterthinks.com/to/gui</a>";
 const QString CMainWindow::FORUM = "<a href=\'http://www.kongregate.com/forums/65-tyrant/topics/257807-automatic-deck-optimization\'>kongregate.com/[..]automatic-deck-optimization</a>";
