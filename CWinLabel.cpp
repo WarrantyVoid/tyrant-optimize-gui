@@ -22,7 +22,7 @@ void CWinLabel::setWinText(const SOptimizationStatus &status, EOptimizationMode 
         break;
     case EOptimizeDefense:
         setToolTip(QString("Chance to win or draw: %1%").arg(status.chanceWin + status.chanceStall, -1, 'f', 3));
-        mWintext = QString("%1%").arg(status.chanceWin + status.chanceStall, -1, 'f', 3);
+        mWintext = QString("%1%").arg(status.chanceWin, -1, 'f', 3);
         mWinPic = rcPath + "WarDefIcon.png";
         break;
     case EOptimizeRaid:
