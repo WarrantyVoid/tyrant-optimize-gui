@@ -267,6 +267,11 @@ bool CDeckTable::addCustomDeck(CDeck &customDeck)
     QHash<QString, CDeck*>::iterator iDeck = mDeckNameMap.find(customDeck.getName());
     if (iDeck != mDeckNameMap.end() && iDeck.key() == customDeck.getName())
     {
+        if (isDeckBlocked(customDeck.getName()))
+        {
+            emit deckBlockageUpdated(*iDeck.value(), false);
+            emit deckBlockageUpdated(customDeck, true);
+        }
         *iDeck.value() = customDeck;
     }
     else
@@ -301,6 +306,10 @@ bool CDeckTable::deleteCustomDecks(const QStringList &customDecks)
             int row = mDecks.indexOf(*iDeck);
             if (row > -1)
             {
+                if (isDeckBlocked(*i))
+                {
+                    emit deckBlockageUpdated(*iDeck.value(), false);
+                }
                 beginRemoveRows(QModelIndex(), row, row);
                 mDecks.removeAt(row);
                 mDeckNameMap.remove(*i);
@@ -338,7 +347,6 @@ void CDeckTable::clearDecks()
     beginResetModel();
     mDecks.clear();
     mDeckNameMap.clear();
-    mBlockedDecks.clear();
     endResetModel();
 }
 
@@ -349,13 +357,19 @@ bool CDeckTable::isDeckBlocked(const QString &deckStr) const
 
 void CDeckTable::setDeckBlockage(const QString &deckStr, bool isBlocked)
 {
-    if (isBlocked)
+    const  CDeck &deck = getDeckForName(deckStr);
+    if (deck.isValid())
     {
-        mBlockedDecks.insert(deckStr);
-    }
-    else
-    {
-        mBlockedDecks.remove(deckStr);
+        if (isBlocked && !mBlockedDecks.contains(deckStr))
+        {
+            mBlockedDecks.insert(deckStr);
+            emit deckBlockageUpdated(deck, isBlocked);
+        }
+        else if (!isBlocked && mBlockedDecks.contains(deckStr))
+        {
+            mBlockedDecks.remove(deckStr);
+            emit deckBlockageUpdated(deck, isBlocked);
+        }
     }
 }
 
@@ -584,6 +598,13 @@ void CDeckTable::initData()
     const CGlobalConfig& pm = CGlobalConfig::getCfg();
     clearDecks();
 
+    //reset deck blockage for outsiders
+    for (QSet<QString>::iterator i = mBlockedDecks.begin(); i != mBlockedDecks.end(); ++i)
+    {
+        const CDeck &deck = getDeckForName(*i);
+        emit deckBlockageUpdated(deck, false);
+    }
+
     //load custom decks
     QFile customDeckFile(pm.getToolPath() + "custom.txt");
     if (customDeckFile.open(QIODevice::ReadOnly))
@@ -609,6 +630,20 @@ void CDeckTable::initData()
                     customDeck = 0;
                 }
             }
+        }
+    }
+
+    //update deck blockage for outsiders
+    for (QSet<QString>::iterator i = mBlockedDecks.begin(); i != mBlockedDecks.end(); ++i)
+    {
+        const CDeck &deck = getDeckForName(*i);
+        if (deck.isValid())
+        {
+            emit deckBlockageUpdated(deck, true);
+        }
+        else
+        {
+            mBlockedDecks.erase(i);
         }
     }
 

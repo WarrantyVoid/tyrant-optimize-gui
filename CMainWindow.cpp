@@ -94,7 +94,7 @@ CMainWindow::CMainWindow(QWidget *parent)
         mUi->ownedCardsFileBox, SIGNAL(currentIndexChanged(const QString&)),
         mFilterWidget, SLOT(setOwnedCardsFile(const QString&)));
     connect(
-        mUi->deckManagementWidget, SIGNAL(deckBlockageChanged(const CDeck&, bool)),
+        &mDecks, SIGNAL(deckBlockageUpdated(const CDeck&, bool)),
         mFilterWidget, SLOT(setDeckBlockage(const CDeck&, bool)));
 
     mUi->baseDeckWidget->setLockEnabled(true);

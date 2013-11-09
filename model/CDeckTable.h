@@ -34,6 +34,9 @@ public:
     bool isDeckBlocked(const QString &deckStr) const;
     void setDeckBlockage(const QString &deckStr, bool isBlocked);
 
+signals:
+    void deckBlockageUpdated(const CDeck &deck, bool isBlocked);
+
 protected slots:
     void processDeck(unsigned int id, const QString &deckName, EDeckType type, unsigned int battlegroundId, const QList<unsigned int> &deckCards);
 

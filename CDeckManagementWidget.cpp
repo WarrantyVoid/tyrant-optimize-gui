@@ -80,11 +80,6 @@ void CDeckManagementWidget::loadParameterSettings(QSettings &settings)
     for (QStringList::const_iterator i = blockList.begin(); i != blockList.end(); ++i)
     {
         mDecks.setDeckBlockage(*i, true);
-        const CDeck& deck = mDecks.getDeckForName(*i);
-        if (deck.isValid())
-        {
-            emit deckBlockageChanged(deck, true);
-        }
     }
     settings.endGroup();
 
@@ -120,20 +115,7 @@ void CDeckManagementWidget::saveParameterSettings(QSettings &settings)
 
 bool CDeckManagementWidget::addCustomDeck(CDeck &customDeck)
 {
-    bool isBlocked = mDecks.isDeckBlocked(customDeck.getName());
-    if (isBlocked)
-    {
-        const CDeck& exDeck = mDecks.getDeckForName(customDeck.getName());
-        if (exDeck.isValid())
-        {
-            emit deckBlockageChanged(exDeck, false);
-        }
-    }
     bool result = mDecks.addCustomDeck(customDeck);
-    if (isBlocked)
-    {
-        emit deckBlockageChanged(customDeck, true);
-    }
     mDeckSortProxy.invalidate();
     return result;
 }
@@ -221,11 +203,6 @@ void CDeckManagementWidget::deleteSelectedDeck()
         {
             const CDeck &deck = mDecks.getDeckForIndex(mDeckSortProxy.mapToSource(*i));
             selectedDecks.push_back(deck.getName());
-            if (mDecks.isDeckBlocked(deck.getName()))
-            {
-                // unblock deleted decks automatically
-                emit deckBlockageChanged(deck, false);
-            }
         }
         mDecks.deleteCustomDecks(selectedDecks);
     }
@@ -239,7 +216,6 @@ void CDeckManagementWidget::blockSelectedDeck()
         const CDeck &deck = mDecks.getDeckForIndex(mDeckSortProxy.mapToSource(indexes.first()));
         bool isBlocked = !mDecks.isDeckBlocked(deck.getName());
         mDecks.setDeckBlockage(deck.getName(), isBlocked);
-        emit deckBlockageChanged(deck, isBlocked);
         mDeckSortProxy.invalidate();
         toggleDeckUsageButton(isBlocked);
     }

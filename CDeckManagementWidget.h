@@ -113,7 +113,6 @@ public:
 
 signals:
     void setDeck(const QString &deckStr, EInputDeckTarget target);
-    void deckBlockageChanged(const CDeck&deck, bool isBlocked);
 
 public slots:
     bool addCustomDeck(CDeck &customDeck);
