@@ -187,6 +187,7 @@ void CCardSearchWidget::updateView(ECardStatusUpdate status)
             QList<CCard*> ownedCards;
             mSearchParameters.fetchFromUi(*mUi);
             cards.searchCards(mSearchParameters, foundCards);
+            int numCardsFound = foundCards.size();
 
             for (int i = foundCards.size() - 1; i > -1; --i)
             {
@@ -222,6 +223,10 @@ void CCardSearchWidget::updateView(ECardStatusUpdate status)
                     mResultWidgets[i]->widget()->setVisible(false);
                 }
             }
+            QString finderResult = QString("Cards found: %1/%2")
+                .arg(qMin(NUM_RESULT_WIDGETS, numCardsFound))
+                .arg(numCardsFound);
+            mUi->finderLabel->setText(finderResult);
         }
         else
         {
