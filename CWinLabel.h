@@ -2,7 +2,6 @@
 #define CWINLABEL_H
 
 #include <QLabel>
-#include <QDropEvent>
 #include "process/IProcessWrapper.h"
 #include "process/CProcessParameters.h"
 

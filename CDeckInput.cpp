@@ -1,5 +1,6 @@
 #include "CDeckInput.h"
 #include <QLineEdit>
+#include <QMimeData>
 
 CDeckInput::CDeckInput(QWidget *parent)
 : QComboBox(parent)
@@ -27,6 +28,26 @@ QStringList CDeckInput::getHistory() const
         history.push_back(itemText(i));
     }
     return history;
+}
+
+QMimeData *CDeckInput::createDeckInputDropData(const QString &deckId)
+{
+    QMimeData *data = new QMimeData();
+    data->setHtml(QString("@CDeckInput:id=%1").arg(deckId));
+    return data;
+}
+
+bool CDeckInput::isDeckInputDropData(const QMimeData *data, bool isMultiAllowed)
+{
+    if (data && data->hasHtml())
+    {
+        QString hmtmlData = data->html().toLatin1();
+        if (hmtmlData.length() < 1024 && hmtmlData.startsWith("@CDeckInput:id="))
+        {
+            return isMultiAllowed || hmtmlData.indexOf(";") == -1;
+        }
+    }
+    return false;
 }
 
 void CDeckInput::setDeckId(const QString &deckStr)
@@ -61,43 +82,37 @@ bool CDeckInput::eventFilter(QObject *obj, QEvent *e)
     {
         case QEvent::Drop:
         {
-            QDropEvent *event = static_cast<QDropEvent *>(e);
-            QString data = event->mimeData()->text().toLatin1();
-            if (data.length() < 1024)
+            QDropEvent *ev = static_cast<QDropEvent *>(e);
+            if (ev && CDeckInput::isDeckInputDropData(ev->mimeData(), mAreMultiDecksAllowed))
             {
-                if (data.indexOf(";") == -1 || mAreMultiDecksAllowed)
+                QString data = ev->mimeData()->html().toLatin1();
+                int dataIdx = data.indexOf("=");
+                if (dataIdx > -1)
                 {
+                    data = data.mid(dataIdx + 1);
                     lineEdit()->setText(data);
                     lineEdit()->setFocus();
                     emit deckDropped(data);
+                    ev->accept();
                 }
             }
-            event->accept();
             return true;
         }
         case QEvent::DragMove:
         {
-            QDragMoveEvent *event = static_cast<QDragMoveEvent *>(e);
-            QString data = event->mimeData()->text().toLatin1();
-            if (data.length() < 1024)
+            QDragMoveEvent *ev = static_cast<QDragMoveEvent *>(e);
+            if (ev && CDeckInput::isDeckInputDropData(ev->mimeData(), mAreMultiDecksAllowed))
             {
-                if (data.indexOf(";") == -1 || mAreMultiDecksAllowed)
-                {
-                    event->accept();
-                }
+                ev->accept();
             }
             return true;
         }
         case QEvent::DragEnter:
         {
-            QDragEnterEvent *event = static_cast<QDragEnterEvent *>(e);
-            QString data = event->mimeData()->text().toLatin1();
-            if (data.length() < 1024)
+            QDragEnterEvent *ev = static_cast<QDragEnterEvent *>(e);
+            if (ev && CDeckInput::isDeckInputDropData(ev->mimeData(), mAreMultiDecksAllowed))
             {
-                if (data.indexOf(";") == -1 || mAreMultiDecksAllowed)
-                {
-                    event->acceptProposedAction();
-                }
+                ev->acceptProposedAction();
             }
             return true;
         }

@@ -1,13 +1,13 @@
 #ifndef CSTATUSWIDGET_H
 #define CSTATUSWIDGET_H
 
+#include <QMediaPlayer>
 #include <QWidget>
 #include <QHBoxLayout>
 #include <QLabel>
 #include <QTimer>
 #include <QTime>
 #include <QMovie>
-#include <phonon/phonon>
 
 enum EStatusValue
 {
@@ -43,7 +43,7 @@ private:
     QTimer mUpdateTimer;
     QTime mReferenceTime;
     QMovie *mMoviePlayer;
-    Phonon::MediaObject *mSoundPlayer;
+    QMediaPlayer *mSoundPlayer;
 };
 
 #endif // CSTATUSWIDGET_H

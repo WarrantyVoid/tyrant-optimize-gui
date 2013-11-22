@@ -6,6 +6,9 @@
 #include <QPaintEvent>
 #include <QPainter>
 #include <QMenu>
+#include <QDrag>
+#include <QMimeData>
+#include <QToolTip>
 
 CCardLabel::CCardLabel(QWidget *parent)
 : QLabel(parent)
@@ -161,7 +164,15 @@ void CCardLabel::setCard(const CCard& card)
                 .arg(curSkill.makeSignature(skills.at(i))));
         }
     }
-    QLabel::setToolTip(skillDescr.join(""));
+    if (mCard.isValid())
+    {
+        QLabel::setToolTip(skillDescr.join(""));
+    }
+    else
+    {
+        QLabel::setToolTip("");
+        QToolTip::hideText();
+    }
 }
 
 const CCard& CCardLabel::getCard() const
@@ -172,7 +183,7 @@ const CCard& CCardLabel::getCard() const
 QMimeData *CCardLabel::createCardLabelDropData(const CCardLabel &label)
 {
     QMimeData *data = new QMimeData();
-    data->setText(QString("@CCardLabel:id=%1;locked=%2")
+    data->setHtml(QString("@CCardLabel:id=%1;locked=%2")
                   .arg(label.getCard().getId())
                   .arg(label.isLocked() ? 1 : 0));
     return data;
@@ -180,9 +191,9 @@ QMimeData *CCardLabel::createCardLabelDropData(const CCardLabel &label)
 
 bool CCardLabel::isCardLabelDropData(const QMimeData *data)
 {
-    if (data)
+    if (data && data->hasHtml())
     {
-        QString textData = data->text().toLatin1();
+        QString textData = data->html().toLatin1();
         if (textData.length() < 50 && textData.startsWith("@CCardLabel:id="))
         {
             return true;
@@ -391,6 +402,15 @@ void CCardLabel::mouseReleaseEvent(QMouseEvent * ev)
     }
 }
 
+void CCardLabel::mouseDoubleClickEvent(QMouseEvent * ev)
+{
+    if (ev && ev->button() == Qt::LeftButton)
+    {
+        setCard(CCard::INVALID_CARD);
+        emit unitDoubleClicked();
+    }
+}
+
 void CCardLabel::mouseMoveEvent(QMouseEvent *ev)
 {
     if (mLockButton)
@@ -457,7 +477,7 @@ void CCardLabel::dropEvent(QDropEvent *ev)
 {
     if (ev && isCardLabelDropData(ev->mimeData()))
     {
-        QString textData = ev->mimeData()->text().toLatin1();
+        QString textData = ev->mimeData()->html().toLatin1();
         QStringList valueList = textData.split(QRegExp("=|;"));
         if (valueList.size() == 4)
         {

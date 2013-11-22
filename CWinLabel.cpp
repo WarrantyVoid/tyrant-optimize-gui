@@ -3,6 +3,7 @@
 #include "CCardLabel.h"
 #include <QPaintEvent>
 #include <QPainter>
+#include <QMimeData>
 
 CWinLabel::CWinLabel(QWidget *parent)
 : QLabel(parent)
@@ -57,20 +58,8 @@ void CWinLabel::dropEvent(QDropEvent *ev)
 {
     if (ev && CCardLabel::isCardLabelDropData(ev->mimeData()))
     {
-        QString textData = ev->mimeData()->text().toLatin1();
-        QStringList valueList = textData.split(QRegExp("=|;"));
-        if (valueList.size() == 4)
-        {
-            bool ok1(true);
-            bool ok2(true);
-            valueList.at(1).toInt(&ok1);
-            valueList.at(3).toInt(&ok2);
-            if (ok1 && ok2)
-            {
-                ev->accept();
-                emit unitDropped();
-            }
-        }
+        ev->accept();
+        emit unitDropped();
     }
 }
 
@@ -90,7 +79,10 @@ void CWinLabel::dragEnterEvent(QDragEnterEvent *ev)
     }
 }
 
-void CWinLabel::mouseDoubleClickEvent (QMouseEvent */*ev*/)
+void CWinLabel::mouseDoubleClickEvent (QMouseEvent *ev)
 {
-    emit trashTriggered();
+    if (ev->button() == Qt::LeftButton)
+    {
+        emit trashTriggered();
+    }
 }

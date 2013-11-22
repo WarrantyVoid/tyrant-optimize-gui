@@ -84,7 +84,7 @@ void CMultiDeckWidget::initDecks()
     {
         QStringList multiDeckStr = mDeckSourceWidget->currentText().split(";");
         resetEditors();
-        double numDecks = qMin(MAX_NUMBER_OF_DECKS, multiDeckStr.size());
+        double numDecks = qMin(int(MAX_NUMBER_OF_DECKS), multiDeckStr.size());
         double totalFractions = 0.0;
         double deckFractions[MAX_NUMBER_OF_DECKS];
         for (int i = 0; i < numDecks; ++i)
@@ -127,7 +127,7 @@ void CMultiDeckWidget::initDecks()
 
 void CMultiDeckWidget::declineDecks()
 {
-    emit decksUpdated(false);
+    emit decksUpdated("");
 }
 
 void CMultiDeckWidget::acceptDecks()

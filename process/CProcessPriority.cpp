@@ -1,8 +1,8 @@
 #include "CProcessPriority.h"
 
-#ifdef _WIN32
+#ifdef Q_OS_WIN
     #include <Windows.h>
-#elif _LINUX
+#elif Q_OS_LINUX
     #include <sys/resource.h>
 #else
     #error OS not supported
@@ -15,7 +15,7 @@ CProcessPriority::CProcessPriority()
 
 void CProcessPriority::setProcessPriority(QProcess &process, EProcessPriority priority)
 {
-    #ifdef _WIN32
+    #ifdef Q_OS_WIN
         _PROCESS_INFORMATION *info = static_cast<_PROCESS_INFORMATION*>(process.pid());
         switch(priority)
         {
@@ -29,7 +29,7 @@ void CProcessPriority::setProcessPriority(QProcess &process, EProcessPriority pr
             SetPriorityClass(info->hProcess, IDLE_PRIORITY_CLASS);
             break;
         }
-    #elif _LINUX
+    #elif Q_OS_LINUX
         int id = static_cast<int>(mProcess->pid());
         int prio = getpriority(PRIO_PROCESS, id);
         switch(priority)

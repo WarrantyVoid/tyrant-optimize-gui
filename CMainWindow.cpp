@@ -15,6 +15,10 @@
 #include <QHelpEvent>
 #include <QClipboard>
 
+#ifdef Q_OS_WIN
+    #include <windows.h>
+#endif
+
 const QString CMainWindow::VERSION = "1.4.5";
 const QString CMainWindow::AUTHOR = "warranty_void";
 const QString CMainWindow::HOMEPAGE = "<a href=\'http://www.hunterthinks.com/to/gui\'>hunterthinks.com/to/gui</a>";
@@ -307,7 +311,8 @@ CMainWindow::CMainWindow(QWidget *parent)
     // Process wrapper connections
     connect(
         mProcessWrapper, SIGNAL(versionInfo(const QString&)),
-        this, SLOT(setToolVersion(const QString&)));
+        this, SLOT(setToolVersion(const QString&)),
+        Qt::QueuedConnection);
     connect(
         mProcessWrapper, SIGNAL(statusUpdated(const SOptimizationStatus&)),
         this, SLOT(setOptimizationStatus(const SOptimizationStatus&)));
@@ -580,18 +585,29 @@ void CMainWindow::saveParameterSettings()
 
 void CMainWindow::toggleAlwaysOnTop(bool checked)
 {
-    Qt::WindowFlags flags = this->windowFlags();
+    // Required because Qt version is buggy on windows ~.~
+#ifdef Q_OS_WIN
     if (checked)
     {
-        setWindowFlags(flags | Qt::CustomizeWindowHint | Qt::WindowStaysOnTopHint);
-        setVisible(true);
+        SetWindowPos(HWND(this->winId()), HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE);
     }
     else
     {
-        setWindowFlags(flags & ~(Qt::CustomizeWindowHint | Qt::WindowStaysOnTopHint));
-        setVisible(true);
+        SetWindowPos(HWND(this->winId()), HWND_NOTOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE);
     }
-    setAcceptDrops(true);
+#else
+    Qt::WindowFlags flags = this->windowFlags();
+    if (checked)
+    {
+        setWindowFlags(flags | Qt::WindowStaysOnTopHint);
+        show();
+    }
+    else
+    {
+        setWindowFlags(flags & (~Qt::WindowStaysOnTopHint));
+        show();
+    }
+#endif
 }
 
 void CMainWindow::toggleMuteSound(bool checked)
@@ -1097,15 +1113,25 @@ void CMainWindow::addCard(unsigned int cardId)
         }
         if (newCard.getType() == ECommanderType)
         {
-            deck.replaceCard(0, newCard);
-        }
-        else if (deck.getNumCards() > 10)
-        {
-            deck.replaceCard(10, newCard);
+            if (deck.getNumCards() > 20)
+            {
+                deck.replaceCard(0, newCard);
+            }
+            else
+            {
+                deck.setCommander(newCard);
+            }
         }
         else
         {
-            deck.addCard(newCard);
+            if (deck.getNumCards() > 20)
+            {
+                deck.replaceCard(20, newCard);
+            }
+            else
+            {
+                deck.addCard(newCard);
+            }
         }
         QString hash;
         mDecks.deckToHash(deck, hash);

@@ -25,6 +25,7 @@ public:
     void setName(const QString& name);
     void setType(EDeckType type);
     void setBattleground(unsigned int battlegroundId);
+    void setCommander(const CCard& card);
     void addCard(const CCard& card);
     void replaceCard(int index, const CCard& card);
     void trimCards(int maxCards);

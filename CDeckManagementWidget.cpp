@@ -15,7 +15,6 @@ CDeckManagementWidget::CDeckManagementWidget(QWidget *parent)
     toggleDeckUsageButton(false);
     mDeckSortProxy.setSourceModel(&mDecks);
     mUi->deckTableView->setModel(&mDeckSortProxy);
-    mUi->deckTableView->setSortingEnabled(true);
     mUi->deckTableView->horizontalHeader()->setDefaultAlignment(Qt::AlignLeft);
     mUi->deckTableView->horizontalHeader()->setDefaultSectionSize(21);
     mUi->deckTableView->verticalHeader()->setDefaultSectionSize(18);

@@ -37,6 +37,8 @@ CDeckWidget::CDeckWidget(QWidget *parent)
             connect(
                 widget, SIGNAL(unitDropped()),
                 this, SLOT(updateDeck()));
+            connect(widget, SIGNAL(unitDoubleClicked()),
+                this, SLOT(updateDeck()));
         }
     }
 
@@ -284,10 +286,8 @@ void CDeckWidget::syncAllUnits()
         }
         else
         {
-           CCard defaultCard;
-           defaultCard.setName(QString("%1").arg(iCard));
            setLocked(iCard - 1, false);
-           setUnit(iCard - 1, defaultCard);
+           setUnit(iCard - 1, CCard::INVALID_CARD);
         }
     }
 }

@@ -8,6 +8,7 @@
 bin/
 tmp/
 *.psd
+*.xcf
 *.tmp
 *.bak
 *.swp

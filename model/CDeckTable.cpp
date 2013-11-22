@@ -4,6 +4,7 @@
 #include "xml/CMissionsXmlParser.h"
 #include "xml/CRaidsXmlParser.h"
 #include "xml/CQuestsXmlParser.h"
+#include "CDeckInput.h"
 #include <QPixmap>
 #include <QFile>
 #include <QMimeData>
@@ -36,9 +37,8 @@ CDeckTable& CDeckTable::getDeckTable()
 }
 
 void CDeckTable::refresh()
-{
+{  
     initData();
-    reset();
 }
 
 bool CDeckTable::deckToHash(const CDeck &deck, QString &hashStr) const
@@ -537,7 +537,7 @@ Qt::DropActions CDeckTable::supportedDropActions() const
      return Qt::MoveAction;
  }
 
-Qt::ItemFlags CDeckTable::flags( const QModelIndex &index) const
+Qt::ItemFlags CDeckTable::flags(const QModelIndex &index) const
 {
     Qt::ItemFlags flags = QAbstractTableModel::flags(index);
     if (index.isValid())
@@ -556,7 +556,6 @@ QStringList CDeckTable::mimeTypes() const
 
 QMimeData *CDeckTable::mimeData(const QModelIndexList &indexes) const
  {
-     QMimeData *mimeData = new QMimeData();
      QStringList deckStr;
      foreach (QModelIndex index, indexes)
      {
@@ -565,8 +564,7 @@ QMimeData *CDeckTable::mimeData(const QModelIndexList &indexes) const
              deckStr << data(index, Qt::UserRole).toString();
          }
      }
-     mimeData->setText(deckStr.join(";"));
-     return mimeData;
+     return CDeckInput::createDeckInputDropData(deckStr.join(";"));
  }
 
 void CDeckTable::processDeck(unsigned int id, const QString &deckName, EDeckType type, unsigned int battlegroundId, const QList<unsigned int> &deckCards)
@@ -595,6 +593,7 @@ void CDeckTable::processDeck(unsigned int id, const QString &deckName, EDeckType
 
 void CDeckTable::initData()
 {
+    beginResetModel();
     const CGlobalConfig& pm = CGlobalConfig::getCfg();
     clearDecks();
 
@@ -694,6 +693,7 @@ void CDeckTable::initData()
         missionReader.parse(missionXml);
         missionFile.close();
     }
+    endResetModel();
 }
 
 bool CDeckTable::writeCustomDecksFile()

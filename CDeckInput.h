@@ -16,6 +16,9 @@ public:
     QString getDeckId() const;
     QStringList getHistory() const;
 
+    static QMimeData *createDeckInputDropData(const QString &deckId);
+    static bool isDeckInputDropData(const QMimeData *data, bool isMultiAllowed);
+
 signals:
     void deckDropped(const QString &deckStr);
 

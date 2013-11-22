@@ -13,7 +13,8 @@ CStatusWidget::CStatusWidget(QWidget *parent)
 {
     mMoviePlayer = new QMovie(this);
     mMoviePlayer->setFileName(":/img/busy.gif");
-    mSoundPlayer = Phonon::createPlayer(Phonon::NoCategory, Phonon::MediaSource(":/snd/notify.wav"));
+    mSoundPlayer = new QMediaPlayer(this);
+    mSoundPlayer->setMedia(QMediaContent(QUrl("qrc:/snd/notify.wav")));
 
     mHorizontalLayout = new QHBoxLayout(this);
     mHorizontalLayout->setContentsMargins(0, 0, 0, 0);
@@ -34,11 +35,6 @@ CStatusWidget::CStatusWidget(QWidget *parent)
 
 CStatusWidget::~CStatusWidget()
 {
-    if (mSoundPlayer)
-    {
-        delete mSoundPlayer;
-        mSoundPlayer = 0;
-    }
 }
 
 QString CStatusWidget::getStatusTime() const
@@ -68,7 +64,7 @@ void CStatusWidget::setStatus(EStatusValue status)
         updateElapsedTime();
         if (isSoundEnabled && mReferenceTime.elapsed() > 10000)
         {
-            mSoundPlayer->seek(0);
+            mSoundPlayer->stop();
             mSoundPlayer->play();
         }
         mUpdateTimer.stop();
@@ -78,7 +74,7 @@ void CStatusWidget::setStatus(EStatusValue status)
         updateElapsedTime();
         if (isSoundEnabled && mReferenceTime.elapsed() > 10000)
         {
-            mSoundPlayer->seek(0);
+            mSoundPlayer->stop();
             mSoundPlayer->play();
         }
         mUpdateTimer.stop();

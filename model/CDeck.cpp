@@ -41,6 +41,22 @@ void CDeck::setBattleground(unsigned int battlegroundId)
     mBattlegroundId = battlegroundId;
 }
 
+void CDeck::setCommander(const CCard& card)
+{
+    if (mCards.empty())
+    {
+         mCards.push_back(card);
+    }
+    else if (mCards[0].getType() == ECommanderType)
+    {
+        mCards[0] = card;
+    }
+    else
+    {
+        mCards.push_front(card);
+    }
+}
+
 void CDeck::addCard(const CCard& card)
 {
     mCards.push_back(card);
@@ -125,7 +141,7 @@ int CDeck::getNumCards() const
 
 bool CDeck::isValid() const
 {
-    return !mName.isEmpty() && !mCards.isEmpty() && mCards.first().getType() == ECommanderType;
+    return !mName.isEmpty() && !mCards.isEmpty();
 }
 
 bool CDeck::isEmpty() const
