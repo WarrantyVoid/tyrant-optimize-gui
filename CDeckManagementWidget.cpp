@@ -1,8 +1,10 @@
 #include "CDeckManagementWidget.h"
 #include "ui_DeckManagementWidget.h"
+#include "CVersion.h"
 #include <QStandardItemModel>
 #include <QLineEdit>
 #include <QMouseEvent>
+
 
 CDeckManagementWidget::CDeckManagementWidget(QWidget *parent)
 : QWidget(parent)
@@ -67,13 +69,20 @@ CDeckManagementWidget::~CDeckManagementWidget()
 void CDeckManagementWidget::loadParameterSettings(QSettings &settings)
 {
     settings.beginGroup("deckManagement");
+    CVersion cfgVersion = CVersion(settings.value("general/version").toString());
+    if (cfgVersion.isValid())
+    {
+        if (cfgVersion > CVersion(1,4,5))
+        {
+            mUi->deckTableView->horizontalHeader()->restoreState(settings.value("tableHeader").toByteArray());
+        }
+    }
     mUi->nameBox->lineEdit()->setText(settings.value("nameFilter", "").toString());
     mUi->commanderBox->lineEdit()->setText(settings.value("commanderFilter", "").toString());
     mUi->customBox->setChecked(settings.value("customDeckFilter", true).toBool());
     mUi->missionBox->setChecked(settings.value("missionDeckFilter", false).toBool());
     mUi->questBox->setChecked(settings.value("questDeckFilter", false).toBool());
     mUi->raidBox->setChecked(settings.value("raidDeckFilter", false).toBool());
-    mUi->deckTableView->horizontalHeader()->restoreState(settings.value("tableHeader").toByteArray());
 
     QStringList blockList = settings.value("blackListedDecks").toStringList();
     for (QStringList::const_iterator i = blockList.begin(); i != blockList.end(); ++i)

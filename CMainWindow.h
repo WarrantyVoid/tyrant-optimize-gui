@@ -15,6 +15,7 @@
 #include "CCardFilterWidget.h"
 #include "CMultiDeckWidget.h"
 #include "CDeckManagementWidget.h"
+#include "CVersion.h"
 
 namespace Ui
 {
@@ -112,11 +113,11 @@ private:
     CProcessParameters mParameters;
 
 private:
-    static const QString VERSION;
+    static const CVersion VERSION;
     static const QString AUTHOR;
     static const QString HOMEPAGE;
     static const QString FORUM;
-    static QString TOOL_VERSION;
+    static CVersion TOOL_VERSION;
 };
 
 #endif // MAINWINDOW_H

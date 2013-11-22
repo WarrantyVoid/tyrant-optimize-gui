@@ -19,11 +19,11 @@
     #include <windows.h>
 #endif
 
-const QString CMainWindow::VERSION = "1.4.5";
+const CVersion CMainWindow::VERSION = CVersion("1.4.5");
 const QString CMainWindow::AUTHOR = "warranty_void";
 const QString CMainWindow::HOMEPAGE = "<a href=\'http://www.hunterthinks.com/to/gui\'>hunterthinks.com/to/gui</a>";
 const QString CMainWindow::FORUM = "<a href=\'http://www.kongregate.com/forums/65-tyrant/topics/257807-automatic-deck-optimization\'>kongregate.com/[..]automatic-deck-optimization</a>";
-QString CMainWindow::TOOL_VERSION = "unknown";
+CVersion CMainWindow::TOOL_VERSION = CVersion::INVALID_VERSION;
 
 CMainWindow::CMainWindow(QWidget *parent)
 : QMainWindow(parent)
@@ -440,8 +440,15 @@ void CMainWindow::setProcessActivityChanged(bool isActive)
 void CMainWindow::loadDefaultSettings()
 {
     QSettings settings("default.ini", QSettings::IniFormat);
-    restoreGeometry(settings.value("window/geometry").toByteArray());
-    restoreState(settings.value("window/state").toByteArray());
+    CVersion cfgVersion = CVersion(settings.value("general/version").toString());
+    if (cfgVersion.isValid())
+    {
+        if (cfgVersion > CVersion(1,4,5))
+        {
+            restoreGeometry(settings.value("window/geometry").toByteArray());
+            restoreState(settings.value("window/state").toByteArray());
+        }
+    }
 
     bool alwaysOnTop = settings.value("window/alwaysOnTop").toBool();
     mUi->alwaysOnTopAction->setChecked(alwaysOnTop);    
@@ -468,6 +475,7 @@ void CMainWindow::loadDefaultSettings()
 void CMainWindow::closeEvent(QCloseEvent *e)
 {
 	QSettings settings("default.ini", QSettings::IniFormat);
+    settings.setValue("general/version", CMainWindow::VERSION.toString());
     settings.setValue("window/geometry", saveGeometry());
     settings.setValue("window/state", saveState());
     settings.setValue("window/alwaysOnTop",  mUi->alwaysOnTopAction->isChecked());
@@ -652,8 +660,8 @@ void CMainWindow::displayAboutMessage()
     QStringList aboutMsg;
     aboutMsg << QString("<h2>%1</h2>").arg(windowTitle());
     aboutMsg << "<table>";
-    aboutMsg << QString("<tr><td>GUI Version:</td><td>%1</td></tr>").arg(CMainWindow::VERSION);
-    aboutMsg << QString("<tr><td>Sim Version:</td><td>%1</td></tr>").arg(CMainWindow::TOOL_VERSION);
+    aboutMsg << QString("<tr><td>GUI Version:</td><td>%1</td></tr>").arg(CMainWindow::VERSION.toString());
+    aboutMsg << QString("<tr><td>Sim Version:</td><td>%1</td></tr>").arg(CMainWindow::TOOL_VERSION.toString());
     aboutMsg << QString("<tr><td>Author:</td><td>%1</td></tr>").arg(CMainWindow::AUTHOR);
     aboutMsg << QString("<tr><td>Home:</td><td>%1</td></tr>").arg(CMainWindow::HOMEPAGE);
     aboutMsg << QString("<tr><td>Forum:</td><td>%1</td></tr>").arg(CMainWindow::FORUM);
@@ -1150,7 +1158,7 @@ void CMainWindow::refreshModels()
 
 void CMainWindow::setToolVersion(const QString &toolVersion)
 {
-    TOOL_VERSION = toolVersion;
+    TOOL_VERSION = CVersion(toolVersion);
     displayAboutMessage();
 }
 
