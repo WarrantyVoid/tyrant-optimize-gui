@@ -33,10 +33,13 @@ public slots:
     void updateView(ECardStatusUpdate status = EOwnedStatusUpdate); 
     void updateLayout();
 
+protected slots:
+    void onCardDoubleClicked();
+    void onCardDragged();
+
 protected:
     virtual void showEvent(QShowEvent *event);
     virtual void resizeEvent(QResizeEvent *event);
-    virtual bool eventFilter(QObject *obj, QEvent *e);
 
 private:
     void updateBoxHistory(QComboBox* box);

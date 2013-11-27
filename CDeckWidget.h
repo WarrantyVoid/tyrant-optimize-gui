@@ -52,6 +52,7 @@ public slots:
     void updateView();
 
 protected slots:
+    void onCardDoubleClicked();
     void updateDeck();
 
 private:

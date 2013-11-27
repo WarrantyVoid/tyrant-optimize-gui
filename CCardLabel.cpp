@@ -406,7 +406,6 @@ void CCardLabel::mouseDoubleClickEvent(QMouseEvent * ev)
 {
     if (ev && ev->button() == Qt::LeftButton)
     {
-        setCard(CCard::INVALID_CARD);
         emit unitDoubleClicked();
     }
 }
@@ -441,9 +440,8 @@ void CCardLabel::mouseMoveEvent(QMouseEvent *ev)
                 drag->setPixmap(dragImg);
             }
 
-
             if (QApplication::keyboardModifiers() == Qt::ControlModifier || !acceptDrops())
-            {
+            {     
                 drag->exec(Qt::CopyAction);
             }
             else
@@ -460,6 +458,7 @@ void CCardLabel::mouseMoveEvent(QMouseEvent *ev)
             }
             delete mLastLeftClickPos;
             mLastLeftClickPos = 0;
+            emit unitDragged();
         }
     }
 }

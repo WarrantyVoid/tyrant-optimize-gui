@@ -38,7 +38,7 @@ CDeckWidget::CDeckWidget(QWidget *parent)
                 widget, SIGNAL(unitDropped()),
                 this, SLOT(updateDeck()));
             connect(widget, SIGNAL(unitDoubleClicked()),
-                this, SLOT(updateDeck()));
+                this, SLOT(onCardDoubleClicked()));
         }
     }
 
@@ -193,6 +193,16 @@ void CDeckWidget::updateView()
 {
     mUi->deckScrollAreaWidgetContents->update();
     update();
+}
+
+void CDeckWidget::onCardDoubleClicked()
+{
+    CCardLabel *cardLabel = dynamic_cast<CCardLabel*>(QObject::sender());
+    if (cardLabel)
+    {
+        cardLabel->setCard(CCard::INVALID_CARD);
+        updateDeck();
+    }
 }
 
 void CDeckWidget::updateDeck()

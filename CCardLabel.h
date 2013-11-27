@@ -27,6 +27,7 @@ public:
     static bool isCardLabelDropData(const QMimeData *data);
 
 signals:
+    void unitDragged();
     void unitDropped();
     void unitDoubleClicked();
     void unitRightClicked(bool isBlack);

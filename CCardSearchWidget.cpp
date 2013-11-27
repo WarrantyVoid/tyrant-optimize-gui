@@ -21,7 +21,10 @@ CCardSearchWidget::CCardSearchWidget(QWidget *parent)
     {
         CCardLabel* newLabel = new CCardLabel();
         newLabel->setFixedSize(80, 110);
-        newLabel->installEventFilter(this);
+        connect(newLabel, SIGNAL(unitDragged()),
+            this, SLOT(onCardDragged()));
+        connect(newLabel, SIGNAL(unitDoubleClicked()),
+            this, SLOT(onCardDoubleClicked()));
         mResultWidgets.push_back(mScene->addWidget(newLabel));
     }
     updateLayout();
@@ -261,6 +264,27 @@ void CCardSearchWidget::updateLayout()
     }
 }
 
+void CCardSearchWidget::onCardDoubleClicked()
+{
+    CCardLabel *cardLabel = dynamic_cast<CCardLabel*>(QObject::sender());
+    if (cardLabel)
+    {
+        const CCard &card = cardLabel->getCard();
+        if (card.isValid())
+        {
+            emit cardSelected(card.getId());
+            updateBoxHistory(mUi->nameBox);
+            updateBoxHistory(mUi->skillBox);
+        }
+    }
+}
+
+void CCardSearchWidget::onCardDragged()
+{
+    updateBoxHistory(mUi->nameBox);
+    updateBoxHistory(mUi->skillBox);
+}
+
 void CCardSearchWidget::showEvent(QShowEvent */*event*/)
 {
     updateLayout();
@@ -271,52 +295,20 @@ void CCardSearchWidget::resizeEvent(QResizeEvent */*event*/)
     updateLayout();
 }
 
-bool CCardSearchWidget::eventFilter(QObject *obj, QEvent *e)
-{
-    switch (e->type())
-    {
-        case QEvent::MouseButtonDblClick:
-        {
-            QMouseEvent *mouseEvent = static_cast<QMouseEvent*>(e);
-            if (mouseEvent->button() == Qt::LeftButton)
-            {
-                CCardLabel *cardLabel = static_cast<CCardLabel*>(obj);
-                const CCard &card = cardLabel->getCard();
-                if (card.isValid())
-                {
-                    emit cardSelected(card.getId());
-                    updateBoxHistory(mUi->nameBox);
-                    updateBoxHistory(mUi->skillBox);
-                }
-                return true;
-            }
-            return QObject::eventFilter(obj, e);
-        }
-        case QEvent::DragEnter:
-        {
-            updateBoxHistory(mUi->nameBox);
-            updateBoxHistory(mUi->skillBox);
-            return QObject::eventFilter(obj, e);
-        }
-        default:
-        {
-            // standard event processing
-            return QObject::eventFilter(obj, e);
-        }
-    }
-}
-
 void CCardSearchWidget::updateBoxHistory(QComboBox* box)
 {
     if (box && box->lineEdit())
     {
-        QString deckStr = box->lineEdit()->text();
+        QString deckStr = box->lineEdit()->text().trimmed();;
         if (!deckStr.isEmpty())
         {
-            if (box->count() == 0 || box->itemText(0).compare(deckStr) != 0)
+            int idx = box->findText(deckStr);
+            if (idx > -1)
             {
-                box->insertItem(0, box->lineEdit()->text());
+                box->removeItem(idx);
             }
+            box->insertItem(0, deckStr);
+            box->setCurrentIndex(0);
         }
     }
 }
