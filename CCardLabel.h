@@ -31,7 +31,7 @@ signals:
     void unitDropped();
     void unitDoubleClicked();
     void unitRightClicked(bool isBlack);
-    void unitCtrlRightClicked(bool isWhite);    
+    void unitCtrlRightClicked(bool isWhite);
 
 protected slots:
     void actionToggleBlack(bool isBlack);

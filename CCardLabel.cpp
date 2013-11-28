@@ -139,40 +139,6 @@ void CCardLabel::setCard(const CCard& card)
     painter.drawPixmap(5, 24, 150, 120, unitImg.copy(0, 15, unitImg.width(), unitImg.height() - 30));
     painter.end();
     QLabel::setPixmap(cardImg);
-
-    const QList<CCardSkill> &skills = mCard.getSkills();
-    QStringList skillDescr;
-    skillDescr.append(QString("<b>%1</b><br>").arg(mCard.getName()));
-    QString subTitleStr = mCard.isUnique() ? "Unique " : "";
-    switch(mCard.getFaction())
-    {
-    case EImperialFaction: subTitleStr += "Imperial"; break;
-    case EBloodthirstyFaction: subTitleStr += "Bloodthirsty"; break;
-    case EXenoFaction: subTitleStr += "Xeno"; break;
-    case ERighteousFaction: subTitleStr += "Righteous"; break;
-    case ERaiderFaction: subTitleStr += "Raider"; break;
-    default: break;
-    }
-    skillDescr.append(QString("<i>%1</i><br>").arg(subTitleStr));
-    for (int i = 0; i < skills.size(); ++i)
-    {
-        const CSkill& curSkill = mCards.getSkillForId(skills.at(i).getId());
-        if (curSkill.isValid())
-        {
-            skillDescr.append(QString("<img src='" + cfg.getResourcePicturePath() + "%1.png'/> %2<br>")
-                .arg(curSkill.getPicture())
-                .arg(curSkill.makeSignature(skills.at(i))));
-        }
-    }
-    if (mCard.isValid())
-    {
-        QLabel::setToolTip(skillDescr.join(""));
-    }
-    else
-    {
-        QLabel::setToolTip("");
-        QToolTip::hideText();
-    }
 }
 
 const CCard& CCardLabel::getCard() const

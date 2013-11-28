@@ -20,7 +20,7 @@ public:
     QString getPicture() const;
     QString getDescription() const;
 
-    QString makeSignature(const CCardSkill& skillParam) const;
+    QString makeSignature(const CCardSkill& skillParam, bool linkSummon=false) const;
     bool isSummon() const;
     bool isValid() const;
 

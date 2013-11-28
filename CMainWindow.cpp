@@ -128,6 +128,7 @@ CMainWindow::CMainWindow(QWidget *parent)
     mDeckToolTip->setWindowFlags(Qt::ToolTip);
     mDeckToolTip->setStyleSheet("QDialog{background-color: rgb(255, 255, 219);border-color: rgb(0, 0, 0);border-width: 1px;border-style: solid;}");
     QBoxLayout *vLayout = new QBoxLayout(QBoxLayout::TopToBottom, mDeckToolTip);
+    vLayout->setMargin(5);
     vLayout->addWidget(mDeckToolTipContent);
     mUi->baseDeckEdit->installEventFilter(this);
     mUi->enemyDeckEdit->installEventFilter(this);

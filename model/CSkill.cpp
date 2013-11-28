@@ -51,7 +51,7 @@ QString CSkill::getDescription() const
     return mDescription;
 }
 
-QString CSkill::makeSignature(const CCardSkill& skillParam) const
+QString CSkill::makeSignature(const CCardSkill& skillParam, bool linkSummon) const
 {
     QString target = "";
     switch(skillParam.getTargetingFaction())
@@ -72,7 +72,14 @@ QString CSkill::makeSignature(const CCardSkill& skillParam) const
             const CCard& card = CCardTable::getCardTable().getCardForId(skillParam.getX());
             if (card.isValid())
             {
-                x = QString(" %1").arg(card.getName());
+                if (linkSummon)
+                {
+                    x = QString(" <a href='#summon'>%1</a>").arg(card.getName());
+                }
+                else
+                {
+                    x = QString(" %1").arg(card.getName());
+                }
             }
         }
         else
