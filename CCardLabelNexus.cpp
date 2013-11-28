@@ -3,6 +3,7 @@
 #include "model/CCardTable.h"
 #include "CGlobalConfig.h"
 #include <QApplication>
+#include <QHelpEvent>
 #include <QDesktopWidget>
 #include <QBoxLayout>
 #include <QDialog>
