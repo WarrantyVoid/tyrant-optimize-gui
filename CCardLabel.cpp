@@ -372,7 +372,12 @@ void CCardLabel::mouseDoubleClickEvent(QMouseEvent * ev)
 {
     if (ev && ev->button() == Qt::LeftButton)
     {
-        emit unitDoubleClicked();
+        if (!mLockButton
+            || !mLockButton->isVisible()
+            || !mLockButton->geometry().contains(ev->pos()))
+        {
+            emit unitDoubleClicked();
+        }
     }
 }
 
