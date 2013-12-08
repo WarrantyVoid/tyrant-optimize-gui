@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1082</width>
-    <height>418</height>
+    <width>1101</width>
+    <height>444</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -83,26 +83,6 @@
             <enum>QLayout::SetFixedSize</enum>
            </property>
            <item>
-            <widget class="QPushButton" name="switchDecksButton">
-             <property name="sizePolicy">
-              <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-               <horstretch>0</horstretch>
-               <verstretch>0</verstretch>
-              </sizepolicy>
-             </property>
-             <property name="toolTip">
-              <string>Switch base and enemy deck..</string>
-             </property>
-             <property name="text">
-              <string/>
-             </property>
-             <property name="icon">
-              <iconset resource="main.qrc">
-               <normaloff>:/img/switch.png</normaloff>:/img/switch.png</iconset>
-             </property>
-            </widget>
-           </item>
-           <item>
             <widget class="QPushButton" name="displayBaseButton">
              <property name="sizePolicy">
               <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
@@ -126,7 +106,7 @@
             </widget>
            </item>
            <item>
-            <widget class="QPushButton" name="hashBaseButton">
+            <widget class="QPushButton" name="actionBaseButton">
              <property name="sizePolicy">
               <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                <horstretch>0</horstretch>
@@ -134,54 +114,14 @@
               </sizepolicy>
              </property>
              <property name="toolTip">
-              <string>Copy base deck hash to clipboard</string>
+              <string>Base deck actions..</string>
              </property>
              <property name="text">
               <string/>
              </property>
              <property name="icon">
               <iconset resource="main.qrc">
-               <normaloff>:/img/hash.png</normaloff>:/img/hash.png</iconset>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QPushButton" name="nameBaseButton">
-             <property name="sizePolicy">
-              <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-               <horstretch>0</horstretch>
-               <verstretch>0</verstretch>
-              </sizepolicy>
-             </property>
-             <property name="toolTip">
-              <string>Copy base deck cards to clipboard</string>
-             </property>
-             <property name="text">
-              <string/>
-             </property>
-             <property name="icon">
-              <iconset resource="main.qrc">
-               <normaloff>:/img/name.png</normaloff>:/img/name.png</iconset>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QPushButton" name="saveBaseButton">
-             <property name="sizePolicy">
-              <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-               <horstretch>0</horstretch>
-               <verstretch>0</verstretch>
-              </sizepolicy>
-             </property>
-             <property name="toolTip">
-              <string>Save base deck as custom deck..</string>
-             </property>
-             <property name="text">
-              <string/>
-             </property>
-             <property name="icon">
-              <iconset resource="main.qrc">
-               <normaloff>:/img/save.png</normaloff>:/img/save.png</iconset>
+               <normaloff>:/img/start.png</normaloff>:/img/start.png</iconset>
              </property>
             </widget>
            </item>
@@ -241,26 +181,6 @@
             <enum>QLayout::SetFixedSize</enum>
            </property>
            <item>
-            <widget class="QPushButton" name="multiEnemyButton">
-             <property name="sizePolicy">
-              <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-               <horstretch>0</horstretch>
-               <verstretch>0</verstretch>
-              </sizepolicy>
-             </property>
-             <property name="toolTip">
-              <string>Manage multiple enemy decks..</string>
-             </property>
-             <property name="text">
-              <string/>
-             </property>
-             <property name="icon">
-              <iconset resource="main.qrc">
-               <normaloff>:/img/multi.png</normaloff>:/img/multi.png</iconset>
-             </property>
-            </widget>
-           </item>
-           <item>
             <widget class="QPushButton" name="displayEnemyButton">
              <property name="sizePolicy">
               <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
@@ -284,7 +204,7 @@
             </widget>
            </item>
            <item>
-            <widget class="QPushButton" name="hashEnemyButton">
+            <widget class="QPushButton" name="actionEnemyButton">
              <property name="sizePolicy">
               <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                <horstretch>0</horstretch>
@@ -292,57 +212,14 @@
               </sizepolicy>
              </property>
              <property name="toolTip">
-              <string>Copy enemy deck hash to clipboard</string>
+              <string>Enemy deck actions..</string>
              </property>
              <property name="text">
               <string/>
              </property>
              <property name="icon">
               <iconset resource="main.qrc">
-               <normaloff>:/img/hash.png</normaloff>:/img/hash.png</iconset>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QPushButton" name="nameEnemyButton">
-             <property name="sizePolicy">
-              <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-               <horstretch>0</horstretch>
-               <verstretch>0</verstretch>
-              </sizepolicy>
-             </property>
-             <property name="toolTip">
-              <string>Copy enemy deck cards to clipboard</string>
-             </property>
-             <property name="text">
-              <string/>
-             </property>
-             <property name="icon">
-              <iconset resource="main.qrc">
-               <normaloff>:/img/name.png</normaloff>:/img/name.png</iconset>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QPushButton" name="saveEnemyButton">
-             <property name="sizePolicy">
-              <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-               <horstretch>0</horstretch>
-               <verstretch>0</verstretch>
-              </sizepolicy>
-             </property>
-             <property name="toolTip">
-              <string>Save enemy deck as custom deck..</string>
-             </property>
-             <property name="text">
-              <string/>
-             </property>
-             <property name="icon">
-              <iconset resource="main.qrc">
-               <normaloff>:/img/save.png</normaloff>:/img/save.png</iconset>
-             </property>
-             <property name="flat">
-              <bool>false</bool>
+               <normaloff>:/img/start.png</normaloff>:/img/start.png</iconset>
              </property>
             </widget>
            </item>
@@ -432,16 +309,6 @@
            </property>
            <property name="alignment">
             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-           </property>
-          </widget>
-         </item>
-         <item row="0" column="1" colspan="2">
-          <widget class="QComboBox" name="battleGroundBox">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
            </property>
           </widget>
          </item>
@@ -539,6 +406,16 @@
              <string>Lowest</string>
             </property>
            </item>
+          </widget>
+         </item>
+         <item row="0" column="1" colspan="2">
+          <widget class="QComboBox" name="battleGroundBox">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
           </widget>
          </item>
         </layout>
@@ -689,7 +566,16 @@
          <item row="1" column="1">
           <widget class="QWidget" name="widget" native="true">
            <layout class="QHBoxLayout" name="horizontalLayout_4">
-            <property name="margin">
+            <property name="leftMargin">
+             <number>0</number>
+            </property>
+            <property name="topMargin">
+             <number>0</number>
+            </property>
+            <property name="rightMargin">
+             <number>0</number>
+            </property>
+            <property name="bottomMargin">
              <number>0</number>
             </property>
             <item>
@@ -791,7 +677,7 @@
          <item>
           <widget class="CStatusWidget" name="optimizerStatusWidget" native="true">
            <property name="sizePolicy">
-            <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+            <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
              <horstretch>0</horstretch>
              <verstretch>0</verstretch>
             </sizepolicy>
@@ -806,6 +692,12 @@
          </item>
          <item>
           <widget class="QPushButton" name="checkBaseButton">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
            <property name="toolTip">
             <string>Simulate base deck as is</string>
            </property>
@@ -816,6 +708,12 @@
          </item>
          <item>
           <widget class="QPushButton" name="reorderBaseButton">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
            <property name="toolTip">
             <string>Optimize only order of base deck </string>
            </property>
@@ -826,6 +724,12 @@
          </item>
          <item>
           <widget class="QPushButton" name="optimizeBaseButton">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
            <property name="toolTip">
             <string>Optimize base deck</string>
            </property>
@@ -844,9 +748,6 @@
            </property>
            <item>
             <widget class="QPushButton" name="useOptimizedButton">
-             <property name="enabled">
-              <bool>false</bool>
-             </property>
              <property name="sizePolicy">
               <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                <horstretch>0</horstretch>
@@ -854,7 +755,7 @@
               </sizepolicy>
              </property>
              <property name="toolTip">
-              <string>Use optimized deck as new base deck</string>
+              <string>Use current optimization result as new base deck</string>
              </property>
              <property name="text">
               <string/>
@@ -886,10 +787,7 @@
             </widget>
            </item>
            <item>
-            <widget class="QPushButton" name="hashOptimizedButton">
-             <property name="enabled">
-              <bool>false</bool>
-             </property>
+            <widget class="QPushButton" name="actionOptimizedButton">
              <property name="sizePolicy">
               <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                <horstretch>0</horstretch>
@@ -897,60 +795,14 @@
               </sizepolicy>
              </property>
              <property name="toolTip">
-              <string>Copy optimized deck hash to clipboard</string>
+              <string>Enemy deck actions..</string>
              </property>
              <property name="text">
               <string/>
              </property>
              <property name="icon">
               <iconset resource="main.qrc">
-               <normaloff>:/img/hash.png</normaloff>:/img/hash.png</iconset>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QPushButton" name="nameOptimizedButton">
-             <property name="enabled">
-              <bool>false</bool>
-             </property>
-             <property name="sizePolicy">
-              <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-               <horstretch>0</horstretch>
-               <verstretch>0</verstretch>
-              </sizepolicy>
-             </property>
-             <property name="toolTip">
-              <string>Copy optimized deck cards to clipboard</string>
-             </property>
-             <property name="text">
-              <string/>
-             </property>
-             <property name="icon">
-              <iconset resource="main.qrc">
-               <normaloff>:/img/name.png</normaloff>:/img/name.png</iconset>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QPushButton" name="saveOptimizedButton">
-             <property name="enabled">
-              <bool>false</bool>
-             </property>
-             <property name="sizePolicy">
-              <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-               <horstretch>0</horstretch>
-               <verstretch>0</verstretch>
-              </sizepolicy>
-             </property>
-             <property name="toolTip">
-              <string>Save optimized deck as custom deck..</string>
-             </property>
-             <property name="text">
-              <string/>
-             </property>
-             <property name="icon">
-              <iconset resource="main.qrc">
-               <normaloff>:/img/save.png</normaloff>:/img/save.png</iconset>
+               <normaloff>:/img/start.png</normaloff>:/img/start.png</iconset>
              </property>
             </widget>
            </item>
@@ -965,7 +817,16 @@
          </property>
          <widget class="QWidget" name="page">
           <layout class="QVBoxLayout" name="verticalLayout_5">
-           <property name="margin">
+           <property name="leftMargin">
+            <number>0</number>
+           </property>
+           <property name="topMargin">
+            <number>0</number>
+           </property>
+           <property name="rightMargin">
+            <number>0</number>
+           </property>
+           <property name="bottomMargin">
             <number>0</number>
            </property>
            <item>
@@ -975,7 +836,16 @@
          </widget>
          <widget class="QWidget" name="page_2">
           <layout class="QVBoxLayout" name="verticalLayout_3">
-           <property name="margin">
+           <property name="leftMargin">
+            <number>0</number>
+           </property>
+           <property name="topMargin">
+            <number>0</number>
+           </property>
+           <property name="rightMargin">
+            <number>0</number>
+           </property>
+           <property name="bottomMargin">
             <number>0</number>
            </property>
            <item>
@@ -1026,7 +896,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1082</width>
+     <width>1101</width>
      <height>22</height>
     </rect>
    </property>
@@ -1222,6 +1092,147 @@
     <string>Update xml data files (dev beta)</string>
    </property>
   </action>
+  <action name="switchDecksAction">
+   <property name="icon">
+    <iconset resource="main.qrc">
+     <normaloff>:/img/switch.png</normaloff>:/img/switch.png</iconset>
+   </property>
+   <property name="text">
+    <string>Switch base with enemy</string>
+   </property>
+   <property name="toolTip">
+    <string>Switch base and enemy deck</string>
+   </property>
+  </action>
+  <action name="nameBaseDeckAction">
+   <property name="icon">
+    <iconset resource="main.qrc">
+     <normaloff>:/img/name.png</normaloff>:/img/name.png</iconset>
+   </property>
+   <property name="text">
+    <string>Copy card  list</string>
+   </property>
+   <property name="toolTip">
+    <string>Copy comma-separated list of card names into clipboard</string>
+   </property>
+  </action>
+  <action name="hashBaseDeckAction">
+   <property name="icon">
+    <iconset resource="main.qrc">
+     <normaloff>:/img/hash.png</normaloff>:/img/hash.png</iconset>
+   </property>
+   <property name="text">
+    <string>Copy deck hash</string>
+   </property>
+   <property name="toolTip">
+    <string>Copy deck hash into clipboard</string>
+   </property>
+  </action>
+  <action name="saveBaseDeckAction">
+   <property name="icon">
+    <iconset resource="main.qrc">
+     <normaloff>:/img/save.png</normaloff>:/img/save.png</iconset>
+   </property>
+   <property name="text">
+    <string>Save as custom</string>
+   </property>
+   <property name="toolTip">
+    <string>Save deck as custom deck</string>
+   </property>
+  </action>
+  <action name="multiEnemyDeckAction">
+   <property name="icon">
+    <iconset resource="main.qrc">
+     <normaloff>:/img/multi.png</normaloff>:/img/multi.png</iconset>
+   </property>
+   <property name="text">
+    <string>Edit multiple decks</string>
+   </property>
+  </action>
+  <action name="nameEnemyDeckAction">
+   <property name="icon">
+    <iconset resource="main.qrc">
+     <normaloff>:/img/name.png</normaloff>:/img/name.png</iconset>
+   </property>
+   <property name="text">
+    <string>Copy card  list</string>
+   </property>
+   <property name="toolTip">
+    <string>Copy comma-separated list of card names into clipboard</string>
+   </property>
+  </action>
+  <action name="hashEnemyDeckAction">
+   <property name="icon">
+    <iconset resource="main.qrc">
+     <normaloff>:/img/hash.png</normaloff>:/img/hash.png</iconset>
+   </property>
+   <property name="text">
+    <string>Copy deck hash</string>
+   </property>
+   <property name="toolTip">
+    <string>Copy deck hash into clipboard</string>
+   </property>
+  </action>
+  <action name="saveEnemyDeckAction">
+   <property name="icon">
+    <iconset resource="main.qrc">
+     <normaloff>:/img/save.png</normaloff>:/img/save.png</iconset>
+   </property>
+   <property name="text">
+    <string>Save as custom</string>
+   </property>
+   <property name="toolTip">
+    <string>Save deck as custom deck</string>
+   </property>
+  </action>
+  <action name="useOptimizedDeckAction">
+   <property name="icon">
+    <iconset resource="main.qrc">
+     <normaloff>:/img/use.png</normaloff>:/img/use.png</iconset>
+   </property>
+   <property name="text">
+    <string>Use as base</string>
+   </property>
+   <property name="toolTip">
+    <string>Uses current optimization result as base deck</string>
+   </property>
+  </action>
+  <action name="nameOptimizedDeckAction">
+   <property name="icon">
+    <iconset resource="main.qrc">
+     <normaloff>:/img/name.png</normaloff>:/img/name.png</iconset>
+   </property>
+   <property name="text">
+    <string>Copy card  list</string>
+   </property>
+   <property name="toolTip">
+    <string>Copy comma-separated list of card names into clipboard</string>
+   </property>
+  </action>
+  <action name="hashOptimizedDeckAction">
+   <property name="icon">
+    <iconset resource="main.qrc">
+     <normaloff>:/img/hash.png</normaloff>:/img/hash.png</iconset>
+   </property>
+   <property name="text">
+    <string>Copy deck hash</string>
+   </property>
+   <property name="toolTip">
+    <string>Copy deck hash into clipboard</string>
+   </property>
+  </action>
+  <action name="saveOptimizedDeckAction">
+   <property name="icon">
+    <iconset resource="main.qrc">
+     <normaloff>:/img/save.png</normaloff>:/img/save.png</iconset>
+   </property>
+   <property name="text">
+    <string>Save as custom</string>
+   </property>
+   <property name="toolTip">
+    <string>Save deck as custom deck</string>
+   </property>
+  </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>
@@ -1260,30 +1271,14 @@
  </resources>
  <connections>
   <connection>
-   <sender>displayBaseButton</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>baseDeckWidget</receiver>
-   <slot>setVisible(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>693</x>
-     <y>75</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>730</x>
-     <y>93</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
    <sender>displayEnemyButton</sender>
    <signal>toggled(bool)</signal>
    <receiver>enemyDeckWidget</receiver>
    <slot>setVisible(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>693</x>
-     <y>121</y>
+     <x>689</x>
+     <y>129</y>
     </hint>
     <hint type="destinationlabel">
      <x>689</x>
@@ -1298,12 +1293,12 @@
    <slot>setEnabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>714</x>
-     <y>185</y>
+     <x>688</x>
+     <y>224</y>
     </hint>
     <hint type="destinationlabel">
-     <x>714</x>
-     <y>199</y>
+     <x>688</x>
+     <y>250</y>
     </hint>
    </hints>
   </connection>
@@ -1314,12 +1309,12 @@
    <slot>setEnabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>488</x>
-     <y>185</y>
+     <x>462</x>
+     <y>224</y>
     </hint>
     <hint type="destinationlabel">
-     <x>426</x>
-     <y>199</y>
+     <x>397</x>
+     <y>250</y>
     </hint>
    </hints>
   </connection>
@@ -1330,12 +1325,28 @@
    <slot>setEnabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>488</x>
-     <y>185</y>
+     <x>462</x>
+     <y>224</y>
     </hint>
     <hint type="destinationlabel">
-     <x>488</x>
-     <y>199</y>
+     <x>462</x>
+     <y>250</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>displayBaseButton</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>baseDeckWidget</receiver>
+   <slot>setVisible(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>677</x>
+     <y>67</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>674</x>
+     <y>91</y>
     </hint>
    </hints>
   </connection>

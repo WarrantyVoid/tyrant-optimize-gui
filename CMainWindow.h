@@ -70,6 +70,7 @@ protected slots:
     void updateWindowHeight(bool grow);
     void updateParameterBoxToolTip(int boxIndex);
     void adjustToDeckType(const QString &deckStr);
+    void displayDeckMenu();
 
     // Widget slots
     void processStateChanged(QProcess::ProcessState newState);

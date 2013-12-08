@@ -226,7 +226,7 @@ void CCardSearchWidget::updateView(ECardStatusUpdate status)
                     mResultWidgets[i]->widget()->setVisible(false);
                 }
             }
-            QString finderResult = QString("Cards found: %1/%2")
+            QString finderResult = QString("Card result: %1/%2")
                 .arg(qMin(NUM_RESULT_WIDGETS, numCardsFound))
                 .arg(numCardsFound);
             mUi->finderLabel->setText(finderResult);

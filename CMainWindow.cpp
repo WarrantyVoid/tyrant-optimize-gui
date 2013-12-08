@@ -207,11 +207,20 @@ CMainWindow::CMainWindow(QWidget *parent)
         mUi->baseDeckWidget, SIGNAL(deckChanged(const QString &)),
         mUi->baseDeckEdit, SLOT(setDeckId(const QString &)));
     connect(
-        mUi->displayBaseButton, SIGNAL(clicked(bool)),
+        mUi->displayBaseButton, SIGNAL(toggled(bool)),
         this, SLOT(updateWindowHeight(bool)), Qt::QueuedConnection);
     connect(
-        mUi->switchDecksButton, SIGNAL(clicked()),
-        this, SLOT(switchDecks()));
+        mUi->actionBaseButton, SIGNAL(clicked()),
+        this, SLOT(displayDeckMenu()), Qt::QueuedConnection);
+    connect(
+        mUi->nameBaseDeckAction, SIGNAL(triggered()),
+        this, SLOT(copyDeckCards()));
+    connect(
+        mUi->hashBaseDeckAction, SIGNAL(triggered()),
+        this, SLOT(copyDeckHash()));
+    connect(
+        mUi->saveBaseDeckAction, SIGNAL(triggered()),
+        this, SLOT(saveCustomDeck()));
 
     // Enemy deck connections
     connect(
@@ -227,8 +236,45 @@ CMainWindow::CMainWindow(QWidget *parent)
         mUi->displayEnemyButton, SIGNAL(clicked(bool)),
         this, SLOT(updateWindowHeight(bool)), Qt::QueuedConnection);
     connect(
-        mUi->multiEnemyButton, SIGNAL(clicked()),
+        mUi->actionEnemyButton, SIGNAL(clicked()),
+        this, SLOT(displayDeckMenu()), Qt::QueuedConnection);
+    connect(
+        mUi->multiEnemyDeckAction, SIGNAL(triggered()),
         mMultiDeckDialog, SLOT(show()));
+    connect(
+        mUi->nameEnemyDeckAction, SIGNAL(triggered()),
+        this, SLOT(copyDeckCards()));
+    connect(
+        mUi->hashEnemyDeckAction, SIGNAL(triggered()),
+        this, SLOT(copyDeckHash()));
+    connect(
+        mUi->saveEnemyDeckAction, SIGNAL(triggered()),
+        this, SLOT(saveCustomDeck()));
+
+    // Optimized deck connections
+    connect(
+        mUi->displayOptimizedButton, SIGNAL(clicked()),
+        this, SLOT(toggleToolResultWidget()));
+    connect(
+        mUi->actionOptimizedButton, SIGNAL(clicked()),
+        this, SLOT(displayDeckMenu()), Qt::QueuedConnection);
+    connect(
+        mUi->useOptimizedButton, SIGNAL(clicked()),
+        this, SLOT(useOptimizedDeck()));
+    connect(
+        mUi->nameOptimizedDeckAction, SIGNAL(triggered()),
+        this, SLOT(copyDeckCards()));
+    connect(
+        mUi->hashOptimizedDeckAction, SIGNAL(triggered()),
+        this, SLOT(copyDeckHash()));
+    connect(
+        mUi->saveOptimizedDeckAction, SIGNAL(triggered()),
+        this, SLOT(saveCustomDeck()));
+
+    // Shared deck connections
+    connect(
+        mUi->switchDecksAction, SIGNAL(triggered()),
+        this, SLOT(switchDecks()));
 
     // Button connections
     connect(
@@ -240,39 +286,6 @@ CMainWindow::CMainWindow(QWidget *parent)
     connect(
         mUi->optimizeBaseButton, SIGNAL(clicked()),
         this, SLOT(toggleToolProcess()));
-    connect(
-        mUi->useOptimizedButton, SIGNAL(clicked()),
-        this, SLOT(useOptimizedDeck()));
-    connect(
-        mUi->saveBaseButton, SIGNAL(clicked()),
-        this, SLOT(saveCustomDeck()));
-    connect(
-        mUi->saveEnemyButton, SIGNAL(clicked()),
-        this, SLOT(saveCustomDeck()));
-    connect(
-        mUi->saveOptimizedButton, SIGNAL(clicked()),
-        this, SLOT(saveCustomDeck()));
-    connect(
-        mUi->nameBaseButton, SIGNAL(clicked()),
-        this, SLOT(copyDeckCards()));
-    connect(
-        mUi->nameEnemyButton, SIGNAL(clicked()),
-        this, SLOT(copyDeckCards()));
-    connect(
-        mUi->nameOptimizedButton, SIGNAL(clicked()),
-        this, SLOT(copyDeckCards()));
-    connect(
-        mUi->hashBaseButton, SIGNAL(clicked()),
-        this, SLOT(copyDeckHash()));
-    connect(
-        mUi->hashEnemyButton, SIGNAL(clicked()),
-        this, SLOT(copyDeckHash()));
-    connect(
-        mUi->hashOptimizedButton, SIGNAL(clicked()),
-        this, SLOT(copyDeckHash()));
-    connect(
-        mUi->displayOptimizedButton, SIGNAL(clicked()),
-        this, SLOT(toggleToolResultWidget()));
 
     // Widgets connections
     connect(
@@ -317,6 +330,7 @@ CMainWindow::CMainWindow(QWidget *parent)
     connect(
         mProcessWrapper, SIGNAL(statusUpdated(const SOptimizationStatus&)),
         this, SLOT(setOptimizationStatus(const SOptimizationStatus&)));
+    setOptimizationStatus(SOptimizationStatus());
 }
 
 CMainWindow::~CMainWindow()
@@ -725,7 +739,7 @@ void CMainWindow::saveCustomDeck()
 {    
     CDeck customDeck;
     QString customDeckName;    
-    if(QObject::sender() == mUi->saveBaseButton)
+    if(QObject::sender() == mUi->saveBaseDeckAction)
     {
         customDeck = mUi->baseDeckWidget->getDeck();
         if (!customDeck.isEmpty())
@@ -747,7 +761,7 @@ void CMainWindow::saveCustomDeck()
             }
         }
     }
-    else if(QObject::sender() == mUi->saveEnemyButton)
+    else if(QObject::sender() == mUi->saveEnemyDeckAction)
     {
         customDeck = mUi->enemyDeckWidget->getDeck();
         if (!customDeck.isEmpty())
@@ -769,7 +783,7 @@ void CMainWindow::saveCustomDeck()
             }
         }
     }
-    else if(QObject::sender() == mUi->saveOptimizedButton)
+    else if(QObject::sender() == mUi->saveOptimizedDeckAction)
     {
         customDeck = mUi->resultDeckWidget->getDeck();
         if (!customDeck.isEmpty())
@@ -817,15 +831,15 @@ void CMainWindow::useOptimizedDeck()
 void CMainWindow::copyDeckHash()
 {
     CDeck deck;
-    if(QObject::sender() == mUi->hashBaseButton)
+    if(QObject::sender() == mUi->hashBaseDeckAction)
     {
         deck = mUi->baseDeckWidget->getDeck();
     }
-    else if(QObject::sender() == mUi->hashEnemyButton)
+    else if(QObject::sender() == mUi->hashEnemyDeckAction)
     {
         deck = mUi->enemyDeckWidget->getDeck();
     }
-    else if(QObject::sender() == mUi->hashOptimizedButton)
+    else if(QObject::sender() == mUi->hashOptimizedDeckAction)
     {
         deck = mUi->resultDeckWidget->getDeck();
     }
@@ -842,15 +856,15 @@ void CMainWindow::copyDeckHash()
 void CMainWindow::copyDeckCards()
 {
     CDeck deck;
-    if(QObject::sender() == mUi->nameBaseButton)
+    if(QObject::sender() == mUi->nameBaseDeckAction)
     {
         deck = mUi->baseDeckWidget->getDeck();
     }
-    else if(QObject::sender() == mUi->nameEnemyButton)
+    else if(QObject::sender() == mUi->nameEnemyDeckAction)
     {
         deck = mUi->enemyDeckWidget->getDeck();
     }
-    else if(QObject::sender() == mUi->nameOptimizedButton)
+    else if(QObject::sender() == mUi->nameOptimizedDeckAction)
     {
         deck = mUi->resultDeckWidget->getDeck();
     }
@@ -948,6 +962,45 @@ void CMainWindow::adjustToDeckType(const QString &deckStr)
         mUi->optimizationModeBox->setCurrentIndex(0);
         mUi->numTurnsSpinBox->setValue(50);
     }
+}
+
+void CMainWindow::displayDeckMenu()
+{
+    QMenu menu;
+    if (QWidget::sender() == mUi->actionBaseButton)
+    {
+        menu.addAction(mUi->nameBaseDeckAction);
+        menu.addAction(mUi->hashBaseDeckAction);
+        menu.addAction(mUi->saveBaseDeckAction);
+        menu.addSeparator();
+        menu.addAction(mUi->switchDecksAction);
+
+    }
+    else if(QWidget::sender() == mUi->actionEnemyButton)
+    {
+        menu.addAction(mUi->nameEnemyDeckAction);
+        menu.addAction(mUi->hashEnemyDeckAction);
+        menu.addAction(mUi->saveEnemyDeckAction);
+        menu.addSeparator();
+        menu.addAction(mUi->switchDecksAction);
+        menu.addAction(mUi->multiEnemyDeckAction);
+    }
+    else if(QWidget::sender() == mUi->actionOptimizedButton)
+    {
+        //menu.addAction(mUi->useOptimizedDeckAction);
+        //menu.addSeparator();
+        menu.addAction(mUi->nameOptimizedDeckAction);
+        menu.addAction(mUi->hashOptimizedDeckAction);
+        menu.addAction(mUi->saveOptimizedDeckAction);
+    }
+    else
+    {
+        return;
+    }
+    QPoint p(QCursor::pos());
+    p.setX(qMax(0, p.x() - 5));
+    p.setY(qMax(0, p.y() - 5));
+    menu.exec(p);
 }
 
 void CMainWindow::processStateChanged(QProcess::ProcessState newState)
@@ -1194,19 +1247,21 @@ void CMainWindow::setOptimizationStatus(const SOptimizationStatus &status)
             mUi->resultDeckWidget->setWinLabel(status, mParameters.optimizationMode());
 
             // We have at least one valid card -> enable saving
-            mUi->useOptimizedButton->setEnabled((true));
-            mUi->saveOptimizedButton->setEnabled(true);
-            mUi->hashOptimizedButton->setEnabled(true);
-            mUi->nameOptimizedButton->setEnabled(true);
+            mUi->useOptimizedButton->setEnabled(true);
+            mUi->useOptimizedDeckAction->setEnabled((true));
+            mUi->saveOptimizedDeckAction->setEnabled(true);
+            mUi->hashOptimizedDeckAction->setEnabled(true);
+            mUi->nameOptimizedDeckAction->setEnabled(true);
             mUi->resultDeckWidget->setDeck(deck);
         }
         else
         {
             mUi->resultDeckWidget->setWinLabel(QPixmap());
             mUi->useOptimizedButton->setEnabled(false);
-            mUi->saveOptimizedButton->setEnabled(false);
-            mUi->hashOptimizedButton->setEnabled(false);
-            mUi->nameOptimizedButton->setEnabled(false);
+            mUi->useOptimizedDeckAction->setEnabled(false);
+            mUi->saveOptimizedDeckAction->setEnabled(false);
+            mUi->hashOptimizedDeckAction->setEnabled(false);
+            mUi->nameOptimizedDeckAction->setEnabled(false);
             mUi->resultDeckWidget->setDefaultUnits();
         }
     }

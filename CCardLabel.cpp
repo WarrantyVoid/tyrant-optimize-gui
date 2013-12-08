@@ -380,7 +380,8 @@ void CCardLabel::mouseMoveEvent(QMouseEvent *ev)
 {
     if (mLockButton)
     {
-        mLockButton->setVisible(mLockButton->isChecked() || mLockButton->geometry().contains(ev->pos()));
+        mLockButton->setVisible(mLockButton->isChecked()
+            || (mCard.isValid() && mLockButton->geometry().contains(ev->pos())));
     }
     if (mLastLeftClickPos && mCard.isValid())
     {
