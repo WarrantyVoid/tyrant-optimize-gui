@@ -182,7 +182,7 @@ void CCardLabelNexus::addCardLabelToolTipSummonLabels()
     if (mCardLabelToolTipSummonLabel == 0 && mCardLabelToolTipSummonLabel == 0)
     {
         QBoxLayout* hLayout = new QBoxLayout(QBoxLayout::LeftToRight);
-        mCardLabelToolTipSummonLabel = new CCardLabel();
+        mCardLabelToolTipSummonLabel = new CCardLabel(0, true);
         mCardLabelToolTipSummonLabel->setMaximumSize(80, 110);
         hLayout->addWidget(mCardLabelToolTipSummonLabel);
         hLayout->setMargin(0);

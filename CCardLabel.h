@@ -12,7 +12,7 @@ class CCardLabel : public QLabel
     Q_OBJECT
 
 public:
-    explicit CCardLabel(QWidget *parent = 0);
+    explicit CCardLabel(QWidget *parent = 0, bool isVirtualCard = false);
     virtual ~CCardLabel();
 
 public:
@@ -63,6 +63,7 @@ private:
     QPixmap mTitleIcon;
     QPointF *mLastLeftClickPos;    
     QPushButton *mLockButton;
+    bool mIsVirtual;
 };
 
 #endif // CCARDLABEL_H

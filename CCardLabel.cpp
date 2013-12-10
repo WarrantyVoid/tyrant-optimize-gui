@@ -10,12 +10,13 @@
 #include <QMimeData>
 #include <QToolTip>
 
-CCardLabel::CCardLabel(QWidget *parent)
+CCardLabel::CCardLabel(QWidget *parent, bool isVirtualCard)
 : QLabel(parent)
 , mCards(CCardTable::getCardTable())
 , mTitleIcon()
 , mLastLeftClickPos(0)
 , mLockButton(0)
+, mIsVirtual(isVirtualCard)
 {
     CCardLabelNexus::getCardLabelNexus().registerCardLabel(this);
     setScaledContents(true);   
@@ -287,41 +288,44 @@ void CCardLabel::paintEvent(QPaintEvent *ev)
             painter.drawText(healthRect.adjusted(-2 * healthRect.width() - 1, 0, -healthRect.width() - 1, 0), Qt::AlignRight | Qt::AlignVCenter, QString("%1").arg(mCard.getHealth()));
         }
 
-        // Display owned status
-        SCardStatus status = mCards.getCardStatus(mCard);
+        if (!mIsVirtual)
         {
-            painter.setPen(Qt::green);
-            QString ownageStr("x0");
-            if (status.numOwned > 0)
+            // Display owned status
+            SCardStatus status = mCards.getCardStatus(mCard);
             {
-                ownageStr = QString("x%1").arg(status.numOwned);
+                painter.setPen(Qt::green);
+                QString ownageStr("x0");
+                if (status.numOwned > 0)
+                {
+                    ownageStr = QString("x%1").arg(status.numOwned);
+                }
+                painter.drawText(ownedRect, Qt::AlignRight | Qt::AlignVCenter, ownageStr);
             }
-            painter.drawText(ownedRect, Qt::AlignRight | Qt::AlignVCenter, ownageStr);
-        }
-        if (cfg.isCardShadingEnabled() && status.numOwned <= 0)
-        {
-            painter.setPen(Qt::NoPen);
-            painter.setBrush(Qt::black);
-            painter.setOpacity(0.6);
-            painter.drawRoundedRect(rect(), 2.0, 2.0);
-        }
-        if (cfg.isBlackLabellingEnabled() && status.isBlack)
-        {
-            // Display black list status
-            painter.setPen(Qt::white);
-            painter.setOpacity(0.6);
-            painter.fillRect(blackRect, QBrush(Qt::black));
-            painter.setOpacity(1.0);
-            painter.drawText(blackRect, Qt::AlignCenter, "Blacklisted");
-        }
-        else if (cfg.isWhiteLabellingEnabled() && status.isWhite)
-        {
-            // Display white list status
-            painter.setPen(Qt::black);
-            painter.setOpacity(0.6);
-            painter.fillRect(blackRect, QBrush(Qt::white));
-            painter.setOpacity(1.0);
-            painter.drawText(blackRect, Qt::AlignCenter, "Whitelisted");
+            if (cfg.isCardShadingEnabled() && status.numOwned <= 0)
+            {
+                painter.setPen(Qt::NoPen);
+                painter.setBrush(Qt::black);
+                painter.setOpacity(0.6);
+                painter.drawRoundedRect(rect(), 2.0, 2.0);
+            }
+            if (cfg.isBlackLabellingEnabled() && status.isBlack)
+            {
+                // Display black list status
+                painter.setPen(Qt::white);
+                painter.setOpacity(0.6);
+                painter.fillRect(blackRect, QBrush(Qt::black));
+                painter.setOpacity(1.0);
+                painter.drawText(blackRect, Qt::AlignCenter, "Blacklisted");
+            }
+            else if (cfg.isWhiteLabellingEnabled() && status.isWhite)
+            {
+                // Display white list status
+                painter.setPen(Qt::black);
+                painter.setOpacity(0.6);
+                painter.fillRect(blackRect, QBrush(Qt::white));
+                painter.setOpacity(1.0);
+                painter.drawText(blackRect, Qt::AlignCenter, "Whitelisted");
+            }
         }
     }
 }
