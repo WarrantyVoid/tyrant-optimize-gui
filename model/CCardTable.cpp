@@ -140,20 +140,62 @@ const CCard& CCardTable::getOwnedCardEquivalent(const CCard &card, const TCardSt
                 if ((curCard.getRarity() != ELegendaryRarity || card.getRarity() == ELegendaryRarity)
                     && (curCard.getType() != ECommanderType || card.getType() == ECommanderType)
                     && (!curCard.isUnique() || card.isUnique()))
-                {
+                {                    
                     int score = 0;
-                    if (curCard.getName().compare(card.getName()) == 0) score +=20;
-                    if (curCard.getType() == card.getType()) score +=10;
-                    if (curCard.getRarity() == card.getRarity()) score += 3;
-                    if (curCard.getFaction() == card.getFaction()) score += 3;
-                    if (curCard.isUnique() == card.isUnique()) score += 2;
-                    if (curCard.getSet() == card.getSet()) score += 1;
+
+                    // Evaluate type
+                    if (curCard.getName().compare(card.getName()) == 0) score +=30;
+                    if (curCard.getType() == card.getType()) score +=15;
+                    if (curCard.getFaction() == card.getFaction()) score += 5;
+
+                    // Evaluate raw stats
+                    if (curCard.getHealth() < card.getHealth())
+                    {
+                        score -= qAbs(curCard.getHealth() - card.getHealth());
+                    }
+                    if (curCard.getAttack() != card.getAttack())
+                    {
+                        score -= 2 * qAbs(curCard.getAttack() - card.getAttack());
+                    }
+                    if (curCard.getDelay() != card.getDelay())
+                    {
+                        score -= 3 * qAbs(curCard.getDelay() - card.getDelay());
+                    }
+
+                    // Evaluate skills
+                    for (TSkillList::const_iterator i = curCard.getSkills().begin(); i != curCard.getSkills().end(); ++i)
+                    {
+                        const CCardSkill& curSkill = *i;
+                        for (TSkillList::const_iterator j = card.getSkills().begin(); j != card.getSkills().end(); ++j)
+                        {
+                            const CCardSkill& skill = *j;
+                            if(curSkill.getId().compare(skill.getId()) == 0)
+                            {
+                                if (skill.getId().compare("legion") == 0 && curCard.getFaction() != card.getFaction())
+                                {
+                                    continue;
+                                }
+                                if(curSkill.isTargetingAll() == skill.isTargetingAll())
+                                {
+                                    score +=10;
+                                    if(curSkill.getFlags() != ECardSkillFlagNone && curSkill.getFlags() == skill.getFlags())
+                                    {
+                                        score +=3;
+                                    }
+                                    if(skill.getX() != -1 && curSkill.getX() >= skill.getX())
+                                    {
+                                        score +=3;
+                                    }
+                                }
+                            }
+                        }
+                    }
 
                     if (score > maxScore)
                     {
                         maxScore = score;
                         result = &curCard;
-                        if (score == 39)
+                        if (score == 98)
                         {
                             return curCard;
                         }
