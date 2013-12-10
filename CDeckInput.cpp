@@ -90,7 +90,14 @@ bool CDeckInput::eventFilter(QObject *obj, QEvent *e)
                 if (dataIdx > -1)
                 {
                     data = data.mid(dataIdx + 1);
-                    lineEdit()->setText(data);
+                    if (data.indexOf(";") == -1 && lineEdit()->text().endsWith(";"))
+                    {
+                        lineEdit()->setText(lineEdit()->text() + data);
+                    }
+                    else
+                    {
+                        lineEdit()->setText(data);
+                    }
                     lineEdit()->setFocus();
                     emit deckDropped(data);
                     ev->accept();

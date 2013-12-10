@@ -25,7 +25,7 @@ public:
     void saveParameterSettings(QSettings &settings);
 
 signals:
-    void cardSelected(unsigned int cardId);
+    void cardSelected(TCardId cardId);
 
 public slots:
     void switchAttackOption();

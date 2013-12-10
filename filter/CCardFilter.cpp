@@ -96,7 +96,7 @@ bool CCardFilter::readOwnedCard(const QString &cardStr, TOwnedCard &card)
     {
         bool okId(true);
         bool okNum(true);
-        unsigned int cardId = cardSplit.at(0).toUInt(&okId);
+        TCardId cardId = cardSplit.at(0).toUInt(&okId);
         card.second = cardSplit.at(2).toInt(&okNum);
         if (okId && okNum)
         {

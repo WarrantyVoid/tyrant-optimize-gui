@@ -4,6 +4,7 @@
 #include <QString>
 #include <QList>
 #include "CCard.h"
+#include "CBattleground.h"
 
 enum EDeckType
 {
@@ -14,27 +15,29 @@ enum EDeckType
     ECustomDeckType
 };
 
+typedef unsigned int TDeckId;
+
 class CDeck
 {
 public:
     CDeck();
-    CDeck(unsigned int id, const QString& name, EDeckType type, unsigned int battlegroundId = 0u);
+    CDeck(TDeckId id, const QString& name, EDeckType type, TBattlegroundId battlegroundId = 0u);
 
 public:
-    void setId(unsigned int id);
+    void setId(TDeckId id);
     void setName(const QString& name);
     void setType(EDeckType type);
-    void setBattleground(unsigned int battlegroundId);
+    void setBattleground(TBattlegroundId battlegroundId);
     void setCommander(const CCard& card);
     void addCard(const CCard& card);
     void replaceCard(int index, const CCard& card);
     void trimCards(int maxCards);
     void clearCards();
 
-    unsigned int getId() const;
+    TDeckId getId() const;
     const QString& getName() const;
     EDeckType getType() const;
-    unsigned int getBattlegroundId() const;
+    TBattlegroundId getBattlegroundId() const;
     const CCard& getCommander() const;
     const CCard& getLegendary() const;
     const TCardList& getCards() const;
@@ -47,10 +50,10 @@ public:
     static const CDeck INVALID_DECK;
 
 private:
-    unsigned int mId;
+    TDeckId mId;
     QString mName;
     EDeckType mType;
-    unsigned int mBattlegroundId;
+    TBattlegroundId mBattlegroundId;
     TCardList mCards;
 };
 

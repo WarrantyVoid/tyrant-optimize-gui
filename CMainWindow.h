@@ -82,7 +82,7 @@ protected slots:
     void ownedCardsUpdated(const QStringList &result);
     void setOwnedCardsWatchingEnabled(bool enabled);
     void scanForOwnedCards();
-    void addCard(unsigned int cardId);
+    void addCard(TCardId cardId);
 
     // Hotkey slots
     void refreshModels();

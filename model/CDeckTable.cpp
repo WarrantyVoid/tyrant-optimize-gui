@@ -88,7 +88,7 @@ bool CDeckTable::deckToHash(const CDeck &deck, QString &hashStr) const
 
 bool CDeckTable::hashToDeck(const QString &hashStr, CDeck &deck) const
 {
-    QList<unsigned int> ids;
+    QList<TCardId> ids;
     int maxIds = 20;
     int lastIndex = -1;
     unsigned int lastId = 0;
@@ -110,12 +110,12 @@ bool CDeckTable::hashToDeck(const QString &hashStr, CDeck &deck) const
                     unsigned int curId = (lastIndex << 6) + curIndex;
                     if (curId < 4001)
                     {
-                        ids.push_back(curId + extId);
+                        ids.push_back(TCardId(curId + extId));
                         lastId = curId + extId;
                     }
                     else for (unsigned int j = 0; j < curId - 4001 && ids.size() <= maxIds; ++j)
                     {
-                        ids.push_back(lastId);
+                        ids.push_back(TCardId(lastId));
                     }
                     lastIndex = -1;
                     extId = 0;
@@ -135,7 +135,7 @@ bool CDeckTable::hashToDeck(const QString &hashStr, CDeck &deck) const
     deck.setName(hashStr);
     deck.clearCards();
     CCardTable &cards = CCardTable::getCardTable();
-    for (QList<unsigned int>::const_iterator i = ids.begin(); i != ids.end(); ++i)
+    for (QList<TCardId>::const_iterator i = ids.begin(); i != ids.end(); ++i)
     {
         const CCard &curCard = cards.getCardForId(*i);
         if (curCard.isValid())
@@ -222,7 +222,7 @@ bool CDeckTable::strToDeck(const QString &deckStr, CDeck &deck) const
             if (cardSplitId.size() > 1)
             {
                 bool ok(true);
-                unsigned int cardId = cardSplitId.at(1).toUInt(&ok);
+                TCardId cardId = cardSplitId.at(1).toUInt(&ok);
                 curCard = cards.getCardForId(cardId);
             }
             else
@@ -567,13 +567,13 @@ QMimeData *CDeckTable::mimeData(const QModelIndexList &indexes) const
      return CDeckInput::createDeckInputDropData(deckStr.join(";"));
  }
 
-void CDeckTable::processDeck(unsigned int id, const QString &deckName, EDeckType type, unsigned int battlegroundId, const QList<unsigned int> &deckCards)
+void CDeckTable::processDeck(TDeckId id, const QString &deckName, EDeckType type, TBattlegroundId battlegroundId, const QList<TCardId> &deckCards)
 {
     if (!deckName.isEmpty() && !deckCards.isEmpty())
     {
         CCardTable &cards = CCardTable::getCardTable();
         CDeck* deck = new CDeck(id, deckName, type, battlegroundId);
-        for (QList<unsigned int>::const_iterator i = deckCards.begin(); i != deckCards.end(); ++i)
+        for (QList<TCardId>::const_iterator i = deckCards.begin(); i != deckCards.end(); ++i)
         {
             const CCard &curCard = cards.getCardForId(*i);
             deck->addCard(curCard);
@@ -652,8 +652,8 @@ void CDeckTable::initData()
     {
         CQuestsXmlParser questXmlParser;
         connect(
-            &questXmlParser, SIGNAL(questParsed(unsigned int, const QString&, EDeckType, unsigned int, const QList<unsigned int>&)),
-            this, SLOT(processDeck(unsigned int, const QString&, EDeckType, unsigned int, const QList<unsigned int>&)));
+            &questXmlParser, SIGNAL(questParsed(TDeckId, const QString&, EDeckType, TBattlegroundId, const QList<TCardId>&)),
+            this, SLOT(processDeck(TDeckId, const QString&, EDeckType, TBattlegroundId, const QList<TCardId>&)));
 
         QXmlInputSource questXml(&questFile);
         QXmlSimpleReader questReader;
@@ -668,8 +668,8 @@ void CDeckTable::initData()
     {
         CRaidsXmlParser raidXmlParser;
         connect(
-            &raidXmlParser, SIGNAL(raidParsed(unsigned int, const QString&, EDeckType, unsigned int, const QList<unsigned int>&)),
-            this, SLOT(processDeck(unsigned int, const QString&, EDeckType, unsigned int, const QList<unsigned int>&)));
+            &raidXmlParser, SIGNAL(raidParsed(TDeckId, const QString&, EDeckType, TBattlegroundId, const QList<TCardId>&)),
+            this, SLOT(processDeck(TDeckId, const QString&, EDeckType, TBattlegroundId, const QList<TCardId>&)));
 
         QXmlInputSource raidXml(&raidFile);
         QXmlSimpleReader raidReader;
@@ -684,8 +684,8 @@ void CDeckTable::initData()
     {
         CMissionsXmlParser missionXmlParser;
         connect(
-            &missionXmlParser, SIGNAL(missionParsed(unsigned int, const QString&, EDeckType, unsigned int, const QList<unsigned int>&)),
-            this, SLOT(processDeck(unsigned int, const QString&, EDeckType, unsigned int, const QList<unsigned int>&)));
+            &missionXmlParser, SIGNAL(missionParsed(TDeckId, const QString&, EDeckType, TBattlegroundId, const QList<TCardId>&)),
+            this, SLOT(processDeck(TDeckId, const QString&, EDeckType, TBattlegroundId, const QList<TCardId>&)));
 
         QXmlInputSource missionXml(&missionFile);
         QXmlSimpleReader missionReader;

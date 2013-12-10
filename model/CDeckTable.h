@@ -5,7 +5,7 @@
 #include <QList>
 #include <QHash>
 #include <QSet>
-#include "model/CDeck.h"
+#include "CDeck.h"
 
 class CDeckTable : public QAbstractTableModel
 {
@@ -38,7 +38,7 @@ signals:
     void deckBlockageUpdated(const CDeck &deck, bool isBlocked);
 
 protected slots:
-    void processDeck(unsigned int id, const QString &deckName, EDeckType type, unsigned int battlegroundId, const QList<unsigned int> &deckCards);
+    void processDeck(TDeckId id, const QString &deckName, EDeckType type, TBattlegroundId battlegroundId, const QList<TCardId> &deckCards);
 
 protected:
     void initData();

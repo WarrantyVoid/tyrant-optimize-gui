@@ -1,48 +1,5 @@
 #include "CCard.h"
 
-CCardSkill::CCardSkill(const QString &id, int x, int y, bool all, unsigned int flags)
-: mId(id)
-, mX(x)
-, mY(y)
-, mTargetsAll(all)
-, mFlags(flags)
-{
-
-}
-
-QString CCardSkill::getId() const
-{
-    return mId;
-}
-
-int CCardSkill::getX() const
-{
-    return mX;
-}
-
-ECardFaction CCardSkill::getTargetingFaction() const
-{
-    switch (mY)
-    {
-    case EImperialFaction: return EImperialFaction;
-    case EBloodthirstyFaction: return EBloodthirstyFaction;
-    case EXenoFaction: return EXenoFaction;
-    case ERighteousFaction: return ERighteousFaction;
-    case ERaiderFaction: return ERaiderFaction;
-    default: return ENoFaction; // == all factions
-    }
-}
-
-bool CCardSkill::isTargetingAll() const
-{
-    return mTargetsAll;
-}
-
-unsigned int CCardSkill::getFlags() const
-{
-    return mFlags;
-}
-
 const CCard CCard::INVALID_CARD;
 const int CCard::UPGRADE_LEVEL_NONE = -1;
 
@@ -64,7 +21,7 @@ CCard::CCard()
 
 }
 
-void CCard::setId(unsigned int id)
+void CCard::setId(TCardId id)
 {
     mId = id;
 }
@@ -100,11 +57,11 @@ void CCard::clearSkills()
     mSkills.clear();
 }
 
-void CCard::addSkill(const QString &str, int x, int y, bool all, unsigned int flags)
+void CCard::addSkill(const CCardSkill &skill)
 {
-    if (!str.isEmpty())
+    if (skill.isValid())
     {
-        mSkills.push_back(CCardSkill(str, x, y, all, flags));
+        mSkills.push_back(skill);
     }
 }
 
@@ -133,7 +90,7 @@ void CCard::setHealth(int health)
     mHealth = health;
 }
 
-unsigned int CCard::getId() const
+TCardId CCard::getId() const
 {
     return mId;
 }

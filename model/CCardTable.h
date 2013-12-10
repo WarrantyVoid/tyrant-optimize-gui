@@ -6,9 +6,10 @@
 #include <QQueue>
 #include <QStringList>
 #include <QNetworkAccessManager>
-#include "model/CSkill.h"
-#include "model/CBattleground.h"
-#include "model/CAchievement.h"
+#include "CCard.h"
+#include "CSkill.h"
+#include "CBattleground.h"
+#include "CAchievement.h"
 #include "ICardCheck.h"
 
 class CDownload;
@@ -21,9 +22,10 @@ struct SCardStatus
     int numOwnedFiltered;
     bool isBlack;
     bool isWhite;
+
 };
 
-typedef QMap<unsigned int, SCardStatus> TCardStatusMap;
+typedef QMap<TCardId, SCardStatus> TCardStatusMap;
 typedef QPair<CCard, int> TOwnedCard;
 
 enum ECardStatusUpdate
@@ -47,7 +49,7 @@ public:
 
     const CSkill& getSkillForId(const QString id) const;
     const QString getPictureForCardSet(ECardSet cardSet) const;
-    const CCard& getCardForId(unsigned int id) const;
+    const CCard& getCardForId(TCardId id) const;
     const CCard& getCardForName(const QString &name) const;
     void getCardsForName(const QString &name, QList<CCard*> &cards) const;
     void searchCards(const ICardCheck &search, QList<CCard*> &cards, int maxHits = -1) const;
@@ -59,7 +61,7 @@ public:
     void setOwnedCards(const QList<TOwnedCard> &ownedCards, const QList<TOwnedCard> &filteredCards);
 
     void updateData(bool beta);
-    const CBattleground& getBattlegroundForId(unsigned int id) const;
+    const CBattleground& getBattlegroundForId(TBattlegroundId id) const;
     const QList<CBattleground>& getBattlegrounds() const;
     const QList<CAchievement>& getAchievements() const;
 
@@ -83,9 +85,9 @@ protected:
 private:
     QHash<QString, CSkill> mSkillIdMap;
     QHash<ECardSet, QString> mCardSetIdMap;
-    QHash<unsigned int, CCard*> mCardIdMap;
+    QHash<TCardId, CCard*> mCardIdMap;
     QMultiHash<QString, CCard*> mCardNameMap;
-    QHash<unsigned int, SCardStatus> mCardStatusMap;
+    QHash<TCardId, SCardStatus> mCardStatusMap;
     QNetworkAccessManager* mNetManager;
     QQueue<CPictureDownload*> mPictureDownloads;
     QQueue<CDownload*> mDataDownloads;

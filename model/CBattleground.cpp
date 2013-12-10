@@ -10,7 +10,7 @@ CBattleground::CBattleground()
 {
 }
 
-void CBattleground::setId(unsigned int id)
+void CBattleground::setId(TBattlegroundId id)
 {
     mId = id;
 }
@@ -30,7 +30,7 @@ void CBattleground::setPicture(const QString &picture)
     mPicture = picture;
 }
 
-unsigned int CBattleground::getId() const
+TBattlegroundId CBattleground::getId() const
 {
     return mId;
 }

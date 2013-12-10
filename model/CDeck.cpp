@@ -11,7 +11,7 @@ CDeck::CDeck()
 {
 }
 
-CDeck::CDeck(unsigned int id, const QString& name, EDeckType type, unsigned int battlegroundId)
+CDeck::CDeck(TDeckId id, const QString& name, EDeckType type, TBattlegroundId battlegroundId)
 : mId(id)
 , mName(name)
 , mType(type)
@@ -21,7 +21,7 @@ CDeck::CDeck(unsigned int id, const QString& name, EDeckType type, unsigned int 
 
 }
 
-void CDeck::setId(unsigned int id)
+void CDeck::setId(TDeckId id)
 {
     mId = id;
 }
@@ -36,7 +36,7 @@ void CDeck::setType(EDeckType type)
     mType = type;
 }
 
-void CDeck::setBattleground(unsigned int battlegroundId)
+void CDeck::setBattleground(TBattlegroundId battlegroundId)
 {
     mBattlegroundId = battlegroundId;
 }
@@ -88,7 +88,7 @@ void CDeck::clearCards()
     mCards.clear();
 }
 
-unsigned int CDeck::getId() const
+TDeckId CDeck::getId() const
 {
     return mId;
 }
@@ -103,7 +103,7 @@ EDeckType CDeck::getType() const
     return mType;
 }
 
-unsigned int CDeck::getBattlegroundId() const
+TBattlegroundId CDeck::getBattlegroundId() const
 {
     return mBattlegroundId;
 }

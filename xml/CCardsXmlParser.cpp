@@ -106,7 +106,7 @@ bool CCardsXmlParser::startElement(const QString & /*namespaceURI*/, const QStri
             int x = -1;
             int y = -1;
             bool all = false;
-            unsigned int flags = CCardSkill::SKILL_FLAG_NONE;
+            ECardSkillFlags flags = ECardSkillFlagNone;
             for (int i = 0; i < atts.count(); ++i)
             {
                 if (atts.qName(i).compare("id") == 0)
@@ -132,7 +132,7 @@ bool CCardsXmlParser::startElement(const QString & /*namespaceURI*/, const QStri
                     bool ok(true);
                     if (atts.value(i).toInt(&ok) == 1)
                     {
-                       flags |=  CCardSkill::SKILL_FLAG_ON_ATTACKED;
+                       flags |= ECardSkillFlagOnAttacked;
                     }
                 }
                 if (atts.qName(i).compare("kill") == 0)
@@ -140,7 +140,7 @@ bool CCardsXmlParser::startElement(const QString & /*namespaceURI*/, const QStri
                     bool ok(true);
                     if (atts.value(i).toInt(&ok) == 1)
                     {
-                       flags |=  CCardSkill::SKILL_FLAG_ON_KILL;
+                       flags |= ECardSkillFlagOnKill;
                     }
                 }
                 if (atts.qName(i).compare("played") == 0)
@@ -148,7 +148,7 @@ bool CCardsXmlParser::startElement(const QString & /*namespaceURI*/, const QStri
                     bool ok(true);
                     if (atts.value(i).toInt(&ok) == 1)
                     {
-                       flags |=  CCardSkill::SKILL_FLAG_ON_PLAY;
+                       flags |= ECardSkillFlagOnPlay;
                     }
                 }
                 if (atts.qName(i).compare("died") == 0)
@@ -156,11 +156,11 @@ bool CCardsXmlParser::startElement(const QString & /*namespaceURI*/, const QStri
                     bool ok(true);
                     if (atts.value(i).toInt(&ok) == 1)
                     {
-                       flags |=  CCardSkill::SKILL_FLAG_ON_DEATH;
+                       flags |= ECardSkillFlagOnDeath;
                     }
                 }
             }
-            mCurCard.addSkill(id, x, y, all, flags);
+            mCurCard.addSkill(CCardSkill(id, x, y, all, flags));
         }
         else if (qName.compare("cost") == 0)
         {

@@ -307,8 +307,8 @@ CMainWindow::CMainWindow(QWidget *parent)
         mMultiDeckWidget, SIGNAL(decksUpdated(const QString&)),
         mMultiDeckDialog, SLOT(hide()));
     connect(
-        mUi->cardSearchWidget, SIGNAL(cardSelected(unsigned int)),
-        this, SLOT(addCard(unsigned int)));
+        mUi->cardSearchWidget, SIGNAL(cardSelected(TCardId)),
+        this, SLOT(addCard(TCardId)));
     connect(
         mOwnedCardsWatcher, SIGNAL(directoryChanged(const QString &)),
         this, SLOT(scanForOwnedCards()));
@@ -1159,7 +1159,7 @@ void CMainWindow::scanForOwnedCards()
     mUi->ownedCardsFileBox->setCurrentIndex(mUi->ownedCardsFileBox->findText(lastText));
 }
 
-void CMainWindow::addCard(unsigned int cardId)
+void CMainWindow::addCard(TCardId cardId)
 {
     CDeckInput *deckInput = 0;
     CDeckWidget *deckWidget = 0;

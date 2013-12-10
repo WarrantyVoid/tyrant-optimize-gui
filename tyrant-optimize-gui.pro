@@ -48,7 +48,9 @@ HEADERS += \
     download/CDownload.h \
     download/CPictureDownload.h \
     filter/CCardSearchParameters.h \
-    CVersion.h
+    CVersion.h \
+    model/CCardSkill.h \
+    model/CardTypes.h
 	   
 FORMS += \
     MainWindow.ui \
@@ -95,7 +97,8 @@ SOURCES += \
     download/CPictureDownload.cpp \
     filter/CCardSearchParameters.cpp \
     filter/CCardFilterParameters.cpp \
-    CVersion.cpp
+    CVersion.cpp \
+    model/CCardSkill.cpp
 
 RESOURCES += main.qrc
 RC_FILE    = main.rc

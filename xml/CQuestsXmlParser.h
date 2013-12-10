@@ -13,7 +13,7 @@ public:
     CQuestsXmlParser();
 
 signals:
-    void questParsed(unsigned int id, const QString &questName, EDeckType type, unsigned int battlegroundId, const QList<unsigned int> &questDeck);
+    void questParsed(TDeckId id, const QString &questName, EDeckType type, TBattlegroundId battlegroundId, const QList<TCardId> &questDeck);
     void battlegroundParsed(const CBattleground &battleground);
 
 protected:
@@ -33,7 +33,7 @@ private:
     QString mCurQuestName;
     unsigned int mCurQuestId;
     unsigned int mCurQuestBattleGroundId;
-    QList<unsigned int> mCurQuestDeck;
+    QList<TCardId> mCurQuestDeck;
 
     bool mIsBattlegroundTagActive;
     bool mIsBgIdTagActive;

@@ -33,7 +33,7 @@ CCardTable::CCardTable()
 
 CCardTable::~CCardTable()
 {
-    QHashIterator<unsigned int, CCard*> i(mCardIdMap);
+    QHashIterator<TCardId, CCard*> i(mCardIdMap);
     while (i.hasNext())
     {
         i.next();
@@ -77,9 +77,9 @@ const QString CCardTable::getPictureForCardSet(ECardSet cardSet) const
     return "";
 }
 
-const CCard& CCardTable::getCardForId(unsigned int id) const
+const CCard& CCardTable::getCardForId(TCardId id) const
 {
-    QHash<unsigned int, CCard*>::const_iterator i = mCardIdMap.find(id);
+    QHash<TCardId, CCard*>::const_iterator i = mCardIdMap.find(id);
     if (i != mCardIdMap.end())
     {
         return *i.value();
@@ -112,7 +112,7 @@ void CCardTable::searchCards(const ICardCheck &search, QList<CCard*> &cards, int
 {
     cards.clear();
     int dummy(0);
-    for (QHash<unsigned int, CCard*>::const_iterator i = mCardIdMap.begin(); i != mCardIdMap.end(); ++i)
+    for (QHash<TCardId, CCard*>::const_iterator i = mCardIdMap.begin(); i != mCardIdMap.end(); ++i)
     {
         if (i.value()->getSet() != EUnknownSet && search.checkCard(*i.value(), dummy))
         {
@@ -129,7 +129,7 @@ const CCard& CCardTable::getOwnedCardEquivalent(const CCard &card, const TCardSt
 {
     int maxScore = 0;
     const CCard* result = 0;
-    for (QHash<unsigned int, SCardStatus>::const_iterator i = mCardStatusMap.begin(); i != mCardStatusMap.end(); ++i)
+    for (QHash<TCardId, SCardStatus>::const_iterator i = mCardStatusMap.begin(); i != mCardStatusMap.end(); ++i)
     {
         if (i.value().numOwnedFiltered > 0)
         {
@@ -174,7 +174,7 @@ const CCard& CCardTable::getOwnedCardEquivalent(const CCard &card, const TCardSt
 
 SCardStatus CCardTable::getCardStatus(const CCard &card) const
 {
-    QHash<unsigned int, SCardStatus>::const_iterator status = mCardStatusMap.find(card.getId());
+    QHash<TCardId, SCardStatus>::const_iterator status = mCardStatusMap.find(card.getId());
     if (status != mCardStatusMap.end())
     {
         return status.value();
@@ -184,7 +184,7 @@ SCardStatus CCardTable::getCardStatus(const CCard &card) const
 
 bool CCardTable::isCardOwned(const CCard &card) const
 {
-    QHash<unsigned int, SCardStatus>::const_iterator status = mCardStatusMap.find(card.getId());
+    QHash<TCardId, SCardStatus>::const_iterator status = mCardStatusMap.find(card.getId());
     if (status != mCardStatusMap.end())
     {
         return status.value().numOwned > 0;
@@ -195,7 +195,7 @@ bool CCardTable::isCardOwned(const CCard &card) const
 void CCardTable::setListedCards(const QStringList &blackList, const QStringList &whiteList)
 {
     // Clear list status
-    for (QHash<unsigned int, SCardStatus>::iterator i = mCardStatusMap.begin(); i != mCardStatusMap.end(); ++i)
+    for (QHash<TCardId, SCardStatus>::iterator i = mCardStatusMap.begin(); i != mCardStatusMap.end(); ++i)
     {
         i.value().isBlack = false;
         i.value().isWhite = false;
@@ -208,7 +208,7 @@ void CCardTable::setListedCards(const QStringList &blackList, const QStringList 
         getCardsForName((*i), blackCards);
         for (QList<CCard*>::const_iterator iBlack = blackCards.begin(); iBlack != blackCards.end(); ++iBlack)
         {
-            QHash<unsigned int, SCardStatus>::iterator iEx = mCardStatusMap.find((*iBlack)->getId());
+            QHash<TCardId, SCardStatus>::iterator iEx = mCardStatusMap.find((*iBlack)->getId());
             if (iEx != mCardStatusMap.end())
             {
                 iEx.value().isBlack = true;
@@ -229,7 +229,7 @@ void CCardTable::setListedCards(const QStringList &blackList, const QStringList 
         getCardsForName((*i), whiteCards);
         for (QList<CCard*>::const_iterator iWhite = whiteCards.begin(); iWhite != whiteCards.end(); ++iWhite)
         {
-            QHash<unsigned int, SCardStatus>::iterator iEx = mCardStatusMap.find((*iWhite)->getId());
+            QHash<TCardId, SCardStatus>::iterator iEx = mCardStatusMap.find((*iWhite)->getId());
             if (iEx != mCardStatusMap.end())
             {
                 iEx.value().isWhite = true;
@@ -248,7 +248,7 @@ void CCardTable::setListedCards(const QStringList &blackList, const QStringList 
 void CCardTable::setOwnedCards(const QList<TOwnedCard> &ownedCards, const QList<TOwnedCard> &filteredCards)
 {
     // Clear ownage status
-    for (QHash<unsigned int, SCardStatus>::iterator i = mCardStatusMap.begin(); i != mCardStatusMap.end(); ++i)
+    for (QHash<TCardId, SCardStatus>::iterator i = mCardStatusMap.begin(); i != mCardStatusMap.end(); ++i)
     {
         i.value().numOwned = -1;
         i.value().numOwnedFiltered = -1;
@@ -257,7 +257,7 @@ void CCardTable::setOwnedCards(const QList<TOwnedCard> &ownedCards, const QList<
     // Update to new ownage status
     for (QList<TOwnedCard>::const_iterator i = ownedCards.begin(); i != ownedCards.end(); ++i)
     {
-        QHash<unsigned int, SCardStatus>::iterator iEx = mCardStatusMap.find((*i).first.getId());
+        QHash<TCardId, SCardStatus>::iterator iEx = mCardStatusMap.find((*i).first.getId());
         if (iEx != mCardStatusMap.end())
         {
             iEx.value().numOwned = (*i).second;
@@ -274,7 +274,7 @@ void CCardTable::setOwnedCards(const QList<TOwnedCard> &ownedCards, const QList<
     // Add information about ownage after applying filters
     for (QList<TOwnedCard>::const_iterator i = filteredCards.begin(); i != filteredCards.end(); ++i)
     {
-        QHash<unsigned int, SCardStatus>::iterator status = mCardStatusMap.find((*i).first.getId());
+        QHash<TCardId, SCardStatus>::iterator status = mCardStatusMap.find((*i).first.getId());
         if (status != mCardStatusMap.end())
         {
             status.value().numOwnedFiltered = (*i).second;
@@ -318,7 +318,7 @@ void CCardTable::updateData(bool isBeta)
     }
 }
 
-const CBattleground& CCardTable::getBattlegroundForId(unsigned int id) const
+const CBattleground& CCardTable::getBattlegroundForId(TBattlegroundId id) const
 {
     for(QList<CBattleground>::const_iterator i = mBattlegrounds.begin(); i != mBattlegrounds.end(); ++i)
     {
@@ -478,7 +478,7 @@ void CCardTable::initData()
 {
     // Cleanup
     mSkillIdMap.clear();
-    QHashIterator<unsigned int, CCard*> i(mCardIdMap);
+    QHashIterator<TCardId, CCard*> i(mCardIdMap);
     while (i.hasNext())
     {
         i.next();

@@ -89,23 +89,23 @@ QString CSkill::makeSignature(const CCardSkill& skillParam, bool linkSummon) con
     }
 
     QString mods = "";
-    unsigned int flags = skillParam.getFlags();
+    ECardSkillFlags flags = skillParam.getFlags();
     if (flags != 0)
     {
         QStringList modList;
-        if ((flags & CCardSkill::SKILL_FLAG_ON_PLAY) == CCardSkill::SKILL_FLAG_ON_PLAY)
+        if (flags.testFlag(ECardSkillFlagOnPlay))
         {
             modList.append("Play");
         }
-        if ((flags & CCardSkill::SKILL_FLAG_ON_ATTACKED) == CCardSkill::SKILL_FLAG_ON_ATTACKED)
+        if (flags.testFlag(ECardSkillFlagOnAttacked))
         {
             modList.append("Attacked");
         }
-        if ((flags & CCardSkill::SKILL_FLAG_ON_KILL) == CCardSkill::SKILL_FLAG_ON_KILL)
+        if (flags.testFlag(ECardSkillFlagOnKill))
         {
             modList.append("Kill");
         }
-        if ((flags & CCardSkill::SKILL_FLAG_ON_DEATH) == CCardSkill::SKILL_FLAG_ON_DEATH)
+        if (flags.testFlag(ECardSkillFlagOnDeath))
         {
             modList.append("Death");
         }

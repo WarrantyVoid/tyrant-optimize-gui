@@ -9,7 +9,7 @@ CAchievement::CAchievement()
 {
 }
 
-void CAchievement::setId(unsigned int id)
+void CAchievement::setId(TAchievementId id)
 {
     mId = id;
 }
@@ -24,7 +24,7 @@ void CAchievement::setDescription(const QString &description)
     mDescription = description;
 }
 
-unsigned int CAchievement::getId() const
+TAchievementId CAchievement::getId() const
 {
     return mId;
 }

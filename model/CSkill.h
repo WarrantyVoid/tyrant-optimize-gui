@@ -2,7 +2,7 @@
 #define CSKILL_H
 
 #include <QString>
-#include <model/CCard.h>
+#include "CCardSkill.h"
 
 class CSkill
 {

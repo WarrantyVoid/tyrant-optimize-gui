@@ -3,17 +3,19 @@
 
 #include <QString>
 
+typedef unsigned int TAchievementId;
+
 class CAchievement
 {
 public:
     CAchievement();
 
 public:
-    void setId(unsigned int id);
+    void setId(TAchievementId id);
     void setName(const QString &name);
     void setDescription(const QString &description);
 
-    unsigned int getId() const;
+    TAchievementId getId() const;
     QString getName() const;
     QString getDescription() const;
 
@@ -23,7 +25,7 @@ public:
     static const CAchievement INVALID_ACHIEVEMENT;
 
 private:
-    unsigned int mId;
+    TAchievementId mId;
     QString mName;
     QString mDescription;
 };
