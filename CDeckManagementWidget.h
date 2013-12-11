@@ -25,7 +25,7 @@ class CDeckItemDelegate : public QStyledItemDelegate
         QStyleOptionViewItem opt = option;
         opt.decorationPosition = QStyleOptionViewItem::Right;
         opt.state &= ~QStyle::State_HasFocus;
-        if (index.column() == 2)
+        if (index.column() == EDeckCommanderColumn)
         {
             QRect normRect = option.rect;
             normRect.moveTo(0, 0);
@@ -36,6 +36,14 @@ class CDeckItemDelegate : public QStyledItemDelegate
         {
             QStyledItemDelegate::paint(painter, opt, index);
         }
+    }
+
+    void updateEditorGeometry(QWidget *editor, const QStyleOptionViewItem &option, const QModelIndex &index) const
+    {
+        QStyleOptionViewItem opt = option;
+        opt.decorationPosition = QStyleOptionViewItem::Right;
+        opt.state &= ~QStyle::State_HasFocus;
+        QStyledItemDelegate::updateEditorGeometry(editor, opt, index);
     }
 };
 
@@ -50,10 +58,11 @@ public:
     {
         switch(column)
         {
-        case 1: mTypePattern = QRegExp(pattern); break;
-        case 2: mCommanderPattern = pattern.toLower(); break;
-        case 4: mNamePattern = pattern.toLower(); break;
-        default:  break;
+        case EDeckIdColumn: break;
+        case EDeckTypeColumn: mTypePattern = QRegExp(pattern); break;
+        case EDeckCommanderColumn: mCommanderPattern = pattern.toLower(); break;
+        case EDeckSizeColumn: break;
+        case EDeckNameColumn: mNamePattern = pattern.toLower(); break;
         }
     }
 
@@ -61,7 +70,7 @@ public:
     {
         if (!mTypePattern.isEmpty())
         {
-            QModelIndex index = sourceModel()->index(sourceRow, 1, sourceParent);
+            QModelIndex index = sourceModel()->index(sourceRow, EDeckTypeColumn, sourceParent);
             if (!mTypePattern.exactMatch(index.data().toString()))
             {
                 return false;
@@ -69,7 +78,7 @@ public:
         }
         if (!mCommanderPattern.isEmpty())
         {
-            QModelIndex index = sourceModel()->index(sourceRow, 2, sourceParent);
+            QModelIndex index = sourceModel()->index(sourceRow, EDeckCommanderColumn, sourceParent);
             if (!index.data().toString().toLower().contains(mCommanderPattern))
             {
                 return false;
@@ -77,7 +86,7 @@ public:
         }
         if (!mNamePattern.isEmpty())
         {
-            QModelIndex index = sourceModel()->index(sourceRow, 4, sourceParent);
+            QModelIndex index = sourceModel()->index(sourceRow, EDeckNameColumn, sourceParent);
             if (!index.data().toString().toLower().contains(mNamePattern))
             {
                 return false;

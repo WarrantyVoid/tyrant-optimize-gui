@@ -380,7 +380,7 @@ int CDeckTable::rowCount(const QModelIndex &/*parent*/) const
 
 int CDeckTable::columnCount(const QModelIndex &/*parent*/) const
 {
-    return 5;
+    return EDeckColumn_MAX + 1;
 }
 
 QVariant CDeckTable::data(const QModelIndex &index, int role) const
@@ -390,14 +390,14 @@ QVariant CDeckTable::data(const QModelIndex &index, int role) const
         CDeck *deckData = mDecks[index.row()];
         switch (index.column())
         {
-        case 0:
+        case EDeckIdColumn:
             switch (role)
             {
             case Qt::DisplayRole:
                 return QString("%1").arg(deckData->getId(), 3, 10, QChar('0'));
             }
             break;
-        case 1:
+        case EDeckTypeColumn:
             switch (role)
             {
             case Qt::DisplayRole:
@@ -422,7 +422,7 @@ QVariant CDeckTable::data(const QModelIndex &index, int role) const
                 }
             }
             break;
-        case 2:
+        case EDeckCommanderColumn:
         {
             switch (role)
             {
@@ -430,15 +430,15 @@ QVariant CDeckTable::data(const QModelIndex &index, int role) const
             {
                 QPixmap comImg;
                 comImg.load(CGlobalConfig::getCfg().getPicturePath() + deckData->getCommander().getPicture());
-                return QVariant(comImg.scaledToHeight(20, Qt::SmoothTransformation));
+                return comImg.scaledToHeight(20, Qt::SmoothTransformation);
             }
             case Qt::ToolTipRole:
             case Qt::DisplayRole:
-                return QVariant(deckData->getCommander().getName());
+                return deckData->getCommander().getName();
             }
             break;
         }
-        case 3:
+        case EDeckSizeColumn:
             switch (role)
             {
             case Qt::TextAlignmentRole:
@@ -446,18 +446,15 @@ QVariant CDeckTable::data(const QModelIndex &index, int role) const
             case Qt::UserRole:
             case Qt::DisplayRole:
                 return QVariant(deckData->getNumCards() - 1);
-            case Qt::ToolTipRole:
-                return QVariant();
             }
             break;
-        case 4:
+        case EDeckNameColumn:
             switch (role)
             {
             case Qt::DecorationRole:
                 if (isDeckBlocked(deckData->getName()))
                 {
-                    QPixmap useImg(":img/block.png");
-                    return QVariant(useImg);
+                    return QPixmap(":img/block.png");
                 }
                 break;
             case Qt::DisplayRole:
@@ -471,10 +468,9 @@ QVariant CDeckTable::data(const QModelIndex &index, int role) const
                     }
                 }
                 return deckData->getName();
+            case Qt::EditRole:
             case Qt::UserRole:
                 return deckData->getName();
-            case Qt::ToolTipRole:
-                return QVariant();
             }
             break;
         }
@@ -488,32 +484,31 @@ QVariant CDeckTable::headerData(int section, Qt::Orientation orientation, int ro
     {
         switch (section)
         {
-        case 0:
+        case EDeckIdColumn:
             if (role == Qt::DisplayRole)
             {
                 return "ID";
             }
             break;
-        case 1:
+        case EDeckTypeColumn:
             if (role == Qt::DecorationRole)
             {
                 QPixmap comImg;
                 comImg.load(":/img/tyrant/CardBack.png");
-
-                return QVariant(comImg.scaledToHeight(20));
+                return comImg.scaledToHeight(20);
             }
             break;
-        case 2:
+        case EDeckCommanderColumn:
         {
             if (role == Qt::DecorationRole)
             {
                 QPixmap comImg;
                 comImg.load(":/img/tyrant/CommanderRegIcon.png");
-                return QVariant(comImg.scaledToHeight(20));
+                return comImg.scaledToHeight(20);
             }
             break;
         }
-        case 3:
+        case EDeckSizeColumn:
         {
             if (role == Qt::DisplayRole)
             {
@@ -521,7 +516,7 @@ QVariant CDeckTable::headerData(int section, Qt::Orientation orientation, int ro
             }
             break;
         }
-        case 4:
+        case EDeckNameColumn:
             if (role == Qt::DisplayRole)
             {
                 return "Deck Name";
@@ -543,6 +538,14 @@ Qt::ItemFlags CDeckTable::flags(const QModelIndex &index) const
     if (index.isValid())
     {
         flags |= Qt::ItemIsDragEnabled;
+        if (index.column() == EDeckNameColumn)
+        {
+            CDeck *deckData = mDecks[index.row()];
+            if (deckData->getType() == ECustomDeckType)
+            {
+                flags |= Qt::ItemIsEditable;
+            }
+        }
     }
     return flags;
 }
@@ -559,13 +562,41 @@ QMimeData *CDeckTable::mimeData(const QModelIndexList &indexes) const
      QStringList deckStr;
      foreach (QModelIndex index, indexes)
      {
-         if (index.isValid() && index.column() == 4)
+         if (index.isValid() && index.column() == EDeckNameColumn)
          {
              deckStr << data(index, Qt::UserRole).toString();
          }
      }
      return CDeckInput::createDeckInputDropData(deckStr.join(";"));
  }
+
+bool CDeckTable::setData(const QModelIndex &index, const QVariant & value, int role)
+{
+    if (index.isValid() && role == Qt::EditRole)
+    {
+        CDeck *deckData = mDecks[index.row()];
+        const QString &oldName = deckData->getName();
+        const QString &newName = value.toString();
+        if (!newName.isEmpty() && oldName.compare(newName) != 0)
+        {
+            QHash<QString, CDeck*>::iterator iDeck = mDeckNameMap.find(oldName);
+            if (iDeck != mDeckNameMap.end())
+            {
+                if (mBlockedDecks.contains(oldName))
+                {
+                    mBlockedDecks.insert(newName);
+                    mBlockedDecks.remove(oldName);
+                }
+                mDeckNameMap.insert(newName, iDeck.value());
+                mDeckNameMap.erase(iDeck);
+                deckData->setName(newName);
+                writeCustomDecksFile();
+            }
+            return true;
+        }
+    }
+    return false;
+}
 
 void CDeckTable::processDeck(TDeckId id, const QString &deckName, EDeckType type, TBattlegroundId battlegroundId, const QList<TCardId> &deckCards)
 {

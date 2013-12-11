@@ -22,6 +22,7 @@ CDeckManagementWidget::CDeckManagementWidget(QWidget *parent)
     mUi->deckTableView->verticalHeader()->setDefaultSectionSize(18);
     mUi->deckTableView->setItemDelegate(&mDeckItemDelegate);
     mUi->deckTableView->setContextMenuPolicy(Qt::CustomContextMenu);
+    mUi->deckTableView->installEventFilter(this);
     mUi->deckTableView->viewport()->installEventFilter(this);
 
     connect(
@@ -195,9 +196,9 @@ void CDeckManagementWidget::updateView()
     {
         deckTypes << "R";
     }
-    mDeckSortProxy.setFilterPattern(1, deckTypes.join("|"));
-    mDeckSortProxy.setFilterPattern(2, mUi->commanderBox->currentText());
-    mDeckSortProxy.setFilterPattern(4, mUi->nameBox->currentText());
+    mDeckSortProxy.setFilterPattern(EDeckTypeColumn, deckTypes.join("|"));
+    mDeckSortProxy.setFilterPattern(EDeckCommanderColumn, mUi->commanderBox->currentText());
+    mDeckSortProxy.setFilterPattern(EDeckNameColumn, mUi->nameBox->currentText());
     mDeckSortProxy.invalidate();
 }
 
@@ -314,12 +315,24 @@ bool CDeckManagementWidget::eventFilter(QObject *obj, QEvent *e)
             }
             return QObject::eventFilter(obj, e);
         }
+        case QEvent::KeyRelease:
+        {
+            QKeyEvent *keyEvent = static_cast<QKeyEvent*>(e);
+            switch (keyEvent->key())
+            {
+                case Qt::Key_Delete:
+                    deleteSelectedDeck();
+                    return true;
+                default:
+                    break;
+            }
+        }
         default:
         {
-            // standard event processing
-            return QObject::eventFilter(obj, e);
+            break;
         }
     }
+    return QObject::eventFilter(obj, e);
 }
 
 void CDeckManagementWidget::toggleDeckUsageButton(bool curDeckUsed)

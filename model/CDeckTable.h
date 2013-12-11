@@ -7,6 +7,16 @@
 #include <QSet>
 #include "CDeck.h"
 
+enum EDeckTableColumns
+{
+   EDeckIdColumn = 0,
+   EDeckTypeColumn = 1,
+   EDeckCommanderColumn = 2,
+   EDeckSizeColumn = 3,
+   EDeckNameColumn = 4,
+   EDeckColumn_MAX = EDeckNameColumn
+};
+
 class CDeckTable : public QAbstractTableModel
 {
     Q_OBJECT
@@ -24,7 +34,6 @@ public:
     bool strToDeck(const QString &deckStr, CDeck &deck) const;
     const CDeck& getDeckForIndex(const QModelIndex &index) const;
     const CDeck& getDeckForName(const QString &deckName) const;
-
 
     bool addCustomDeck(CDeck &customDeck);
     bool deleteCustomDecks(const QStringList &customDecks);
@@ -49,7 +58,8 @@ protected:
     virtual Qt::DropActions supportedDropActions() const;
     virtual Qt::ItemFlags flags( const QModelIndex & index) const;
     virtual QStringList mimeTypes() const;
-    QMimeData *mimeData(const QModelIndexList &indexes) const;
+    virtual QMimeData *mimeData(const QModelIndexList &indexes) const;
+    virtual bool setData(const QModelIndex &index, const QVariant & value, int role = Qt::EditRole);
 
 private:
     bool writeCustomDecksFile();
