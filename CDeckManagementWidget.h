@@ -20,6 +20,14 @@ class DeckManagementWidget;
 */
 class CDeckItemDelegate : public QStyledItemDelegate
 {
+public:
+    CDeckItemDelegate(QObject *parent = 0)
+    : QStyledItemDelegate(parent)
+    , mIsEditing(false)
+    {
+
+    }
+
     void paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const
     {
         QStyleOptionViewItem opt = option;
@@ -38,6 +46,18 @@ class CDeckItemDelegate : public QStyledItemDelegate
         }
     }
 
+    void setEditorData(QWidget *editor, const QModelIndex &index) const
+    {
+        mIsEditing = true;
+        QStyledItemDelegate::setEditorData(editor, index);
+    }
+
+    void setModelData(QWidget *editor, QAbstractItemModel *model, const QModelIndex &index) const
+    {
+        QStyledItemDelegate::setModelData(editor, model, index);
+        mIsEditing = false;
+    }
+
     void updateEditorGeometry(QWidget *editor, const QStyleOptionViewItem &option, const QModelIndex &index) const
     {
         QStyleOptionViewItem opt = option;
@@ -45,6 +65,14 @@ class CDeckItemDelegate : public QStyledItemDelegate
         opt.state &= ~QStyle::State_HasFocus;
         QStyledItemDelegate::updateEditorGeometry(editor, opt, index);
     }
+
+    bool isEditing() const
+    {
+        return mIsEditing;
+    }
+
+private:
+    mutable int mIsEditing;
 };
 
 /**

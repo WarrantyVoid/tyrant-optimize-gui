@@ -318,13 +318,16 @@ bool CDeckManagementWidget::eventFilter(QObject *obj, QEvent *e)
         case QEvent::KeyRelease:
         {
             QKeyEvent *keyEvent = static_cast<QKeyEvent*>(e);
-            switch (keyEvent->key())
+            if (!mDeckItemDelegate.isEditing())
             {
-                case Qt::Key_Delete:
-                    deleteSelectedDeck();
-                    return true;
-                default:
-                    break;
+                switch (keyEvent->key())
+                {
+                    case Qt::Key_Delete:
+                        deleteSelectedDeck();
+                        return true;
+                    default:
+                        break;
+                }
             }
         }
         default:
