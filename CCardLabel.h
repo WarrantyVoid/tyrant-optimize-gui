@@ -33,6 +33,9 @@ signals:
     void unitRightClicked(bool isBlack);
     void unitCtrlRightClicked(bool isWhite);
 
+public slots:
+    void displayContextMenu(const QPoint &pos);
+
 protected slots:
     void actionToggleBlack(bool isBlack);
     void actionToggleWhite(bool isWhite);

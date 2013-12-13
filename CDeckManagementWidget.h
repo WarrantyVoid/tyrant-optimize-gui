@@ -152,12 +152,15 @@ signals:
     void setDeck(const QString &deckStr, EInputDeckTarget target);
 
 public slots:
+    void displayContextMenu(const QPoint &pos);
     bool addCustomDeck(CDeck &customDeck);
     void updateButtonAvailability();
     void updateView();
 
 private slots:
     void deleteSelectedDeck();
+    void nameSelectedDeck();
+    void hashSelectedDeck();
     void blockSelectedDeck();
     void setSelectedBaseDeck();
     void setSelectedEnemyDeck();
@@ -165,9 +168,6 @@ private slots:
 
 protected:
     virtual bool eventFilter(QObject *obj, QEvent *e);
-
-private:
-    void toggleDeckUsageButton(bool curDeckUsed);
     
 private:
     Ui::DeckManagementWidget *mUi;

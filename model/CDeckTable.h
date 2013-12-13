@@ -24,6 +24,7 @@ public:
     explicit CDeckTable(QObject *parent = 0);
     virtual ~CDeckTable();
     static CDeckTable& getDeckTable();
+    int getNumberOfDecks() const { return mDecks.size(); }
 
 public:
     void refresh();

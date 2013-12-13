@@ -4,7 +4,8 @@
 #include <QStandardItemModel>
 #include <QLineEdit>
 #include <QMouseEvent>
-
+#include <QMenu>
+#include <QClipboard>
 
 CDeckManagementWidget::CDeckManagementWidget(QWidget *parent)
 : QWidget(parent)
@@ -14,7 +15,6 @@ CDeckManagementWidget::CDeckManagementWidget(QWidget *parent)
 , mDeckSortProxy()
 {
     mUi->setupUi(this);
-    toggleDeckUsageButton(false);
     mDeckSortProxy.setSourceModel(&mDecks);
     mUi->deckTableView->setModel(&mDeckSortProxy);
     mUi->deckTableView->horizontalHeader()->setDefaultAlignment(Qt::AlignLeft);
@@ -25,22 +25,15 @@ CDeckManagementWidget::CDeckManagementWidget(QWidget *parent)
     mUi->deckTableView->installEventFilter(this);
     mUi->deckTableView->viewport()->installEventFilter(this);
 
+    // Table
+    connect(
+        mUi->deckTableView, SIGNAL(customContextMenuRequested(QPoint)),
+        this, SLOT(displayContextMenu(QPoint)));
     connect(
         mUi->deckTableView->selectionModel(), SIGNAL(selectionChanged(const QItemSelection&, const QItemSelection&)),
         this, SLOT(updateButtonAvailability()));
-    connect(
-        mUi->deleteDeckButton, SIGNAL(clicked()),
-        this, SLOT(deleteSelectedDeck()));
-    connect(
-        mUi->blockDeckButton, SIGNAL(clicked()),
-        this, SLOT(blockSelectedDeck()));
-    connect(
-        mUi->setEnemyDeckButton, SIGNAL(clicked()),
-        this, SLOT(setSelectedEnemyDeck()));
-    connect(
-        mUi->setBaseDeckButton, SIGNAL(clicked()),
-        this, SLOT(setSelectedBaseDeck()));
 
+    // Search fields
     connect(
         mUi->nameBox, SIGNAL(editTextChanged(const QString&)),
         this, SLOT(updateView()));
@@ -59,6 +52,26 @@ CDeckManagementWidget::CDeckManagementWidget(QWidget *parent)
     connect(
         mUi->raidBox, SIGNAL(clicked(bool)),
         this, SLOT(updateView()));
+
+    // Menu
+    connect(
+        mUi->setEnemyDeckAction, SIGNAL(triggered()),
+        this, SLOT(setSelectedEnemyDeck()));
+    connect(
+        mUi->setBaseDeckAction, SIGNAL(triggered()),
+        this, SLOT(setSelectedBaseDeck()));
+    connect(
+        mUi->nameDeckAction, SIGNAL(triggered()),
+        this, SLOT(nameSelectedDeck()));
+    connect(
+        mUi->hashDeckAction, SIGNAL(triggered()),
+        this, SLOT(hashSelectedDeck()));
+    connect(
+        mUi->blockDeckAction, SIGNAL(triggered()),
+        this, SLOT(blockSelectedDeck()));
+    connect(
+        mUi->deleteDeckAction, SIGNAL(triggered()),
+        this, SLOT(deleteSelectedDeck()));
 }
 
 CDeckManagementWidget::~CDeckManagementWidget()
@@ -122,6 +135,20 @@ void CDeckManagementWidget::saveParameterSettings(QSettings &settings)
     settings.endGroup();
 }
 
+void CDeckManagementWidget::displayContextMenu(const QPoint &/*pos*/)
+{
+    QMenu menu ;
+    menu.addAction(mUi->setBaseDeckAction);
+    menu.addAction(mUi->setEnemyDeckAction);
+    menu.addAction(mUi->deleteDeckAction);
+    menu.addSeparator();
+    menu.addAction(mUi->nameDeckAction);
+    menu.addAction(mUi->hashDeckAction);
+    menu.addSeparator();
+    menu.addAction(mUi->blockDeckAction);
+    menu.exec(QCursor::pos());
+}
+
 bool CDeckManagementWidget::addCustomDeck(CDeck &customDeck)
 {
     bool result = mDecks.addCustomDeck(customDeck);
@@ -169,12 +196,12 @@ void CDeckManagementWidget::updateButtonAvailability()
             setBaseDeckAllowed = false;
         }
         const CDeck &deck = mDecks.getDeckForIndex(mDeckSortProxy.mapToSource(indexes.first()));
-        toggleDeckUsageButton(mDecks.isDeckBlocked(deck.getName()));
+        mUi->blockDeckAction->setChecked(mDecks.isDeckBlocked(deck.getName()));
     }
-    mUi->deleteDeckButton->setEnabled(deleteAllowed);
-    mUi->blockDeckButton->setEnabled(blockAllowed);
-    mUi->setBaseDeckButton->setEnabled(setBaseDeckAllowed);
-    mUi->setEnemyDeckButton->setEnabled(setEnemyDeckAllowed);
+    mUi->deleteDeckAction->setEnabled(deleteAllowed);
+    mUi->blockDeckAction->setEnabled(blockAllowed);
+    mUi->setBaseDeckAction->setEnabled(setBaseDeckAllowed);
+    mUi->setEnemyDeckAction->setEnabled(setEnemyDeckAllowed);
 }
 
 void CDeckManagementWidget::updateView()
@@ -200,20 +227,53 @@ void CDeckManagementWidget::updateView()
     mDeckSortProxy.setFilterPattern(EDeckCommanderColumn, mUi->commanderBox->currentText());
     mDeckSortProxy.setFilterPattern(EDeckNameColumn, mUi->nameBox->currentText());
     mDeckSortProxy.invalidate();
+
+    QString finderResult = QString("Displaying %1 of %2 available decks")
+        .arg(mUi->deckTableView->model()->rowCount())
+        .arg(mDecks.getNumberOfDecks());
+    mUi->finderLabel->setText(finderResult);
 }
 
 void CDeckManagementWidget::deleteSelectedDeck()
 {
     QModelIndexList indexes = mUi->deckTableView->selectionModel()->selectedRows();
-    QStringList selectedDecks;
     if (!indexes.isEmpty())
     {
+        QStringList selectedDecks;
         for (QModelIndexList::const_iterator i = indexes.begin(); i!= indexes.end(); ++i)
         {
             const CDeck &deck = mDecks.getDeckForIndex(mDeckSortProxy.mapToSource(*i));
             selectedDecks.push_back(deck.getName());
         }
         mDecks.deleteCustomDecks(selectedDecks);
+    }
+}
+
+void CDeckManagementWidget::nameSelectedDeck()
+{
+    QModelIndexList indexes = mUi->deckTableView->selectionModel()->selectedRows();
+    if (!indexes.isEmpty())
+    {
+        const CDeck &deck = mDecks.getDeckForIndex(mDeckSortProxy.mapToSource(indexes.first()));
+        QString str;
+        if (mDecks.deckToStr(deck, str))
+        {
+            QApplication::clipboard()->setText(str);
+        }
+    }
+}
+
+void CDeckManagementWidget::hashSelectedDeck()
+{
+    QModelIndexList indexes = mUi->deckTableView->selectionModel()->selectedRows();
+    if (!indexes.isEmpty())
+    {
+        const CDeck &deck = mDecks.getDeckForIndex(mDeckSortProxy.mapToSource(indexes.first()));
+        QString hash;
+        if (mDecks.deckToHash(deck, hash))
+        {
+            QApplication::clipboard()->setText(hash);
+        }
     }
 }
 
@@ -226,7 +286,6 @@ void CDeckManagementWidget::blockSelectedDeck()
         bool isBlocked = !mDecks.isDeckBlocked(deck.getName());
         mDecks.setDeckBlockage(deck.getName(), isBlocked);
         mDeckSortProxy.invalidate();
-        toggleDeckUsageButton(isBlocked);
     }
 }
 
@@ -271,9 +330,9 @@ void CDeckManagementWidget::setSelectedDeck()
             const CDeck &deck = mDecks.getDeckForIndex(mDeckSortProxy.mapToSource(*i));
             selectedDecks.push_back(deck.getName());
         }
-        if (mUi->setBaseDeckButton->isEnabled())
+        if (mUi->setBaseDeckAction->isEnabled())
         {
-            if (mUi->setEnemyDeckButton->isEnabled())
+            if (mUi->setEnemyDeckAction->isEnabled())
             {
                 emit setDeck(selectedDecks.join(";"), ActiveDeckInputTarget);
             }
@@ -304,17 +363,6 @@ bool CDeckManagementWidget::eventFilter(QObject *obj, QEvent *e)
             return QObject::eventFilter(obj, e);
 
         }
-        case QEvent::MouseButtonRelease:
-        {
-            QMouseEvent *mouseEvent = static_cast<QMouseEvent*>(e);
-            if (mouseEvent->button() == Qt::RightButton
-                && mUi->blockDeckButton->isEnabled())
-            {
-                blockSelectedDeck();
-                return true;
-            }
-            return QObject::eventFilter(obj, e);
-        }
         case QEvent::KeyRelease:
         {
             QKeyEvent *keyEvent = static_cast<QKeyEvent*>(e);
@@ -336,16 +384,4 @@ bool CDeckManagementWidget::eventFilter(QObject *obj, QEvent *e)
         }
     }
     return QObject::eventFilter(obj, e);
-}
-
-void CDeckManagementWidget::toggleDeckUsageButton(bool curDeckUsed)
-{
-    if (curDeckUsed)
-    {
-        mUi->blockDeckButton->setText("Unblock");
-    }
-    else
-    {
-       mUi->blockDeckButton->setText("Block");
-    }
 }

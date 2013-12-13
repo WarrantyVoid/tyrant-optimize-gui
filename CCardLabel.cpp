@@ -19,7 +19,11 @@ CCardLabel::CCardLabel(QWidget *parent, bool isVirtualCard)
 , mIsVirtual(isVirtualCard)
 {
     CCardLabelNexus::getCardLabelNexus().registerCardLabel(this);
-    setScaledContents(true);   
+    setScaledContents(true);
+    setContextMenuPolicy(Qt::CustomContextMenu);
+
+    connect(this, SIGNAL(customContextMenuRequested(QPoint)),
+            this, SLOT(displayContextMenu(QPoint)));
 }
 
 CCardLabel::~CCardLabel()
@@ -167,6 +171,26 @@ bool CCardLabel::isCardLabelDropData(const QMimeData *data)
         }
     }
     return false;
+}
+
+void CCardLabel::displayContextMenu(const QPoint &/*pos*/)
+{
+    SCardStatus status = mCards.getCardStatus(mCard);
+    QAction *blackListAction = new QAction("Black list", this);
+    blackListAction->setCheckable(true);
+    blackListAction->setChecked(status.isBlack);
+    blackListAction->setEnabled(mCard.isValid());
+    QAction *whiteListAction = new QAction("White list", this);
+    whiteListAction->setCheckable(true);
+    whiteListAction->setChecked(status.isWhite);
+    whiteListAction->setEnabled(mCard.isValid());
+    connect(blackListAction, SIGNAL(triggered(bool)), this, SLOT(actionToggleBlack(bool)));
+    connect(whiteListAction, SIGNAL(triggered(bool)), this, SLOT(actionToggleWhite(bool)));
+
+    QMenu menu ;
+    menu.addAction(blackListAction);
+    menu.addAction(whiteListAction);
+    menu.exec(QCursor::pos());
 }
 
 void CCardLabel::actionToggleBlack(bool isBlack)
@@ -343,28 +367,8 @@ void CCardLabel::mousePressEvent(QMouseEvent *ev)
     }
 }
 
-void CCardLabel::mouseReleaseEvent(QMouseEvent * ev)
+void CCardLabel::mouseReleaseEvent(QMouseEvent * /*ev*/)
 {
-    if (ev->button() == Qt::RightButton)
-    {
-        SCardStatus status = mCards.getCardStatus(mCard);
-        QAction* blackListAction  = new QAction("Black list", this);
-        blackListAction->setCheckable(true);
-        blackListAction->setChecked(status.isBlack);
-        QAction* whiteListAction  = new QAction("White list", this);
-        whiteListAction->setCheckable(true);
-        whiteListAction->setChecked(status.isWhite);
-        connect(blackListAction, SIGNAL(triggered(bool)), this, SLOT(actionToggleBlack(bool)));
-        connect(whiteListAction, SIGNAL(triggered(bool)), this, SLOT(actionToggleWhite(bool)));
-
-        QMenu *menu = new QMenu();
-        menu->addAction(blackListAction);
-        menu->addAction(whiteListAction);
-        menu->exec(QCursor::pos());
-
-        delete menu;
-        menu = 0;
-    }
     if (mLastLeftClickPos)
     {
         delete mLastLeftClickPos;

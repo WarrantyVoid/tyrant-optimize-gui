@@ -192,69 +192,78 @@
        </widget>
       </item>
       <item>
-       <layout class="QHBoxLayout" name="horizontalLayout">
-        <item>
-         <widget class="QPushButton" name="deleteDeckButton">
-          <property name="enabled">
-           <bool>false</bool>
-          </property>
-          <property name="text">
-           <string>Delete</string>
-          </property>
-          <property name="icon">
-           <iconset resource="main.qrc">
-            <normaloff>:/img/delete.png</normaloff>:/img/delete.png</iconset>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QPushButton" name="blockDeckButton">
-          <property name="enabled">
-           <bool>false</bool>
-          </property>
-          <property name="text">
-           <string>Block</string>
-          </property>
-          <property name="icon">
-           <iconset resource="main.qrc">
-            <normaloff>:/img/block-unblock.png</normaloff>:/img/block-unblock.png</iconset>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QPushButton" name="setBaseDeckButton">
-          <property name="enabled">
-           <bool>false</bool>
-          </property>
-          <property name="text">
-           <string>As Base</string>
-          </property>
-          <property name="icon">
-           <iconset resource="main.qrc">
-            <normaloff>:/img/use.png</normaloff>:/img/use.png</iconset>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QPushButton" name="setEnemyDeckButton">
-          <property name="enabled">
-           <bool>false</bool>
-          </property>
-          <property name="text">
-           <string>As Enemy</string>
-          </property>
-          <property name="icon">
-           <iconset resource="main.qrc">
-            <normaloff>:/img/use.png</normaloff>:/img/use.png</iconset>
-          </property>
-         </widget>
-        </item>
-       </layout>
+       <widget class="QLabel" name="finderLabel">
+        <property name="text">
+         <string/>
+        </property>
+       </widget>
       </item>
      </layout>
     </widget>
    </item>
   </layout>
+  <action name="setBaseDeckAction">
+   <property name="icon">
+    <iconset resource="main.qrc">
+     <normaloff>:/img/use.png</normaloff>:/img/use.png</iconset>
+   </property>
+   <property name="text">
+    <string>Use as Base Deck</string>
+   </property>
+  </action>
+  <action name="setEnemyDeckAction">
+   <property name="icon">
+    <iconset resource="main.qrc">
+     <normaloff>:/img/use.png</normaloff>:/img/use.png</iconset>
+   </property>
+   <property name="text">
+    <string>Use as Enemy Deck</string>
+   </property>
+   <property name="toolTip">
+    <string>Use as Enemy Deck</string>
+   </property>
+  </action>
+  <action name="blockDeckAction">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Block deck (Mark as used)</string>
+   </property>
+  </action>
+  <action name="deleteDeckAction">
+   <property name="icon">
+    <iconset resource="main.qrc">
+     <normaloff>:/img/delete.png</normaloff>:/img/delete.png</iconset>
+   </property>
+   <property name="text">
+    <string>Delete Deck</string>
+   </property>
+  </action>
+  <action name="nameDeckAction">
+   <property name="icon">
+    <iconset resource="main.qrc">
+     <normaloff>:/img/name.png</normaloff>:/img/name.png</iconset>
+   </property>
+   <property name="text">
+    <string>Copy card  list</string>
+   </property>
+   <property name="toolTip">
+    <string>Copy comma-separated list of card names into clipboard</string>
+   </property>
+  </action>
+  <action name="hashDeckAction">
+   <property name="icon">
+    <iconset resource="main.qrc">
+     <normaloff>:/img/hash.png</normaloff>:/img/hash.png</iconset>
+   </property>
+   <property name="text">
+    <string>Copy deck hash</string>
+   </property>
+   <property name="toolTip">
+    <string>Copy deck hash into clipboard</string>
+   </property>
+  </action>
  </widget>
  <resources>
   <include location="main.qrc"/>
