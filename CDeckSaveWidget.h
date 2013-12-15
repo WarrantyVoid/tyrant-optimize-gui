@@ -2,6 +2,8 @@
 #define CDECKSAVEWIDGET_H
 
 #include <QWidget>
+#include "model/CDeck.h"
+#include "process/CProcessParameters.h"
 
 namespace Ui {
 class DeckSaveWidget;
@@ -18,12 +20,16 @@ class CDeckSaveWidget : public QWidget
     Q_OBJECT
     
 public:
-    CDeckSaveWidget(const QString &deckName, QWidget *parent = 0);
+    CDeckSaveWidget(const CDeck &deck, EOptimizationMode optMode, QWidget *parent = 0);
     ~CDeckSaveWidget();
 
 public:
     EDeckSaveResult result() const { return mResult; }
     QString deckName() const;
+
+public:
+    static QString buildDeckName(const CDeck &deck, EOptimizationMode optMode);
+    static QString buildCardName(const CCard &card);
 
 protected slots:
     void okButtonPressed();

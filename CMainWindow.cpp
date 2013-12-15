@@ -736,74 +736,44 @@ void CMainWindow::reorderBaseDeck()
 }
 
 void CMainWindow::saveCustomDeck()
-{    
-    CDeck customDeck;
-    QString customDeckName;    
-    if(QObject::sender() == mUi->saveBaseDeckAction)
-    {
-        customDeck = mUi->baseDeckWidget->getDeck();
-        if (!customDeck.isEmpty())
-        {          
-            QStringList comTokens = customDeck.getCards().first().getName().split(QRegExp("\\s|\\,|\\*"), QString::SkipEmptyParts);
-            if (!comTokens.empty())
-            {
-                QString comName = comTokens.at(0);
-                if (comTokens.size() > 1)
-                {
-                    comName = "";
-                    for (int i = 0; i < comTokens.size(); ++i)
-                    {
-                        comName += comTokens.at(i).left(1);
-                    }
-
-                }
-                customDeckName = comName.toLower() + "-";
-            }
-        }
-    }
-    else if(QObject::sender() == mUi->saveEnemyDeckAction)
-    {
-        customDeck = mUi->enemyDeckWidget->getDeck();
-        if (!customDeck.isEmpty())
-        {         
-            QStringList comTokens = customDeck.getCards().first().getName().split(QRegExp("\\s|\\,|\\*"), QString::SkipEmptyParts);
-            if (!comTokens.empty())
-            {
-                QString comName = comTokens.at(0);
-                if (comTokens.size() > 1)
-                {
-                    comName = "";
-                    for (int i = 0; i < comTokens.size(); ++i)
-                    {
-                        comName += comTokens.at(i).left(1);
-                    }
-
-                }
-                customDeckName = comName.toLower() + "-";
-            }
-        }
-    }
-    else if(QObject::sender() == mUi->saveOptimizedDeckAction)
-    {
-        customDeck = mUi->resultDeckWidget->getDeck();
-        if (!customDeck.isEmpty())
-        {
-            QString enemyDeckName = mParameters.enemyDeck().toLower().replace(" ", "-");
-            customDeckName = QString("anti-%1").arg(enemyDeckName);
-            if(!enemyDeckName.isEmpty() && !enemyDeckName[enemyDeckName.length() - 1].isDigit()
-                && customDeck.getCards().size() < 10)
-            {
-                customDeckName += QString("-%1").arg((customDeck.getCards().size() - 1));
-            }
-        }
-    }
-
+{
+    QAction *action = dynamic_cast<QAction*>(QObject::sender());
+    CDeck customDeck = getActionDeck(action);
     customDeck.setName("CustomDeck");
     customDeck.setType(ECustomDeckType);
+
     if (customDeck.isValid())
-    {        
+    {
+        EOptimizationMode mode = static_cast<EOptimizationMode>(mUi->optimizationModeBox->currentIndex());
+        if (action == mUi->saveEnemyDeckAction)
+        {
+            switch (mode)
+            {
+            case EOptimizeWin: mode = EOptimizeDefense; break;
+            case EOptimizeDefense: mode = EOptimizeWin; break;
+            default: break;
+            }
+        }
+        else
+        {
+            const CDeck &enemyDeck = mDecks.getDeckForName(mUi->enemyDeckEdit->getDeckId());
+            if (enemyDeck.isValid())
+            {
+                switch (enemyDeck.getType())
+                {
+                case EMissionDeckType:
+                case ERaidDeckType:
+                case EQuestDeckType:
+                    customDeck = enemyDeck;
+                    break;
+                default:
+                    break;
+                }
+            }
+        }
+
         QDialog saveDialog(this);
-        CDeckSaveWidget* saveWidget = new CDeckSaveWidget(customDeckName, &saveDialog);
+        CDeckSaveWidget* saveWidget = new CDeckSaveWidget(customDeck, mode, &saveDialog);
         QBoxLayout *vLayout = new QBoxLayout(QBoxLayout::TopToBottom, &saveDialog);
         vLayout->addWidget(saveWidget);
         saveDialog.setWindowTitle("Add custom deck");
@@ -830,51 +800,21 @@ void CMainWindow::useOptimizedDeck()
 
 void CMainWindow::copyDeckHash()
 {
-    CDeck deck;
-    if(QObject::sender() == mUi->hashBaseDeckAction)
+    CDeck deck = getActionDeck(dynamic_cast<QAction*>(QObject::sender()));
+    QString hash;
+    if (deck.isValid() && mDecks.deckToHash(deck, hash))
     {
-        deck = mUi->baseDeckWidget->getDeck();
-    }
-    else if(QObject::sender() == mUi->hashEnemyDeckAction)
-    {
-        deck = mUi->enemyDeckWidget->getDeck();
-    }
-    else if(QObject::sender() == mUi->hashOptimizedDeckAction)
-    {
-        deck = mUi->resultDeckWidget->getDeck();
-    }
-    if (deck.isValid())
-    {
-        QString hash;
-        if (mDecks.deckToHash(deck, hash))
-        {
-            QApplication::clipboard()->setText(hash);
-        }
+        QApplication::clipboard()->setText(hash);
     }
 }
 
 void CMainWindow::copyDeckCards()
 {
-    CDeck deck;
-    if(QObject::sender() == mUi->nameBaseDeckAction)
+    CDeck deck = getActionDeck(dynamic_cast<QAction*>(QObject::sender()));
+    QString str;
+    if (deck.isValid() && mDecks.deckToStr(deck, str))
     {
-        deck = mUi->baseDeckWidget->getDeck();
-    }
-    else if(QObject::sender() == mUi->nameEnemyDeckAction)
-    {
-        deck = mUi->enemyDeckWidget->getDeck();
-    }
-    else if(QObject::sender() == mUi->nameOptimizedDeckAction)
-    {
-        deck = mUi->resultDeckWidget->getDeck();
-    }
-    if (deck.isValid())
-    {
-        QString str;
-        if (mDecks.deckToStr(deck, str))
-        {
-            QApplication::clipboard()->setText(str);
-        }
+        QApplication::clipboard()->setText(str);
     }
 }
 
@@ -1299,4 +1239,21 @@ void CMainWindow::getActiveDeck(CDeckInput *&deckInput, CDeckWidget *&deckWidget
         deckInput = mUi->baseDeckEdit;
         deckWidget = mUi->baseDeckWidget;
     }
+}
+
+const CDeck& CMainWindow::getActionDeck(const QAction *triggerAction) const
+{
+    if (triggerAction == mUi->nameBaseDeckAction || triggerAction == mUi->hashBaseDeckAction || triggerAction == mUi->saveBaseDeckAction)
+    {
+        return mUi->baseDeckWidget->getDeck();
+    }
+    else if (triggerAction == mUi->nameEnemyDeckAction || triggerAction == mUi->hashEnemyDeckAction || triggerAction == mUi->saveEnemyDeckAction)
+    {
+        return mUi->enemyDeckWidget->getDeck();
+    }
+    else if (triggerAction == mUi->nameOptimizedDeckAction || triggerAction == mUi->hashOptimizedDeckAction || triggerAction == mUi->saveOptimizedDeckAction)
+    {
+        return mUi->resultDeckWidget->getDeck();
+    }
+    return CDeck::INVALID_DECK;
 }

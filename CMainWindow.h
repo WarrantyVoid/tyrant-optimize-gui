@@ -95,6 +95,7 @@ protected slots:
 private:
     void addConsoleLine(const QString &line, bool truncate = false);
     void getActiveDeck(CDeckInput *&deckInput, CDeckWidget *&deckWidget) const;
+    const CDeck& getActionDeck(const QAction *triggerAction) const;
 
 private:
     Ui::MainWindow *mUi;
