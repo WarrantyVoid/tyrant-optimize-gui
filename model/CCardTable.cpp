@@ -394,12 +394,7 @@ void CCardTable::processNextPictureDownload()
             const CCard &card = download->getPictureMetaData();
             if (card.isValid() && !mCardIdMap.contains(card.getId()))
             {
-                CCard* c = new CCard(card);
-                mCardIdMap.insert(card.getId(), c);
-                if (card.getSet() != EUnknownSet)
-                {
-                    mCardNameMap.insert(card.getName(), c);
-                }
+                addCard(card);
             }
             delete download;
             download = 0;
@@ -469,12 +464,7 @@ void CCardTable::processCard(const CCard &card)
         QFile pictureFile(pictureFileName);
         if (pictureFile.exists())
         {
-            CCard* c = new CCard(card);
-            mCardIdMap.insert(card.getId(), c);
-            if (card.getSet() != EUnknownSet)
-            {
-                mCardNameMap.insert(card.getName(), c);
-            }
+            addCard(card);
         }
         else
         {
@@ -513,6 +503,32 @@ void CCardTable::processAchievement(const CAchievement& achievement)
     if (achievement.isValid())
     {
         mAchievements.push_back(achievement);
+    }
+}
+
+void CCardTable::addCard(const CCard &card)
+{
+    CCard* c = new CCard(card);
+    mCardIdMap.insert(card.getId(), c);
+    if (card.getSet() != EUnknownSet)
+    {
+        if (c->getUpgradeLevel() == 1)
+        {
+            QHash<QString, CCard*>::iterator base = mCardNameMap.find(card.getBaseName());
+            if (base != mCardNameMap.end())
+            {
+                base.value()->setUpgradeLevel(0);
+            }
+        }
+        else
+        {
+            QHash<QString, CCard*>::iterator upgraded = mCardNameMap.find(card.getUpgradedName());
+            if (upgraded != mCardNameMap.end())
+            {
+                c->setUpgradeLevel(0);
+            }
+        }
+        mCardNameMap.insert(card.getName(), c);
     }
 }
 

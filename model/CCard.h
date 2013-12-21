@@ -32,6 +32,8 @@ public:
 
     TCardId getId() const;
     QString getName() const;
+    QString getBaseName() const;
+    QString getUpgradedName() const;
     QString getLwCsName() const;
     QString getPicture() const;
     ECardRarity getRarity() const;

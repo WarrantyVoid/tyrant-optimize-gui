@@ -106,6 +106,21 @@ QString CCard::getName() const
     return name;
 }
 
+QString CCard::getBaseName() const
+{
+    QString name = mName;
+    name.replace(",", "");
+    return name;
+}
+
+QString CCard::getUpgradedName() const
+{
+    QString name = mName;
+    name.replace(",", "");
+    name.append(QChar('*'));
+    return name;
+}
+
 QString CCard::getLwCsName() const
 {
     return mLwCsName;
@@ -167,8 +182,7 @@ const TSkillList& CCard::getSkills() const
 
 int CCard::getUpgradeLevel() const
 {
-    return (mSet == EUpgradedSet) ? 1 : UPGRADE_LEVEL_NONE;
-    //return mUpgradeLevel;
+    return (mSet == EUpgradedSet) ? 1 : mUpgradeLevel;
 }
 
 int CCard::getDelay() const

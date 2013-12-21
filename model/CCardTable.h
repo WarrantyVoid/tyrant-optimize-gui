@@ -80,6 +80,7 @@ signals:
     void processAchievement(const CAchievement& achievement);
 
 protected:
+    void addCard(const CCard &card);
     void initData();
 
 private:
