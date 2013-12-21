@@ -972,7 +972,7 @@
   <widget class="QDockWidget" name="deckManagementDockWidget">
    <property name="minimumSize">
     <size>
-     <width>280</width>
+     <width>320</width>
      <height>37</height>
     </size>
    </property>

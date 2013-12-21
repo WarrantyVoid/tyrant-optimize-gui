@@ -83,6 +83,7 @@ protected slots:
     void setOwnedCardsWatchingEnabled(bool enabled);
     void scanForOwnedCards();
     void addCard(TCardId cardId);
+    void toggleDeckToolTip(bool isVisible, const QString &deckId="");
 
     // Hotkey slots
     void refreshModels();

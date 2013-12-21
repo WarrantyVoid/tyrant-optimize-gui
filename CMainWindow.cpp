@@ -146,11 +146,21 @@ CMainWindow::CMainWindow(QWidget *parent)
     QBoxLayout *vLayout3 = new QBoxLayout(QBoxLayout::TopToBottom, mMultiDeckDialog);
     vLayout3->addWidget(mMultiDeckWidget);
     mMultiDeckWidget->setDeckInputWidget(mUi->enemyDeckEdit);
-    mMultiDeckWidget->setToolTipHandler(this);
     mMultiDeckDialog->setWindowTitle("Multi Deck Creation");
     connect(
         mMultiDeckDialog, SIGNAL(rejected()),
         mMultiDeckWidget, SLOT(declineDecks()));
+    connect(
+        mMultiDeckWidget, SIGNAL(deckToolTipTriggered(bool, const QString&)),
+        this, SLOT(toggleDeckToolTip(bool, const QString&)));
+
+    //Deck managment setup
+    connect(
+        mUi->deckManagementWidget, SIGNAL(deckToolTipTriggered(bool, const QString&)),
+        this, SLOT(toggleDeckToolTip(bool, const QString&)));
+    connect(
+        mUi->deckManagementWidget, SIGNAL(setDeck(const QString &,EInputDeckTarget)),
+        this, SLOT(setDeckInput(const QString &,EInputDeckTarget)));
 
     // Menu connections
     connect(
@@ -312,9 +322,6 @@ CMainWindow::CMainWindow(QWidget *parent)
     connect(
         mOwnedCardsWatcher, SIGNAL(directoryChanged(const QString &)),
         this, SLOT(scanForOwnedCards()));
-    connect(
-        mUi->deckManagementWidget, SIGNAL(setDeck(const QString &,EInputDeckTarget)),
-        this, SLOT(setDeckInput(const QString &,EInputDeckTarget)));
     connect(
         &CCardLabelNexus::getCardLabelNexus(), SIGNAL(blackListStatusToggled(const CCard&, bool)),
         mFilterWidget, SLOT(setCardBlackListStatus(const CCard&, bool)));
@@ -512,33 +519,18 @@ bool CMainWindow::eventFilter(QObject *obj, QEvent *e)
     {
         case QEvent::ToolTip:
         {
-            QHelpEvent *he = static_cast<QHelpEvent *>(e);
             CDeckInput *deckInput = dynamic_cast<CDeckInput*>(obj);
-            if (e && deckInput)
+            if (deckInput)
             {
-                if (!mDeckToolTip->isVisible())
-                {
-                    //mProcessStatusLabel->setText(QString("(%1, %2)").arg(deckHash).arg(cards.join("|")));
-                    mDeckToolTipContent->setDeck(deckInput->getDeckId());
-
-                    int reqW = mDeckToolTip->width() + 5;
-                    int reqH = mDeckToolTip->height() + 20;
-                    int xRel = (QApplication::desktop()->width() - he->globalX() < reqW)
-                        ? -reqW
-                        : 5;
-                    int yRel = (QApplication::desktop()->height() - he->globalY() < reqH)
-                        ? -reqH
-                        : 20;
-                    mDeckToolTip->setGeometry(he->globalX() + xRel, he->globalY() + yRel, 440, 220);
-                    mDeckToolTip->setVisible(true);
-                    he->accept();
-                }
+                toggleDeckToolTip(true, deckInput->getDeckId());
+                e->accept();
+                return true;
             }
-            return true;
+            return QObject::eventFilter(obj, e);
         } 
         //case QEvent::FocusOut:
         case QEvent::Leave:
-            mDeckToolTip->setVisible(false);
+            toggleDeckToolTip(false);
             return QObject::eventFilter(obj, e);
         default:
         {
@@ -1139,6 +1131,32 @@ void CMainWindow::addCard(TCardId cardId)
         mDecks.deckToHash(deck, hash);
         deckInput->setDeckId(hash);
     }
+}
+
+void CMainWindow::toggleDeckToolTip(bool isVisible, const QString &deckId)
+{
+    const CDeck &oldDeck = mDeckToolTipContent->getDeck();
+    bool deckChanged = deckId.compare(oldDeck.getName()) != 0;
+    if (isVisible && (deckChanged || !mDeckToolTip->isVisible()))
+    {
+        mDeckToolTipContent->setDeck(deckId);
+
+        QPoint p(QCursor::pos());
+        int reqW = mDeckToolTip->width() + 5;
+        int reqH = mDeckToolTip->height() + 20;
+        int xRel = (QApplication::desktop()->width() - p.x() < reqW)
+            ? -reqW
+            : 5;
+        int yRel = (QApplication::desktop()->height() - p.y() < reqH)
+            ? -reqH
+            : 20;
+        mDeckToolTip->setGeometry(p.x() + xRel, p.y() + yRel, 440, 220);
+    }
+    if (isVisible != mDeckToolTip->isVisible())
+    {
+        mDeckToolTip->setVisible(isVisible);
+    }
+
 }
 
 void CMainWindow::refreshModels()

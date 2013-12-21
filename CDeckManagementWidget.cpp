@@ -378,6 +378,28 @@ bool CDeckManagementWidget::eventFilter(QObject *obj, QEvent *e)
                 }
             }
         }
+        case QEvent::ToolTip:
+        {
+            QHelpEvent *he = static_cast<QHelpEvent*>(e);
+            QModelIndex index = mDeckSortProxy.mapToSource(mUi->deckTableView->indexAt(he->pos()));
+            if (index.column() == EDeckNameColumn)
+            {
+                const CDeck &deck = mDecks.getDeckForIndex(index);
+                emit deckToolTipTriggered(index.column() == EDeckNameColumn, deck.getName());
+                e->accept();
+                return true;
+            }
+            else
+            {
+                emit deckToolTipTriggered(false);
+            }
+            break;
+        }
+        //case QEvent::FocusOut:
+        case QEvent::MouseButtonPress:
+        case QEvent::Leave:
+            emit deckToolTipTriggered(false);
+            break;
         default:
         {
             break;

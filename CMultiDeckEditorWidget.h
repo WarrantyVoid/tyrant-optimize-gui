@@ -18,8 +18,8 @@ public:
     ~CMultiDeckEditorWidget();
 
 public:
-    void setToolTipHandler(QObject *handler);
-    QString getResult();
+    QString getDeckId() const;
+    QString getResult() const;
     void updateHistory();
     void reset();    
 

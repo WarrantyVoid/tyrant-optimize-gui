@@ -16,13 +16,13 @@ public:
 
 public:
     void setDeckInputWidget(CDeckInput* inputWidget);    
-    void setToolTipHandler(QObject *handler);
     void updateHistory();    
     void initDecks();
 
 signals:
     void numberOfDecksChanged(int numDecks);
     void decksUpdated(const QString &decks);
+    void deckToolTipTriggered(bool isVisible, const QString &deckId = "");
 
 public slots:
     void declineDecks();
@@ -33,6 +33,7 @@ protected slots:
 
 protected:
     virtual void showEvent(QShowEvent *event);
+    virtual bool eventFilter(QObject *obj, QEvent *e);
 
 private:
     bool isDoubleEqual(double d1, double d2);

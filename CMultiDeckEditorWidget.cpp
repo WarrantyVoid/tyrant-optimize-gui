@@ -20,12 +20,12 @@ CMultiDeckEditorWidget::~CMultiDeckEditorWidget()
     delete mUi;
 }
 
-void CMultiDeckEditorWidget::setToolTipHandler(QObject *handler)
+QString CMultiDeckEditorWidget::getDeckId() const
 {
-    mUi->deckEdit->installEventFilter(handler);
+    return mUi->deckEdit->currentText();
 }
 
-QString CMultiDeckEditorWidget::getResult()
+QString CMultiDeckEditorWidget::getResult() const
 {
     if (isVisible() && !mUi->deckEdit->currentText().isEmpty())
     {

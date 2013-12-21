@@ -31,6 +31,7 @@ CMultiDeckWidget::CMultiDeckWidget(QWidget *parent)
         {
             mMultiDeckEditors[i]->setVisible(false);
         }
+        mMultiDeckEditors[i]->installEventFilter(this);
     }
     for (int i = 0; i < MAX_NUMBER_OF_DECKS; ++i)
     {
@@ -57,14 +58,6 @@ CMultiDeckWidget::CMultiDeckWidget(QWidget *parent)
 void CMultiDeckWidget::setDeckInputWidget(CDeckInput* inputWidget)
 {
     mDeckSourceWidget = inputWidget;
-}
-
-void CMultiDeckWidget::setToolTipHandler(QObject *handler)
-{
-    for (int i = 0; i < MAX_NUMBER_OF_DECKS; ++i)
-    {
-        mMultiDeckEditors[i]->setToolTipHandler(handler);
-    }
 }
 
 void CMultiDeckWidget::updateHistory()
@@ -165,6 +158,33 @@ void CMultiDeckWidget::addDeck()
 void CMultiDeckWidget::showEvent(QShowEvent */*event*/)
 {
     initDecks();
+}
+
+bool CMultiDeckWidget::eventFilter(QObject *obj, QEvent *e)
+{
+    switch (e->type())
+    {
+        case QEvent::ToolTip:
+        {
+            CMultiDeckEditorWidget *deckEditor = dynamic_cast<CMultiDeckEditorWidget*>(obj);
+            if (deckEditor)
+            {
+                emit deckToolTipTriggered(true, deckEditor->getDeckId());
+                e->accept();
+                return true;
+            }
+            return QObject::eventFilter(obj, e);
+        }
+        //case QEvent::FocusOut:
+        case QEvent::Leave:
+            emit deckToolTipTriggered(false);
+            return QObject::eventFilter(obj, e);
+        default:
+        {
+            // standard event processing
+            return QObject::eventFilter(obj, e);
+        }
+    }
 }
 
 bool CMultiDeckWidget::isDoubleEqual(double d1, double d2)

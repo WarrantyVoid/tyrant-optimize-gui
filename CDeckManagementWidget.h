@@ -150,6 +150,7 @@ public:
 
 signals:
     void setDeck(const QString &deckStr, EInputDeckTarget target);
+    void deckToolTipTriggered(bool isVisible, const QString &deckId = "");
 
 public slots:
     void displayContextMenu(const QPoint &pos);

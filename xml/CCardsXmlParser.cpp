@@ -94,11 +94,11 @@ bool CCardsXmlParser::startElement(const QString & /*namespaceURI*/, const QStri
         }
         else if (qName.compare("upgraded_card") == 0)
         {
-            mCurCard.setUpgradeLevel(0);
+            //mCurCard.setUpgradeLevel(0);
         }
         else if (qName.compare("base_card") == 0)
         {
-            mCurCard.setUpgradeLevel(1);
+            //mCurCard.setUpgradeLevel(1);
         }
         else if (qName.compare("skill") == 0)
         {
