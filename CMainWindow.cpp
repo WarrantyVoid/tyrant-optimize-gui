@@ -736,7 +736,9 @@ void CMainWindow::saveCustomDeck()
 
     if (customDeck.isValid())
     {
+        const CDeck &enemyDeck = mDecks.getDeckForName(mUi->enemyDeckEdit->getDeckId());
         EOptimizationMode mode = static_cast<EOptimizationMode>(mUi->optimizationModeBox->currentIndex());
+        bool isPvE = false;
         if (action == mUi->saveEnemyDeckAction)
         {
             switch (mode)
@@ -748,7 +750,6 @@ void CMainWindow::saveCustomDeck()
         }
         else
         {
-            const CDeck &enemyDeck = mDecks.getDeckForName(mUi->enemyDeckEdit->getDeckId());
             if (enemyDeck.isValid())
             {
                 switch (enemyDeck.getType())
@@ -756,7 +757,7 @@ void CMainWindow::saveCustomDeck()
                 case EMissionDeckType:
                 case ERaidDeckType:
                 case EQuestDeckType:
-                    customDeck = enemyDeck;
+                    isPvE = true;
                     break;
                 default:
                     break;
@@ -765,7 +766,7 @@ void CMainWindow::saveCustomDeck()
         }
 
         QDialog saveDialog(this);
-        CDeckSaveWidget* saveWidget = new CDeckSaveWidget(customDeck, mode, &saveDialog);
+        CDeckSaveWidget* saveWidget = new CDeckSaveWidget(isPvE ? enemyDeck : customDeck, mode, &saveDialog);
         QBoxLayout *vLayout = new QBoxLayout(QBoxLayout::TopToBottom, &saveDialog);
         vLayout->addWidget(saveWidget);
         saveDialog.setWindowTitle("Add custom deck");
