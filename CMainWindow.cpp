@@ -182,6 +182,9 @@ CMainWindow::CMainWindow(QWidget *parent)
         mUi->muteSoundAction, SIGNAL(triggered(bool)),
         this, SLOT(toggleMuteSound(bool)));
     connect(
+        mUi->combineDeckActionsAction, SIGNAL(triggered(bool)),
+        this, SLOT(toggleDeckActionButton(bool)));
+    connect(
         mUi->refreshAction, SIGNAL(triggered()),
         this, SLOT(refreshModels()));
     connect(
@@ -226,10 +229,19 @@ CMainWindow::CMainWindow(QWidget *parent)
         mUi->nameBaseDeckAction, SIGNAL(triggered()),
         this, SLOT(copyDeckCards()));
     connect(
+        mUi->nameBaseDeckButton, SIGNAL(clicked()),
+        this, SLOT(copyDeckCards()));
+    connect(
         mUi->hashBaseDeckAction, SIGNAL(triggered()),
         this, SLOT(copyDeckHash()));
     connect(
+        mUi->hashBaseDeckButton, SIGNAL(clicked()),
+        this, SLOT(copyDeckHash()));
+    connect(
         mUi->saveBaseDeckAction, SIGNAL(triggered()),
+        this, SLOT(saveCustomDeck()));
+    connect(
+        mUi->saveBaseDeckButton, SIGNAL(clicked()),
         this, SLOT(saveCustomDeck()));
 
     // Enemy deck connections
@@ -252,13 +264,25 @@ CMainWindow::CMainWindow(QWidget *parent)
         mUi->multiEnemyDeckAction, SIGNAL(triggered()),
         mMultiDeckDialog, SLOT(show()));
     connect(
+        mUi->multiEnemyDeckButton, SIGNAL(clicked()),
+        mMultiDeckDialog, SLOT(show()));
+    connect(
         mUi->nameEnemyDeckAction, SIGNAL(triggered()),
+        this, SLOT(copyDeckCards()));
+    connect(
+        mUi->nameEnemyDeckButton, SIGNAL(clicked()),
         this, SLOT(copyDeckCards()));
     connect(
         mUi->hashEnemyDeckAction, SIGNAL(triggered()),
         this, SLOT(copyDeckHash()));
     connect(
+        mUi->hashEnemyDeckButton, SIGNAL(clicked()),
+        this, SLOT(copyDeckHash()));
+    connect(
         mUi->saveEnemyDeckAction, SIGNAL(triggered()),
+        this, SLOT(saveCustomDeck()));
+    connect(
+        mUi->saveEnemyDeckButton, SIGNAL(clicked()),
         this, SLOT(saveCustomDeck()));
 
     // Optimized deck connections
@@ -275,15 +299,27 @@ CMainWindow::CMainWindow(QWidget *parent)
         mUi->nameOptimizedDeckAction, SIGNAL(triggered()),
         this, SLOT(copyDeckCards()));
     connect(
+        mUi->nameOptimizedDeckButton, SIGNAL(clicked()),
+        this, SLOT(copyDeckCards()));
+    connect(
         mUi->hashOptimizedDeckAction, SIGNAL(triggered()),
         this, SLOT(copyDeckHash()));
     connect(
+        mUi->hashOptimizedDeckButton, SIGNAL(clicked()),
+        this, SLOT(copyDeckHash()));
+    connect(
         mUi->saveOptimizedDeckAction, SIGNAL(triggered()),
+        this, SLOT(saveCustomDeck()));
+    connect(
+        mUi->saveOptimizedDeckButton, SIGNAL(clicked()),
         this, SLOT(saveCustomDeck()));
 
     // Shared deck connections
     connect(
         mUi->switchDecksAction, SIGNAL(triggered()),
+        this, SLOT(switchDecks()));
+    connect(
+        mUi->switchDecksButton, SIGNAL(clicked()),
         this, SLOT(switchDecks()));
 
     // Button connections
@@ -482,6 +518,10 @@ void CMainWindow::loadDefaultSettings()
     mUi->displayEnemyButton->setChecked(enemyDisplayed);
 
     CGlobalConfig::getCfg().load(settings);
+    bool combinedDeckActions = CGlobalConfig::getCfg().isDeckActionButtonEnabled();
+    mUi->combineDeckActionsAction->setChecked(combinedDeckActions);
+    toggleDeckActionButton(combinedDeckActions);
+
     mUi->muteSoundAction->setChecked(CGlobalConfig::getCfg().isSoundMuted());
     mUi->shadeOwnedCardsAction->setChecked(CGlobalConfig::getCfg().isCardShadingEnabled());
     mUi->labelBlackCardsAction->setChecked(CGlobalConfig::getCfg().isBlackLabellingEnabled());
@@ -641,13 +681,23 @@ void CMainWindow::toggleCardLabelling(bool checked)
     if (QObject::sender() == mUi->labelBlackCardsAction)
     {
         CGlobalConfig::getCfg().setBlackLabellingEnabled(checked);
-
     }
     else if (QObject::sender() == mUi->labelWhiteCardsAction)
     {
         CGlobalConfig::getCfg().setWhiteLabellingEnabled(checked);
     }
     updateView(EListStatusUpdate);
+}
+
+void CMainWindow::toggleDeckActionButton(bool checked)
+{
+    CGlobalConfig::getCfg().setDeckActionButtonEnabled(checked);
+    mUi->actionBaseButton->setVisible(checked);
+    mUi->expandedBaseActions->setVisible(!checked);
+    mUi->actionEnemyButton->setVisible(checked);
+    mUi->expandedEnemyActions->setVisible(!checked);
+    mUi->actionOptimizedButton->setVisible(checked);
+    mUi->expandedOptimizedActions->setVisible(!checked);
 }
 
 void CMainWindow::updateXmlData()
@@ -729,8 +779,8 @@ void CMainWindow::reorderBaseDeck()
 
 void CMainWindow::saveCustomDeck()
 {
-    QAction *action = dynamic_cast<QAction*>(QObject::sender());
-    CDeck customDeck = getActionDeck(action);
+    QObject* trigger = QObject::sender();
+    CDeck customDeck = getTriggeredDeck(trigger);
     customDeck.setName("CustomDeck");
     customDeck.setType(ECustomDeckType);
 
@@ -739,7 +789,7 @@ void CMainWindow::saveCustomDeck()
         const CDeck &enemyDeck = mDecks.getDeckForName(mUi->enemyDeckEdit->getDeckId());
         EOptimizationMode mode = static_cast<EOptimizationMode>(mUi->optimizationModeBox->currentIndex());
         bool isPvE = false;
-        if (action == mUi->saveEnemyDeckAction)
+        if (trigger == mUi->saveEnemyDeckAction || trigger == mUi->saveEnemyDeckButton)
         {
             switch (mode)
             {
@@ -793,7 +843,7 @@ void CMainWindow::useOptimizedDeck()
 
 void CMainWindow::copyDeckHash()
 {
-    CDeck deck = getActionDeck(dynamic_cast<QAction*>(QObject::sender()));
+    CDeck deck = getTriggeredDeck(QObject::sender());
     QString hash;
     if (deck.isValid() && mDecks.deckToHash(deck, hash))
     {
@@ -803,7 +853,7 @@ void CMainWindow::copyDeckHash()
 
 void CMainWindow::copyDeckCards()
 {
-    CDeck deck = getActionDeck(dynamic_cast<QAction*>(QObject::sender()));
+    CDeck deck = getTriggeredDeck(QObject::sender());
     QString str;
     if (deck.isValid() && mDecks.deckToStr(deck, str))
     {
@@ -988,6 +1038,7 @@ void CMainWindow::processError(QProcess::ProcessError error)
         default:
             break;
         }
+        addConsoleLine(mProcess->errorString());
         mUi->optimizerStatusWidget->setStatus(EStatusResultFailure);
     }
 }
@@ -1260,17 +1311,29 @@ void CMainWindow::getActiveDeck(CDeckInput *&deckInput, CDeckWidget *&deckWidget
     }
 }
 
-const CDeck& CMainWindow::getActionDeck(const QAction *triggerAction) const
+const CDeck& CMainWindow::getTriggeredDeck(const QObject *trigger) const
 {
-    if (triggerAction == mUi->nameBaseDeckAction || triggerAction == mUi->hashBaseDeckAction || triggerAction == mUi->saveBaseDeckAction)
+    if (trigger == mUi->nameBaseDeckAction || trigger == mUi->hashBaseDeckAction || trigger == mUi->saveBaseDeckAction)
     {
         return mUi->baseDeckWidget->getDeck();
     }
-    else if (triggerAction == mUi->nameEnemyDeckAction || triggerAction == mUi->hashEnemyDeckAction || triggerAction == mUi->saveEnemyDeckAction)
+    else if (trigger == mUi->nameEnemyDeckAction || trigger == mUi->hashEnemyDeckAction || trigger == mUi->saveEnemyDeckAction)
     {
         return mUi->enemyDeckWidget->getDeck();
     }
-    else if (triggerAction == mUi->nameOptimizedDeckAction || triggerAction == mUi->hashOptimizedDeckAction || triggerAction == mUi->saveOptimizedDeckAction)
+    else if (trigger == mUi->nameOptimizedDeckAction || trigger == mUi->hashOptimizedDeckAction || trigger == mUi->saveOptimizedDeckAction)
+    {
+        return mUi->resultDeckWidget->getDeck();
+    }
+    else if (trigger == mUi->nameBaseDeckButton || trigger == mUi->hashBaseDeckButton || trigger == mUi->saveBaseDeckButton)
+    {
+        return mUi->baseDeckWidget->getDeck();
+    }
+    else if (trigger == mUi->nameEnemyDeckButton || trigger == mUi->hashEnemyDeckButton || trigger == mUi->saveEnemyDeckButton)
+    {
+        return mUi->enemyDeckWidget->getDeck();
+    }
+    else if (trigger == mUi->nameOptimizedDeckButton || trigger == mUi->hashOptimizedDeckButton || trigger == mUi->saveOptimizedDeckButton)
     {
         return mUi->resultDeckWidget->getDeck();
     }

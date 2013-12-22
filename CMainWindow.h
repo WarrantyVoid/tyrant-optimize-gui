@@ -51,6 +51,7 @@ protected slots:
     void toggleMuteSound(bool checked);
     void toggleCardsShading(bool checked);
     void toggleCardLabelling(bool checked);
+    void toggleDeckActionButton(bool checked);
     void updateXmlData();
     void updateOwnedCards();
     void displayAboutMessage();
@@ -96,7 +97,7 @@ protected slots:
 private:
     void addConsoleLine(const QString &line, bool truncate = false);
     void getActiveDeck(CDeckInput *&deckInput, CDeckWidget *&deckWidget) const;
-    const CDeck& getActionDeck(const QAction *triggerAction) const;
+    const CDeck& getTriggeredDeck(const QObject *trigger) const;
 
 private:
     Ui::MainWindow *mUi;

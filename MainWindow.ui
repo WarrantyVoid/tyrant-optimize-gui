@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1101</width>
-    <height>444</height>
+    <width>1151</width>
+    <height>454</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -125,6 +125,89 @@
              </property>
             </widget>
            </item>
+           <item>
+            <widget class="QWidget" name="expandedBaseActions" native="true">
+             <property name="minimumSize">
+              <size>
+               <width>100</width>
+               <height>0</height>
+              </size>
+             </property>
+             <layout class="QHBoxLayout" name="horizontalLayout_5">
+              <property name="spacing">
+               <number>2</number>
+              </property>
+              <property name="leftMargin">
+               <number>0</number>
+              </property>
+              <property name="topMargin">
+               <number>0</number>
+              </property>
+              <property name="rightMargin">
+               <number>0</number>
+              </property>
+              <property name="bottomMargin">
+               <number>0</number>
+              </property>
+              <item>
+               <widget class="QPushButton" name="nameBaseDeckButton">
+                <property name="toolTip">
+                 <string>Copy comma-separated list of card names into clipboard</string>
+                </property>
+                <property name="text">
+                 <string/>
+                </property>
+                <property name="icon">
+                 <iconset resource="main.qrc">
+                  <normaloff>:/img/name.png</normaloff>:/img/name.png</iconset>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QPushButton" name="hashBaseDeckButton">
+                <property name="toolTip">
+                 <string>Copy deck hash into clipboard</string>
+                </property>
+                <property name="text">
+                 <string/>
+                </property>
+                <property name="icon">
+                 <iconset resource="main.qrc">
+                  <normaloff>:/img/hash.png</normaloff>:/img/hash.png</iconset>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QPushButton" name="saveBaseDeckButton">
+                <property name="toolTip">
+                 <string>Save deck as custom deck</string>
+                </property>
+                <property name="text">
+                 <string/>
+                </property>
+                <property name="icon">
+                 <iconset resource="main.qrc">
+                  <normaloff>:/img/save.png</normaloff>:/img/save.png</iconset>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QPushButton" name="switchDecksButton">
+                <property name="toolTip">
+                 <string>Switch base and enemy deck</string>
+                </property>
+                <property name="text">
+                 <string/>
+                </property>
+                <property name="icon">
+                 <iconset resource="main.qrc">
+                  <normaloff>:/img/switch.png</normaloff>:/img/switch.png</iconset>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </widget>
+           </item>
           </layout>
          </item>
         </layout>
@@ -221,6 +304,83 @@
               <iconset resource="main.qrc">
                <normaloff>:/img/start.png</normaloff>:/img/start.png</iconset>
              </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QWidget" name="expandedEnemyActions" native="true">
+             <layout class="QHBoxLayout" name="_2">
+              <property name="spacing">
+               <number>2</number>
+              </property>
+              <property name="leftMargin">
+               <number>0</number>
+              </property>
+              <property name="topMargin">
+               <number>0</number>
+              </property>
+              <property name="rightMargin">
+               <number>0</number>
+              </property>
+              <property name="bottomMargin">
+               <number>0</number>
+              </property>
+              <item>
+               <widget class="QPushButton" name="nameEnemyDeckButton">
+                <property name="toolTip">
+                 <string>Copy comma-separated list of card names into clipboard</string>
+                </property>
+                <property name="text">
+                 <string/>
+                </property>
+                <property name="icon">
+                 <iconset resource="main.qrc">
+                  <normaloff>:/img/name.png</normaloff>:/img/name.png</iconset>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QPushButton" name="hashEnemyDeckButton">
+                <property name="toolTip">
+                 <string>Copy deck hash into clipboard</string>
+                </property>
+                <property name="text">
+                 <string/>
+                </property>
+                <property name="icon">
+                 <iconset resource="main.qrc">
+                  <normaloff>:/img/hash.png</normaloff>:/img/hash.png</iconset>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QPushButton" name="saveEnemyDeckButton">
+                <property name="toolTip">
+                 <string>Save deck as custom deck</string>
+                </property>
+                <property name="text">
+                 <string/>
+                </property>
+                <property name="icon">
+                 <iconset resource="main.qrc">
+                  <normaloff>:/img/save.png</normaloff>:/img/save.png</iconset>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QPushButton" name="multiEnemyDeckButton">
+                <property name="toolTip">
+                 <string>Edit multiple decks</string>
+                </property>
+                <property name="text">
+                 <string/>
+                </property>
+                <property name="icon">
+                 <iconset resource="main.qrc">
+                  <normaloff>:/img/multi.png</normaloff>:/img/multi.png</iconset>
+                </property>
+               </widget>
+              </item>
+             </layout>
             </widget>
            </item>
           </layout>
@@ -746,26 +906,9 @@
            <property name="sizeConstraint">
             <enum>QLayout::SetFixedSize</enum>
            </property>
-           <item>
-            <widget class="QPushButton" name="useOptimizedButton">
-             <property name="sizePolicy">
-              <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-               <horstretch>0</horstretch>
-               <verstretch>0</verstretch>
-              </sizepolicy>
-             </property>
-             <property name="toolTip">
-              <string>Use current optimization result as new base deck</string>
-             </property>
-             <property name="text">
-              <string/>
-             </property>
-             <property name="icon">
-              <iconset resource="main.qrc">
-               <normaloff>:/img/use.png</normaloff>:/img/use.png</iconset>
-             </property>
-            </widget>
-           </item>
+           <property name="rightMargin">
+            <number>0</number>
+           </property>
            <item>
             <widget class="QPushButton" name="displayOptimizedButton">
              <property name="sizePolicy">
@@ -783,6 +926,89 @@
              <property name="icon">
               <iconset resource="main.qrc">
                <normaloff>:/img/view-console.png</normaloff>:/img/view-console.png</iconset>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QWidget" name="expandedOptimizedActions" native="true">
+             <layout class="QHBoxLayout" name="_3">
+              <property name="spacing">
+               <number>2</number>
+              </property>
+              <property name="leftMargin">
+               <number>0</number>
+              </property>
+              <property name="topMargin">
+               <number>0</number>
+              </property>
+              <property name="rightMargin">
+               <number>0</number>
+              </property>
+              <property name="bottomMargin">
+               <number>0</number>
+              </property>
+              <item>
+               <widget class="QPushButton" name="nameOptimizedDeckButton">
+                <property name="toolTip">
+                 <string>Copy comma-separated list of card names into clipboard</string>
+                </property>
+                <property name="text">
+                 <string/>
+                </property>
+                <property name="icon">
+                 <iconset resource="main.qrc">
+                  <normaloff>:/img/name.png</normaloff>:/img/name.png</iconset>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QPushButton" name="hashOptimizedDeckButton">
+                <property name="toolTip">
+                 <string>Copy deck hash into clipboard</string>
+                </property>
+                <property name="text">
+                 <string/>
+                </property>
+                <property name="icon">
+                 <iconset resource="main.qrc">
+                  <normaloff>:/img/hash.png</normaloff>:/img/hash.png</iconset>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QPushButton" name="saveOptimizedDeckButton">
+                <property name="toolTip">
+                 <string>Save deck as custom deck</string>
+                </property>
+                <property name="text">
+                 <string/>
+                </property>
+                <property name="icon">
+                 <iconset resource="main.qrc">
+                  <normaloff>:/img/save.png</normaloff>:/img/save.png</iconset>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </widget>
+           </item>
+           <item>
+            <widget class="QPushButton" name="useOptimizedButton">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="toolTip">
+              <string>Use current optimization result as new base deck</string>
+             </property>
+             <property name="text">
+              <string/>
+             </property>
+             <property name="icon">
+              <iconset resource="main.qrc">
+               <normaloff>:/img/use.png</normaloff>:/img/use.png</iconset>
              </property>
             </widget>
            </item>
@@ -896,7 +1122,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1101</width>
+     <width>1151</width>
      <height>22</height>
     </rect>
    </property>
@@ -918,6 +1144,7 @@
     <addaction name="separator"/>
     <addaction name="alwaysOnTopAction"/>
     <addaction name="muteSoundAction"/>
+    <addaction name="combineDeckActionsAction"/>
    </widget>
    <widget class="QMenu" name="menuHelp">
     <property name="title">
@@ -1231,6 +1458,17 @@
    </property>
    <property name="toolTip">
     <string>Save deck as custom deck</string>
+   </property>
+  </action>
+  <action name="combineDeckActionsAction">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>Deck action buttons</string>
    </property>
   </action>
  </widget>

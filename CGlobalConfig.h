@@ -27,11 +27,13 @@ public:
     void setBlackLabellingEnabled(bool enabled);
     void setWhiteLabellingEnabled(bool enabled);
     void setSoundMuted(bool muted);
+    void setDeckActionButtonEnabled(bool enabled);
     const QString& getLastDir() const;
     bool isCardShadingEnabled() const;
     bool isBlackLabellingEnabled() const;
     bool isWhiteLabellingEnabled() const;
     bool isSoundMuted() const;
+    bool isDeckActionButtonEnabled() const;
 
 private:
     QString mSep;
@@ -47,6 +49,7 @@ private:
     bool mIsBlackLabellingEnabled;
     bool mIsWhiteLabellingEnabled;
     bool mIsSoundMuted;
+    bool mIsDeckActionButtonEnabled;
 
     static CGlobalConfig *GLOBAL_CONFIG;
 };

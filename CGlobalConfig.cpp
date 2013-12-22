@@ -17,6 +17,7 @@ CGlobalConfig::CGlobalConfig()
 , mIsBlackLabellingEnabled(true)
 , mIsWhiteLabellingEnabled(true)
 , mIsSoundMuted(false)
+, mIsDeckActionButtonEnabled(true)
 {
 }
 
@@ -36,6 +37,7 @@ void CGlobalConfig::load(QSettings &settings)
     mIsBlackLabellingEnabled = settings.value("view/blackLabellingEnabled", mIsBlackLabellingEnabled).toBool();
     mIsWhiteLabellingEnabled = settings.value("view/whiteLabellingEnabled", mIsWhiteLabellingEnabled).toBool();
     mIsSoundMuted = settings.value("general/muteSound", mIsSoundMuted).toBool();
+    mIsDeckActionButtonEnabled = settings.value("general/deckActionButtons", mIsDeckActionButtonEnabled).toBool();
 }
 
 void CGlobalConfig::save(QSettings &settings)
@@ -45,6 +47,7 @@ void CGlobalConfig::save(QSettings &settings)
     settings.setValue("view/blackLabellingEnabled", mIsBlackLabellingEnabled);
     settings.setValue("view/whiteLabellingEnabled", mIsWhiteLabellingEnabled);
     settings.setValue("general/muteSound", mIsSoundMuted);
+    settings.setValue("general/deckActionButtons", mIsDeckActionButtonEnabled);
 }
 
 const QString& CGlobalConfig::getAppPath() const
@@ -102,6 +105,11 @@ void CGlobalConfig::setSoundMuted(bool muted)
     mIsSoundMuted = muted;
 }
 
+void CGlobalConfig::setDeckActionButtonEnabled(bool enabled)
+{
+    mIsDeckActionButtonEnabled = enabled;
+}
+
 const QString& CGlobalConfig::getLastDir() const
 {
     return mLastDir;
@@ -125,4 +133,9 @@ bool CGlobalConfig::isWhiteLabellingEnabled() const
 bool CGlobalConfig::isSoundMuted() const
 {
     return mIsSoundMuted;
+}
+
+bool CGlobalConfig::isDeckActionButtonEnabled() const
+{
+    return mIsDeckActionButtonEnabled;
 }
