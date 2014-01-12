@@ -3,6 +3,7 @@
 
 #include <QMainWindow>
 #include <QLabel>
+#include <QProgressBar>
 #include <QProcess>
 #include <QComboBox>
 #include <QFileSystemWatcher>
@@ -78,7 +79,7 @@ protected slots:
     void processError(QProcess::ProcessError error);
     void processFinished(int exitCode, QProcess::ExitStatus exitStatus);
     void processReadyReadStandardOutput();
-    void downloadProgress(int numDone, int numDownloads);
+    void downloadProgress(const CCard& card, int numDone, int numDownloads, bool success);
     void dataUpdated(const QStringList &result);
     void ownedCardsUpdated(const QStringList &result);
     void setOwnedCardsWatchingEnabled(bool enabled);
@@ -112,6 +113,7 @@ private:
     IProcessWrapper *mProcessWrapper;
     QLabel *mProcessStatusLabel;
     QLabel *mDownloadStatusLabel;
+    QProgressBar *mDownloadStatusProgress;
     CCardTable &mCards;
     CDeckTable &mDecks;
     CProcessParameters mParameters;

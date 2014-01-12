@@ -17,7 +17,14 @@ CDownload::CDownload(const QString &urlName, const QString &fileName, bool hashC
 CDownload::~CDownload()
 {
     if (mNetReply)
-    {        
+    {
+        disconnect(
+            mNetReply, SIGNAL(finished()),
+            this, SLOT(downloadFinished()));
+
+        disconnect(
+            mNetReply, SIGNAL(error(QNetworkReply::NetworkError)),
+            this, SLOT(downloadError(QNetworkReply::NetworkError)));
         mNetReply->abort();
         delete mNetReply;
         mNetReply = 0;
@@ -67,7 +74,6 @@ void CDownload::downloadProgress(qint64 bytesReceived, qint64 bytesTotal)
 void CDownload::downloadError(QNetworkReply::NetworkError /*error*/)
 {
     mState = EDownloadFailed;
-    emit downloadHandled();
 }
 
 void CDownload::downloadFinished()

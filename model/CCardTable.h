@@ -55,7 +55,7 @@ public:
     void searchCards(const ICardCheck &search, QList<CCard*> &cards, int maxHits = -1) const;
 
     const CCard& getOwnedCardEquivalent(const CCard &card, const TCardStatusMap &used) const;
-    SCardStatus getCardStatus(const CCard &card) const;
+    SCardStatus getCardStatus(const CCard &card) const;    
     bool isCardOwned(const CCard &card) const;
     void setListedCards(const QStringList &blackList, const QStringList &whiteList);
     void setOwnedCards(const QList<TOwnedCard> &ownedCards, const QList<TOwnedCard> &filteredCards);
@@ -64,9 +64,10 @@ public:
     const CBattleground& getBattlegroundForId(TBattlegroundId id) const;
     const QList<CBattleground>& getBattlegrounds() const;
     const QList<CAchievement>& getAchievements() const;
+    void getCardPicture(const CCard &card, QPixmap& picture) const;
 
 signals:
-    void downloadProgress(int numDone, int numDownloads);
+    void downloadProgress(const CCard& card, int numDone, int numDownloads, bool success);
     void dataUpdated(const QStringList &result);
     void cardStatusUpdated(ECardStatusUpdate status);
 
@@ -87,8 +88,8 @@ private:
     QHash<QString, CSkill> mSkillIdMap;
     QHash<ECardSet, QString> mCardSetIdMap;
     QHash<TCardId, CCard*> mCardIdMap;
-    QMultiHash<QString, CCard*> mCardNameMap;
     QHash<TCardId, SCardStatus> mCardStatusMap;
+    QMultiHash<QString, CCard*> mCardNameMap;
     QNetworkAccessManager* mNetManager;
     QQueue<CPictureDownload*> mPictureDownloads;
     QQueue<CDownload*> mDataDownloads;

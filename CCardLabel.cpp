@@ -134,15 +134,14 @@ void CCardLabel::setCard(const CCard& card)
     default: cardImg.load(cfg.getResourcePicturePath() + "CardBack.png"); break;
     }
 
-    QPixmap unitImg;
-    if (!unitImg.load(cfg.getPicturePath() + card.getPicture()))
+    if (card.isValid())
     {
-        // workaround for invalid file extension
-        unitImg.load(cfg.getPicturePath() + card.getPicture(), "png");
+        QPixmap unitImg;
+        mCards.getCardPicture(mCard, unitImg);
+        QPainter painter(&cardImg);
+        painter.drawPixmap(5, 24, 150, 120, unitImg.copy(0, 15, unitImg.width(), unitImg.height() - 30));
+        painter.end();
     }
-    QPainter painter(&cardImg);
-    painter.drawPixmap(5, 24, 150, 120, unitImg.copy(0, 15, unitImg.width(), unitImg.height() - 30));
-    painter.end();
     QLabel::setPixmap(cardImg);
 }
 
@@ -191,6 +190,14 @@ void CCardLabel::displayContextMenu(const QPoint &/*pos*/)
     menu.addAction(blackListAction);
     menu.addAction(whiteListAction);
     menu.exec(QCursor::pos());
+}
+
+void CCardLabel::updateCardLabelPicture(const CCard& card)
+{
+    if (mCard.getId() == card.getId())
+    {
+        setCard(card);
+    }
 }
 
 void CCardLabel::actionToggleBlack(bool isBlack)

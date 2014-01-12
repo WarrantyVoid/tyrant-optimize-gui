@@ -39,6 +39,7 @@ CMainWindow::CMainWindow(QWidget *parent)
 , mProcessWrapper(new CTyrantOptimizeWrapper())
 , mProcessStatusLabel(new QLabel())
 , mDownloadStatusLabel(new QLabel())
+, mDownloadStatusProgress(new QProgressBar())
 , mCards(CCardTable::getCardTable())
 , mDecks(CDeckTable::getDeckTable())
 , mParameters()
@@ -121,6 +122,8 @@ CMainWindow::CMainWindow(QWidget *parent)
     // Status bar setup
     mUi->statusBar->addPermanentWidget(mProcessStatusLabel, 0);
     mUi->statusBar->addPermanentWidget(mDownloadStatusLabel, 1);
+    mUi->statusBar->addPermanentWidget(mDownloadStatusProgress, 2);
+    mDownloadStatusProgress->setVisible(false);
     mProcessStatusLabel->setFocusPolicy(Qt::ClickFocus);
     mProcessStatusLabel->setTextInteractionFlags(Qt::TextSelectableByMouse);
 
@@ -335,8 +338,8 @@ CMainWindow::CMainWindow(QWidget *parent)
 
     // Widgets connections
     connect(
-        &mCards, SIGNAL(downloadProgress(int,int)),
-        this, SLOT(downloadProgress(int,int)));
+        &mCards, SIGNAL(downloadProgress(const CCard&,int,int,bool)),
+        this, SLOT(downloadProgress(const CCard&,int,int,bool)));
     connect(
         &mCards, SIGNAL(dataUpdated(const QStringList&)),
         this, SLOT(dataUpdated(const QStringList&)));
@@ -1087,15 +1090,26 @@ void CMainWindow::processReadyReadStandardOutput()
     }
 }
 
-void  CMainWindow::downloadProgress(int numDone, int numDownloads)
+void  CMainWindow::downloadProgress(const CCard &card, int numDone, int numDownloads, bool success)
 {
     if (numDone == numDownloads)
     {
-        mDownloadStatusLabel->setText("Downloading card pictures..done");        
+
+        mDownloadStatusLabel->setText(QString("Downloading of card pictures..%1").arg(success ? "done" : "failed"));
+        mDownloadStatusProgress->setVisible(false);
+        CCardLabelNexus::getCardLabelNexus().updateCardPictures(card);
     }
     else
     {
-        mDownloadStatusLabel->setText(QString("Downloading card pictures..(%1/%2)").arg(numDone).arg(numDownloads));
+        mDownloadStatusLabel->setText(QString("Downloading of card pictures..(%1/%2)").arg(numDone).arg(numDownloads));
+        mDownloadStatusProgress->setMaximum(numDownloads);
+        mDownloadStatusProgress->setValue(numDone);
+        mDownloadStatusProgress->repaint();
+        mDownloadStatusProgress->setVisible(true);
+        //if (numDone % 10 == 0)
+        {
+            CCardLabelNexus::getCardLabelNexus().updateCardPictures(card);
+        }
     }
 }
 

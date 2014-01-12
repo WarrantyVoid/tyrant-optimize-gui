@@ -4,6 +4,7 @@
 #include "xml/CCardsXmlParser.h"
 #include "xml/CQuestsXmlParser.h"
 #include "xml/CAchievementsXmlParser.h"
+#include <QPixmapCache>
 #include <QFileInfo>
 #include <QDateTime>
 #include <QXmlSimpleReader>
@@ -17,6 +18,7 @@ CCardTable::CCardTable()
 : mSkillIdMap()
 , mCardSetIdMap()
 , mCardIdMap()
+, mCardStatusMap()
 , mCardNameMap()
 , mNetManager(new QNetworkAccessManager())
 , mPictureDownloads()
@@ -27,7 +29,8 @@ CCardTable::CCardTable()
 , mTotalDownloads(0)
 , mFinishedDownloads(0)
 {
-    initData();  
+    initData();
+    QPixmapCache::setCacheLimit(32768);
     QNetworkProxyFactory::setUseSystemConfiguration(true);
 }
 
@@ -348,7 +351,8 @@ void CCardTable::updateData(bool isBeta)
 
             connect(
                 mDataDownloads.head(), SIGNAL(downloadHandled()),
-                this, SLOT(processNextDataDownload()));
+                this, SLOT(processNextDataDownload()),
+                Qt::QueuedConnection);
             mDataDownloads.head()->startDownload(mNetManager);
         }
         else
@@ -382,20 +386,26 @@ const QList<CAchievement>& CCardTable::getAchievements() const
     return mAchievements;
 }
 
+void CCardTable::getCardPicture(const CCard &card, QPixmap& picture) const
+{
+    if (!picture.load(CGlobalConfig::getCfg().getPicturePath() + card.getPicture()))
+    {
+        picture.load(CGlobalConfig::getCfg().getPicturePath() + "DefaultCardImage.jpg");
+    }
+}
+
 void CCardTable::processNextPictureDownload()
 {
     if (!mPictureDownloads.isEmpty())
     {
         ++mFinishedDownloads;
-        emit downloadProgress(mFinishedDownloads, mTotalDownloads);
         CPictureDownload* download = mPictureDownloads.dequeue();
         if (download)
         {
-            const CCard &card = download->getPictureMetaData();
-            if (card.isValid() && !mCardIdMap.contains(card.getId()))
-            {
-                addCard(card);
-            }
+            emit downloadProgress(download->getPictureMetaData(),
+                                  mFinishedDownloads,
+                                  mTotalDownloads,
+                                  download->state() == EDownloadStored);
             delete download;
             download = 0;
         }
@@ -404,7 +414,8 @@ void CCardTable::processNextPictureDownload()
     {
         connect(
             mPictureDownloads.head(), SIGNAL(downloadHandled()),
-            this, SLOT(processNextPictureDownload()));
+            this, SLOT(processNextPictureDownload()),
+            Qt::QueuedConnection);
         mPictureDownloads.head()->startDownload(mNetManager);
     }
 }
@@ -414,21 +425,24 @@ void CCardTable::processNextDataDownload()
     if (!mDataDownloads.isEmpty())
     {
         CDownload* download = mDataDownloads.dequeue();
-        QFileInfo fileInfo(download->fileName());
-        QString action = "";
-        switch (download->state())
+        if (download)
         {
-        case EDownloadNotStarted: action = "Not started"; break;
-        case EDownloadStarted: action = "Started"; break;
-        case EDownloadFailed: action = "Failed to download"; break;
-        case EDownloadSuccessful: action = "Already up-to-date"; break;
-        case EDownloadStored: action = "Updated"; break;
-        case EDownloadStoreFailed: action = "Failed to write"; break;
+            QFileInfo fileInfo(download->fileName());
+            QString action = "";
+            switch (download->state())
+            {
+            case EDownloadNotStarted: action = "Not started"; break;
+            case EDownloadStarted: action = "Started"; break;
+            case EDownloadFailed: action = "Failed to download"; break;
+            case EDownloadSuccessful: action = "Already up-to-date"; break;
+            case EDownloadStored: action = "Updated"; break;
+            case EDownloadStoreFailed: action = "Failed to write"; break;
+            }
+            QString result = QString("<tr><td>%1</td><td>:</td><td>%2</td></tr>").arg(fileInfo.fileName()).arg(action);
+            mDataDownloadResults.append(result);
+            delete download;
+            download = 0;
         }
-        QString result = QString("<tr><td>%1</td><td>:</td><td>%2</td></tr>").arg(fileInfo.fileName()).arg(action);
-        mDataDownloadResults.append(result);
-        delete download;
-        download = 0;
     }
     if (mDataDownloads.isEmpty())
     {
@@ -441,7 +455,8 @@ void CCardTable::processNextDataDownload()
     {
         connect(
             mDataDownloads.head(), SIGNAL(downloadHandled()),
-            this, SLOT(processNextDataDownload()));
+            this, SLOT(processNextDataDownload()),
+            Qt::QueuedConnection);
         mDataDownloads.head()->startDownload(mNetManager);
     };
 }
@@ -462,18 +477,14 @@ void CCardTable::processCard(const CCard &card)
         //http://www.facebook.com/media/set/?set=a.240926515984717.57623.235197086557660&type=1
         QString pictureFileName(CGlobalConfig::getCfg().getPicturePath() + card.getPicture());
         QFile pictureFile(pictureFileName);
-        if (pictureFile.exists())
-        {
-            addCard(card);
-        }
-        else
+        addCard(card);
+        if (!pictureFile.exists())
         {
             QString pictureUrlName(CGlobalConfig::getCfg().getOnlinePicturePath() + card.getPicture());
             CPictureDownload *download = new CPictureDownload(pictureUrlName, pictureFileName);
             download->setPictureMetaData(card);
             mPictureDownloads.enqueue(download);
         }
-
     }
 }
 
@@ -631,7 +642,8 @@ void CCardTable::initData()
 
         connect(
             mPictureDownloads.head(), SIGNAL(downloadHandled()),
-            this, SLOT(processNextPictureDownload()));
+            this, SLOT(processNextPictureDownload()),
+            Qt::QueuedConnection);
         mPictureDownloads.head()->startDownload(mNetManager);
     }
 }

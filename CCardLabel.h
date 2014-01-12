@@ -35,6 +35,7 @@ signals:
 
 public slots:
     void displayContextMenu(const QPoint &pos);
+    void updateCardLabelPicture(const CCard& card);
 
 protected slots:
     void actionToggleBlack(bool isBlack);

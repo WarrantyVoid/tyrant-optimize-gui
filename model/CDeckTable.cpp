@@ -428,8 +428,9 @@ QVariant CDeckTable::data(const QModelIndex &index, int role) const
             {
             case Qt::DecorationRole:
             {
+                CCardTable &cardTable = CCardTable::getCardTable();
                 QPixmap comImg;
-                comImg.load(CGlobalConfig::getCfg().getPicturePath() + deckData->getCommander().getPicture());
+                cardTable.getCardPicture(deckData->getCommander(), comImg);
                 return comImg.scaledToHeight(20, Qt::SmoothTransformation);
             }
             case Qt::ToolTipRole:

@@ -42,6 +42,11 @@ CCardLabelNexus& CCardLabelNexus::getCardLabelNexus()
     return *CARD_LABEL_NEXUS;
 }
 
+void CCardLabelNexus::updateCardPictures(const CCard & card)
+{
+    emit pictureDownloaded(card);
+}
+
 void CCardLabelNexus::registerCardLabel(CCardLabel* label)
 {
     if (label)
@@ -52,6 +57,9 @@ void CCardLabelNexus::registerCardLabel(CCardLabel* label)
         connect(
             label, SIGNAL(unitCtrlRightClicked(bool)),
             this, SLOT(setCardLabelWhiteListStatus(bool)));
+        connect(
+            this, SIGNAL(pictureDownloaded(const CCard&)),
+            label, SLOT(updateCardLabelPicture(const CCard&)));
         label->installEventFilter(this);
     }
 }

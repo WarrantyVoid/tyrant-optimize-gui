@@ -19,12 +19,14 @@ public:
     static CCardLabelNexus& getCardLabelNexus();
 
 public:
+    void updateCardPictures(const CCard & card);
     void registerCardLabel(CCardLabel *label);
     void unregisterCardLabel( CCardLabel* label);
 
 signals:
     void blackListStatusToggled(const CCard &card, bool isBlack);
     void whiteListStatusToggled(const CCard &card, bool isWhite);
+    void pictureDownloaded(const CCard &card);
 
 public slots:
     void setCardLabelBlackListStatus(bool isBlack);
