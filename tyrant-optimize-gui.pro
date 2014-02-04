@@ -50,7 +50,8 @@ HEADERS += \
     filter/CCardSearchParameters.h \
     CVersion.h \
     model/CCardSkill.h \
-    model/CardTypes.h
+    model/CardTypes.h \
+    xml/CXmlSaxValue.h
 	   
 FORMS += \
     MainWindow.ui \

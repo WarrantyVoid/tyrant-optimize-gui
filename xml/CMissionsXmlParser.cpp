@@ -1,63 +1,45 @@
 #include "xml/CMissionsXmlParser.h"
 
 CMissionsXmlParser::CMissionsXmlParser()
-: mIsMissionTagActive(false)
-, mIsNameTagActive(false)
-, mIdTagActive(false)
-, mIsCommanderTagActive(false)
-, mIsDeckTagActive(false)
-, mIsCardTagActive(false)
-, mCurMissionName("")
-, mCurMissionId(0u)
-, mCurMissionDeck()
+: mMission("mission")
+, mCommander("commander")
+, mDeck("deck")
+, mCard("card")
+, mName("name", "")
+, mId("id", 0u)
+, mBattlegroundId("effect", 0u)
+, mDeckCardList()
 {
 
 }
 
 bool CMissionsXmlParser::startDocument()
 {
-    mIsMissionTagActive = false;
-    mIsNameTagActive = false;
-    mIdTagActive = false;
-    mIsCommanderTagActive = false;
-    mIsDeckTagActive = false;
-    mIsCardTagActive = false;
-    mCurMissionName = "";
-    mCurMissionId = 0u;
-    mCurMissionDeck.clear();
+    mMission.reset();
+    mCommander.reset();
+    mDeck.reset();
+    mCard.reset();
+    mName.reset();
+    mId.reset();
+    mBattlegroundId.reset();
+    mDeckCardList.clear();
     return true;
 }
 
 bool CMissionsXmlParser::startElement(const QString & /*namespaceURI*/, const QString & /*localName*/, const QString & qName, const QXmlAttributes & /*atts*/)
 {
-    if (qName.compare("mission") == 0)
+
+    if (mMission.handleStartElement(qName));
+    else if (mMission.isOpen())
     {
-        mIsMissionTagActive = true;
-    }
-    else if (mIsMissionTagActive)
-    {
-        if (qName.compare("name") == 0)
+        if (mName.handleStartElement(qName));
+        else if (mId.handleStartElement(qName));
+        else if (mBattlegroundId.handleStartElement(qName));
+        else if (mCommander.handleStartElement(qName));
+        else if (mDeck.handleStartElement(qName));
+        else if (mDeck.isOpen())
         {
-            mIsNameTagActive = true;
-        }
-        else if (qName.compare("id") == 0)
-        {
-            mIdTagActive = true;
-        }
-        else if (qName.compare("commander") == 0)
-        {
-            mIsCommanderTagActive = true;
-        }
-        else if (qName.compare("deck") == 0)
-        {
-            mIsDeckTagActive = true;
-        }
-        else if (mIsDeckTagActive)
-        {
-            if (qName.compare("card") == 0)
-            {
-                mIsCardTagActive = true;
-            }
+            if (mCard.handleStartElement(qName)){ };
         }
     }
     return true;
@@ -65,69 +47,64 @@ bool CMissionsXmlParser::startElement(const QString & /*namespaceURI*/, const QS
 
 bool CMissionsXmlParser::endElement(const QString & /*namespaceURI*/, const QString & /*localName*/, const QString & qName)
 {
-    if (mIsMissionTagActive)
+    if (mMission.handleEndElement(qName))
     {
-        if (qName.compare("mission") == 0)
+        emit missionParsed(
+            mId.value(),
+            mName.value(),
+            EMissionDeckType,
+            mBattlegroundId.value(),
+            mDeckCardList);
+        mName.reset();
+        mId.reset();
+        mBattlegroundId.reset();
+        mDeckCardList.clear();
+    }
+    else if (mMission.isOpen())
+    {
+        if (mName.handleEndElement(qName));
+        else if (mId.handleEndElement(qName));
+        else if (mBattlegroundId.handleEndElement(qName));
+        else if (mCommander.handleEndElement(qName));
+        else if (mDeck.handleEndElement(qName));
+        else if (mDeck.isOpen())
         {
-            emit missionParsed(mCurMissionId, mCurMissionName, EMissionDeckType, 0u,  mCurMissionDeck);
-            mIsMissionTagActive = false;
-            mCurMissionName = "";
-            mCurMissionId = 0u;
-            mCurMissionDeck.clear();
-        }
-        else if (qName.compare("name") == 0)
-        {
-            mIsNameTagActive = false;
-        }
-        else if (qName.compare("id") == 0)
-        {
-            mIdTagActive = false;
-        }
-        else if (qName.compare("name") == 0)
-        {
-            mIsNameTagActive = false;
-        }
-        else if (qName.compare("commander") == 0)
-        {
-            mIsCommanderTagActive = false;
-        }
-        else if (qName.compare("deck") == 0)
-        {
-            mIsDeckTagActive = false;
-        }
-        else if (mIsDeckTagActive)
-        {
-            if (qName.compare("card") == 0)
-            {
-                mIsCardTagActive = false;
-            }
+            if (mCard.handleEndElement(qName)){ };
         }
     }
     return true;
 }
 
-bool CMissionsXmlParser::characters(const QString & ch)
+bool CMissionsXmlParser::characters(const QString &ch)
 {
-    if (mIsMissionTagActive)
+    if (mMission.isOpen())
     {
-        if (mIsNameTagActive)
+        if (mName.isOpen())
         {
-            mCurMissionName = ch;
+            mName.setValue(ch.trimmed());
         }
-        else if (mIdTagActive)
+        else if (mId.isOpen())
         {
             bool ok(true);
-            mCurMissionId = ch.toUInt(&ok);
+            mId.setValue(ch.toUInt(&ok));
         }
-        else if (mIsCommanderTagActive)
+        else if (mBattlegroundId.isOpen())
         {
             bool ok(true);
-            mCurMissionDeck.push_back(ch.toUInt(&ok));
+            mBattlegroundId.setValue(ch.toUInt(&ok));
         }
-        else if (mIsDeckTagActive && mIsCardTagActive)
+        else if (mCommander.isOpen())
         {
             bool ok(true);
-            mCurMissionDeck.push_back(ch.toUInt(&ok));
+            mDeckCardList.push_back(ch.toUInt(&ok));
+        }
+        else if (mDeck.isOpen())
+        {
+            if (mCard.isOpen())
+            {
+                bool ok(true);
+                mDeckCardList.push_back(ch.toUInt(&ok));
+            }
         }
     }
     return true;

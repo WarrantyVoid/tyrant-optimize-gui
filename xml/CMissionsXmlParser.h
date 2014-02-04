@@ -3,6 +3,7 @@
 
 #include <QXmlDefaultHandler>
 #include "model/CDeck.h"
+#include "CXmlSaxValue.h"
 
 class CMissionsXmlParser : public QObject, public QXmlDefaultHandler
 {
@@ -23,15 +24,14 @@ protected:
     virtual bool endDocument();
 
 private:
-    bool mIsMissionTagActive;
-    bool mIsNameTagActive;
-    bool mIdTagActive;
-    bool mIsCommanderTagActive;
-    bool mIsDeckTagActive;
-    bool mIsCardTagActive;
-    QString mCurMissionName;
-    unsigned int mCurMissionId;
-    QList<TCardId> mCurMissionDeck;
+    CXmlSaxValue<> mMission;
+    CXmlSaxValue<> mCommander;
+    CXmlSaxValue<> mDeck;
+    CXmlSaxValue<> mCard;
+    CXmlSaxValue<QString> mName;
+    CXmlSaxValue<unsigned int> mId;
+    CXmlSaxValue<unsigned int> mBattlegroundId;
+    QList<TCardId> mDeckCardList;
 };
 
 #endif // CMISSIONSXMLPARSER_H

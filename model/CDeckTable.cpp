@@ -459,7 +459,6 @@ QVariant CDeckTable::data(const QModelIndex &index, int role) const
                 }
                 break;
             case Qt::DisplayRole:
-                if(deckData->getType() == EQuestDeckType)
                 {
                     CCardTable &cardTable = CCardTable::getCardTable();
                     const CBattleground& bg = cardTable.getBattlegroundForId(deckData->getBattlegroundId());
@@ -467,8 +466,8 @@ QVariant CDeckTable::data(const QModelIndex &index, int role) const
                     {
                         return QString("%1 (%2)").arg(deckData->getName()).arg(bg.getName());
                     }
+                    return deckData->getName();
                 }
-                return deckData->getName();
             case Qt::EditRole:
             case Qt::UserRole:
                 return deckData->getName();

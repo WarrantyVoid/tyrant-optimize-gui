@@ -927,10 +927,17 @@ void CMainWindow::adjustToDeckType(const QString &deckStr)
     const CDeck& deck = mDecks.getDeckForName(deckStr);
 
     // Update battle ground
-    if (deck.isValid() && deck.getType() == EQuestDeckType)
+    if (deck.isValid())
     {
         const CBattleground &battleground = mCards.getBattlegroundForId(deck.getBattlegroundId());
-        mUi->battleGroundBox->setCurrentIndex(mUi->battleGroundBox->findText(battleground.getName()));
+        if (battleground.isValid())
+        {
+            mUi->battleGroundBox->setCurrentIndex(mUi->battleGroundBox->findText(battleground.getName()));
+        }
+        else
+        {
+            mUi->battleGroundBox->setCurrentIndex(0);
+        }
     }
     else
     {
