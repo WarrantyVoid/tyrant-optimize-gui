@@ -67,12 +67,12 @@ void CDeckInput::updateHistory()
     if (!deckStr.isEmpty())
     {
         int idx = findText(deckStr);
-        if (idx > -1)
-        {
-            removeItem(idx);
-        }
         insertItem(0, deckStr);
         setCurrentIndex(0);
+        if (idx > -1)
+        {
+            removeItem(idx + 1);
+        }
     }
 }
 
