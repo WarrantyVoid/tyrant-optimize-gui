@@ -19,7 +19,7 @@
     #include <windows.h>
 #endif
 
-const CVersion CMainWindow::VERSION = CVersion("1.5.1");
+const CVersion CMainWindow::VERSION = CVersion("1.5.2");
 const QString CMainWindow::AUTHOR = "warranty_void";
 const QString CMainWindow::HOMEPAGE = "<a href=\'http://www.hunterthinks.com/to/gui\'>hunterthinks.com/to/gui</a>";
 const QString CMainWindow::FORUM = "<a href=\'http://www.kongregate.com/forums/65-tyrant/topics/257807-automatic-deck-optimization\'>kongregate.com/[..]automatic-deck-optimization</a>";
