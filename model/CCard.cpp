@@ -1,7 +1,6 @@
 #include "CCard.h"
 
 const CCard CCard::INVALID_CARD;
-const int CCard::UPGRADE_LEVEL_NONE = -1;
 
 CCard::CCard()
 : mId(0)
@@ -12,7 +11,7 @@ CCard::CCard()
 , mFaction(EUnknownFaction)
 , mSet(EUnknownSet)
 , mSkills()
-, mUpgradeLevel(UPGRADE_LEVEL_NONE)
+, mUpgradeLevel(EUpgradeNotAvailable)
 , mDelay(-1)
 , mAttack(-1)
 , mHealth(-1)
@@ -65,7 +64,7 @@ void CCard::addSkill(const CCardSkill &skill)
     }
 }
 
-void CCard::setUpgradeLevel(int level)
+void CCard::setUpgradeLevel(ECardUpgradeLevel level)
 {
     mUpgradeLevel = level;
 }
@@ -99,7 +98,7 @@ QString CCard::getName() const
 {
     QString name = mName;
     name.replace(",", "");
-    if (getUpgradeLevel() > 0)
+    if (getUpgradeLevel() == EUpgradeLevel2)
     {
         name.append(QChar('*'));
     }
@@ -180,9 +179,9 @@ const TSkillList& CCard::getSkills() const
     return mSkills;
 }
 
-int CCard::getUpgradeLevel() const
+ECardUpgradeLevel CCard::getUpgradeLevel() const
 {
-    return (mSet == EUpgradedSet) ? 1 : mUpgradeLevel;
+    return (mSet == EUpgradedSet) ? EUpgradeLevel2 : mUpgradeLevel;
 }
 
 int CCard::getDelay() const

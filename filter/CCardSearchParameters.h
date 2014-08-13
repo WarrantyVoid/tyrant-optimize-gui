@@ -49,6 +49,10 @@ private:
     EComparisonMethod mHpCompare;
     int mAttackValue;
     int mHpValue;
+    int mUpgradeLevel;
+    bool mCheckUpgradeLevel;
+    bool mIsUnique;
+
 };
 
 #endif // CCARDSEARCHPARAMETERS_H

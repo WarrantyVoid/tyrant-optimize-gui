@@ -19,6 +19,9 @@ CCardSearchParameters::CCardSearchParameters()
 , mHpCompare(ECompareEqualOrLarger)
 , mAttackValue(0)
 , mHpValue(0)
+, mUpgradeLevel(0xff)
+, mCheckUpgradeLevel(false)
+, mIsUnique(false)
 {
 }
 
@@ -74,6 +77,16 @@ void CCardSearchParameters::fetchFromUi(const Ui::CardSearchWidget &ui)
 
     mAttackValue = ui.attackSlider->value();
     mHpValue = ui.hpSlider->value();
+
+    mCheckUpgradeLevel = true;
+    switch(ui.upgradeStackedWidget->currentIndex())
+    {
+    case 1: mUpgradeLevel = 0; break;
+    case 2: mUpgradeLevel = 1; break;
+    case 3: mUpgradeLevel = 2; break;
+    default: mUpgradeLevel = 0xff; mCheckUpgradeLevel = false; break;
+    }
+    mIsUnique = ui.uniqueButton->isChecked();
 }
 
 void CCardSearchParameters::updateUi(Ui::CardSearchWidget &ui) const
@@ -117,6 +130,22 @@ void CCardSearchParameters::updateUi(Ui::CardSearchWidget &ui) const
     }
     ui.attackSlider->setValue(mAttackValue);
     ui.hpSlider->setValue(mHpValue);
+
+    if (mCheckUpgradeLevel)
+    {
+        switch(mUpgradeLevel)
+        {
+        case 0: ui.upgradeStackedWidget->setCurrentIndex(1); break;
+        case 1: ui.upgradeStackedWidget->setCurrentIndex(2); break;
+        case 2: ui.upgradeStackedWidget->setCurrentIndex(3); break;
+        default: ui.upgradeStackedWidget->setCurrentIndex(0); break;
+        }
+    }
+    else
+    {
+        ui.upgradeStackedWidget->setCurrentIndex(0);
+    }
+    ui.uniqueButton->setChecked(mIsUnique);
 }
 
 void CCardSearchParameters::fetchFromSettings(QSettings &settings)
@@ -137,7 +166,10 @@ void CCardSearchParameters::fetchFromSettings(QSettings &settings)
     mAttackCompare = static_cast<EComparisonMethod>(settings.value("attackCompare").toInt());
     mHpCompare = static_cast<EComparisonMethod>(settings.value("hpCompare").toInt());
     mAttackValue = settings.value("attackValue", mAttackValue).toInt();
-    mHpValue = settings.value("hpValue", mHpValue).toInt();
+    mHpValue = settings.value("hpValue", mHpValue).toInt();  
+    mUpgradeLevel = settings.value("upgradeLevel", mUpgradeLevel).toInt();
+    mCheckUpgradeLevel = settings.value("checkUpgradeLevel", mCheckUpgradeLevel).toBool();
+    mIsUnique = settings.value("checkUnique", mIsUnique).toBool();
     settings.endGroup();
 }
 
@@ -154,6 +186,9 @@ void CCardSearchParameters::updateSettings(QSettings &settings) const
     settings.setValue("hpCompare", static_cast<int>(mHpCompare));
     settings.setValue("attackValue", mAttackValue);
     settings.setValue("hpValue", mHpValue);
+    settings.setValue("upgradeLevel", mUpgradeLevel);
+    settings.setValue("checkUpgradeLevel", mCheckUpgradeLevel);
+    settings.setValue("checkUnique", mIsUnique);
     settings.endGroup();
 }
 
@@ -241,6 +276,22 @@ bool CCardSearchParameters::checkCard(const CCard &card, int &/*num*/) const
         case 4: pass = (mTimerMask & 0x10) != 0; break;
         default: pass = false; break;
         }
+    }
+
+    if (pass && mCheckUpgradeLevel)
+    {
+        switch(mUpgradeLevel)
+        {
+        case 0: pass = card.getUpgradeLevel() == EUpgradeNotAvailable; break;
+        case 1: pass = card.getUpgradeLevel() == EUpgradeLevel1; break;
+        case 2: pass = card.getUpgradeLevel() == EUpgradeLevel2; break;
+        default: pass = false; break;
+        }
+    }
+
+    if (pass && mIsUnique)
+    {
+        pass = card.isUnique();
     }
 
     if (pass)

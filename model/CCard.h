@@ -24,7 +24,7 @@ public:
     void setSet(ECardSet set);
     void clearSkills();
     void addSkill(const CCardSkill& skill);
-    void setUpgradeLevel(int level);
+    void setUpgradeLevel(ECardUpgradeLevel level);
     void setDelay(int delay);
     void setUnique(bool isUnique);
     void setAttack(int attack);
@@ -41,7 +41,7 @@ public:
     ECardType getType() const;
     ECardSet getSet() const;
     const TSkillList& getSkills() const;
-    int getUpgradeLevel() const;
+    ECardUpgradeLevel getUpgradeLevel() const;
     int getDelay() const;
     bool isUnique() const;
     int getAttack() const;
@@ -53,7 +53,6 @@ public:
 
 public:
     static const CCard INVALID_CARD;
-    static const int UPGRADE_LEVEL_NONE;
 
 private:
     TCardId mId;
@@ -64,7 +63,7 @@ private:
     ECardFaction mFaction;
     ECardSet mSet;
     QList<CCardSkill> mSkills;
-    int mUpgradeLevel;
+    ECardUpgradeLevel mUpgradeLevel;
     int mDelay;
     int mAttack;
     int mHealth;

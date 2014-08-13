@@ -127,6 +127,23 @@ CCardSearchWidget::CCardSearchWidget(QWidget *parent)
     connect(
         mUi->timer4Button, SIGNAL(clicked(bool)),
         this, SLOT(updateView()));
+
+    connect(
+        mUi->uniqueButton, SIGNAL(clicked(bool)),
+        this, SLOT(updateView()));
+
+    connect(
+        mUi->upgradeAllButton, SIGNAL(clicked()),
+        this, SLOT(switchUpgradeOption()));
+    connect(
+        mUi->upgradeNoneButton, SIGNAL(clicked()),
+        this, SLOT(switchUpgradeOption()));
+    connect(
+        mUi->upgrade0Button, SIGNAL(clicked()),
+        this, SLOT(switchUpgradeOption()));
+    connect(
+        mUi->upgrade1Button, SIGNAL(clicked()),
+        this, SLOT(switchUpgradeOption()));
 }
 
 CCardSearchWidget::~CCardSearchWidget()
@@ -175,6 +192,21 @@ void CCardSearchWidget::switchHpOption()
     else
     {
         mUi->hpStackedWidget->setCurrentIndex(0);
+    }
+    updateView();
+}
+
+void CCardSearchWidget::switchUpgradeOption()
+{
+    int numStates = mUi->upgradeStackedWidget->count();
+    int curState = mUi->upgradeStackedWidget->currentIndex();
+    if (curState < numStates - 1)
+    {
+       mUi->upgradeStackedWidget->setCurrentIndex(curState + 1);
+    }
+    else
+    {
+        mUi->upgradeStackedWidget->setCurrentIndex(0);
     }
     updateView();
 }

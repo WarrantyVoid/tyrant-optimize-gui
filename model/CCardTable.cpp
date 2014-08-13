@@ -523,12 +523,12 @@ void CCardTable::addCard(const CCard &card)
     mCardIdMap.insert(card.getId(), c);
     if (card.getSet() != EUnknownSet)
     {
-        if (c->getUpgradeLevel() == 1)
+        if (c->getUpgradeLevel() == EUpgradeLevel2)
         {
             QHash<QString, CCard*>::iterator base = mCardNameMap.find(card.getBaseName());
             if (base != mCardNameMap.end())
             {
-                base.value()->setUpgradeLevel(0);
+                base.value()->setUpgradeLevel(EUpgradeLevel1);
             }
         }
         else
@@ -536,7 +536,7 @@ void CCardTable::addCard(const CCard &card)
             QHash<QString, CCard*>::iterator upgraded = mCardNameMap.find(card.getUpgradedName());
             if (upgraded != mCardNameMap.end())
             {
-                c->setUpgradeLevel(0);
+                c->setUpgradeLevel(EUpgradeLevel1);
             }
         }
         mCardNameMap.insert(card.getName(), c);

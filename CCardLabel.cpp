@@ -240,7 +240,7 @@ void CCardLabel::paintEvent(QPaintEvent *ev)
 
         // Paint upgrade symbol
         QString cardName = mCard.getName();
-        if (mCard.getUpgradeLevel() != CCard::UPGRADE_LEVEL_NONE)
+        if (mCard.getUpgradeLevel() != EUpgradeNotAvailable)
         {
             if (cardName.endsWith(QChar('*')))
             {
@@ -248,11 +248,13 @@ void CCardLabel::paintEvent(QPaintEvent *ev)
             }
             switch(mCard.getUpgradeLevel())
             {
-            case 0:
+            case EUpgradeLevel1:
                 painter.drawPixmap(upgradePos, QPixmap(cfg.getResourcePicturePath() + "UpgradeIcon1.png"));
                 break;
-            case 1:
+            case EUpgradeLevel2:
                 painter.drawPixmap(upgradePos, QPixmap(cfg.getResourcePicturePath() + "UpgradeIcon2.png"));
+                break;
+            default:
                 break;
             }
         }

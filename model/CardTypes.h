@@ -53,5 +53,12 @@ enum ECardSet
     ESpecialSet = 9000
 };
 
+enum ECardUpgradeLevel
+{
+    EUnknownUpgradeLevel = 0,
+    EUpgradeLevel1 = 1,
+    EUpgradeLevel2 = 2,
+    EUpgradeNotAvailable = 0xff
+};
 
 #endif // CARDTYPES_H

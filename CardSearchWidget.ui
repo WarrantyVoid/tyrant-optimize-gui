@@ -86,6 +86,9 @@
             <verstretch>0</verstretch>
            </sizepolicy>
           </property>
+          <property name="toolTip">
+           <string>Attack equal</string>
+          </property>
           <property name="currentIndex">
            <number>0</number>
           </property>
@@ -101,6 +104,9 @@
                 <horstretch>0</horstretch>
                 <verstretch>0</verstretch>
                </sizepolicy>
+              </property>
+              <property name="toolTip">
+               <string>Attack more or equal</string>
               </property>
               <property name="icon">
                <iconset resource="main.qrc">
@@ -143,6 +149,9 @@
                 <horstretch>0</horstretch>
                 <verstretch>0</verstretch>
                </sizepolicy>
+              </property>
+              <property name="toolTip">
+               <string>Attack less or equal</string>
               </property>
               <property name="icon">
                <iconset resource="main.qrc">
@@ -229,6 +238,9 @@
             <verstretch>0</verstretch>
            </sizepolicy>
           </property>
+          <property name="toolTip">
+           <string>Health less or equal</string>
+          </property>
           <property name="currentIndex">
            <number>0</number>
           </property>
@@ -250,6 +262,9 @@
                 <horstretch>0</horstretch>
                 <verstretch>0</verstretch>
                </sizepolicy>
+              </property>
+              <property name="toolTip">
+               <string>Health more or equal</string>
               </property>
               <property name="icon">
                <iconset resource="main.qrc">
@@ -702,15 +717,161 @@
         </item>
        </layout>
       </item>
-      <item row="4" column="0" colspan="3">
+      <item row="5" column="0" colspan="3">
        <widget class="QGraphicsView" name="finderView"/>
       </item>
-      <item row="5" column="0" colspan="3">
+      <item row="6" column="0" colspan="3">
        <widget class="QLabel" name="finderLabel">
         <property name="text">
          <string/>
         </property>
        </widget>
+      </item>
+      <item row="4" column="0" colspan="3">
+       <layout class="QHBoxLayout" name="horizontalLayout_3">
+        <property name="spacing">
+         <number>2</number>
+        </property>
+        <property name="bottomMargin">
+         <number>0</number>
+        </property>
+        <item>
+         <widget class="QPushButton" name="uniqueButton">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="toolTip">
+           <string>Unique Cards</string>
+          </property>
+          <property name="icon">
+           <iconset resource="main.qrc">
+            <normaloff>:/img/unique.png</normaloff>:/img/unique.png</iconset>
+          </property>
+          <property name="checkable">
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QStackedWidget" name="upgradeStackedWidget">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="currentIndex">
+           <number>0</number>
+          </property>
+          <widget class="QWidget" name="upgradeAllPage">
+           <layout class="QVBoxLayout" name="verticalLayout_11">
+            <property name="margin">
+             <number>0</number>
+            </property>
+            <item>
+             <widget class="QPushButton" name="upgradeAllButton">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="text">
+               <string/>
+              </property>
+              <property name="icon">
+               <iconset resource="main.qrc">
+                <normaloff>:/img/use.png</normaloff>:/img/use.png</iconset>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </widget>
+          <widget class="QWidget" name="upgradeNonePage">
+           <layout class="QVBoxLayout" name="verticalLayout_8">
+            <property name="margin">
+             <number>0</number>
+            </property>
+            <item>
+             <widget class="QPushButton" name="upgradeNoneButton">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="text">
+               <string/>
+              </property>
+              <property name="icon">
+               <iconset resource="main.qrc">
+                <normaloff>:/img/delete.png</normaloff>:/img/delete.png</iconset>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </widget>
+          <widget class="QWidget" name="upgrade0Page">
+           <layout class="QVBoxLayout" name="verticalLayout_9">
+            <property name="margin">
+             <number>0</number>
+            </property>
+            <item>
+             <widget class="QPushButton" name="upgrade0Button">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="icon">
+               <iconset resource="main.qrc">
+                <normaloff>:/img/tyrant/UpgradeIcon1.png</normaloff>:/img/tyrant/UpgradeIcon1.png</iconset>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </widget>
+          <widget class="QWidget" name="upgrade1Page">
+           <layout class="QVBoxLayout" name="verticalLayout_10">
+            <property name="margin">
+             <number>0</number>
+            </property>
+            <item>
+             <widget class="QPushButton" name="upgrade1Button">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="icon">
+               <iconset resource="main.qrc">
+                <normaloff>:/img/tyrant/UpgradeIcon2.png</normaloff>:/img/tyrant/UpgradeIcon2.png</iconset>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </widget>
+         </widget>
+        </item>
+        <item>
+         <spacer name="horizontalSpacer_3">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>40</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+       </layout>
       </item>
      </layout>
     </widget>
@@ -748,7 +909,7 @@
      <y>64</y>
     </hint>
     <hint type="destinationlabel">
-     <x>130</x>
+     <x>159</x>
      <y>66</y>
     </hint>
    </hints>

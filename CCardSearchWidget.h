@@ -30,6 +30,7 @@ signals:
 public slots:
     void switchAttackOption();
     void switchHpOption();
+    void switchUpgradeOption();
     void updateView(ECardStatusUpdate status = EOwnedStatusUpdate); 
     void updateLayout();
 
